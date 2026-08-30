@@ -11,9 +11,25 @@ return [
     | by the framework. The "local" disk, as well as a variety of cloud
     | based disks are available to your application for file storage.
     |
+    | Laravel Cloud injects FILESYSTEM_DISK=s3 when an Object Storage bucket
+    | is attached to the environment.
+    |
     */
 
     'default' => env('FILESYSTEM_DISK', 'local'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Public media disk
+    |--------------------------------------------------------------------------
+    |
+    | CRM uploads (logos, gallery, service imagery) use this disk. Locally it
+    | defaults to "public". On Laravel Cloud, when FILESYSTEM_DISK=s3 is set,
+    | media automatically uses the s3 disk unless MEDIA_DISK overrides it.
+    |
+    */
+
+    'media' => env('MEDIA_DISK') ?: (env('FILESYSTEM_DISK', 'local') === 's3' ? 's3' : 'public'),
 
     /*
     |--------------------------------------------------------------------------
@@ -58,6 +74,7 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => 'public',
             'throw' => false,
             'report' => false,
         ],

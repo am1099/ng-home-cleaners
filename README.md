@@ -50,6 +50,8 @@ npm run build
 composer run dev
 ```
 
+Object storage on Laravel Cloud: attach a bucket in the dashboard (injects `FILESYSTEM_DISK=s3` + AWS vars), then set `AWS_URL` to the bucket’s public URL. Details in `docs/deployment.md`.
+
 ### Local admin login (seeded in non-production)
 
 - URL: http://127.0.0.1:8000/admin

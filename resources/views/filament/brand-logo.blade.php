@@ -2,7 +2,7 @@
     $settings = app(\App\Services\SiteSettingsService::class)->get();
     $logoPath = $settings->logo_path;
     $logoUrl = filled($logoPath)
-        ? \Illuminate\Support\Facades\Storage::disk('public')->url($logoPath)
+        ? \App\Support\Media::url($logoPath)
         : null;
 @endphp
 

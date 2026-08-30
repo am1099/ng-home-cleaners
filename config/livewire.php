@@ -129,7 +129,9 @@ return [
     */
 
     'temporary_file_upload' => [
-        // Explicit local disk avoids Windows stream failures when the "default" disk is mis-resolved.
+        // Keep temp uploads on the local disk. Permanent CRM media uses the
+        // "media" disk (public locally, s3 on Laravel Cloud). The project's
+        // TemporaryUploadedFile override expects a local pathname for Symfony.
         'disk' => env('LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK', 'local'),
         'rules' => ['required', 'file', 'max:12288'],
         'directory' => 'livewire-tmp',

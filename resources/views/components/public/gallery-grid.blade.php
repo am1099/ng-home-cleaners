@@ -4,7 +4,7 @@
     <div {{ $attributes->class(['mx-auto flex max-w-7xl flex-wrap justify-center gap-8']) }}>
         @foreach ($items as $item)
             @php
-                $src = \Illuminate\Support\Facades\Storage::disk('public')->url($item->image_path);
+                $src = \App\Support\Media::url($item->image_path);
                 $label = filled($item->caption) ? $item->caption : $item->alt_text;
             @endphp
             <figure class="w-full overflow-hidden rounded-[var(--radius-card)] bg-surface-card shadow-[var(--shadow-card)] sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] lg:max-w-md">

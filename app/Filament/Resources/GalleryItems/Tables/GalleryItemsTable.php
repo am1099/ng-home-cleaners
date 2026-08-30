@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\GalleryItems\Tables;
 
 use App\Filament\Support\StandardRecordActions;
+use App\Support\Media;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\ImageColumn;
@@ -20,7 +21,7 @@ class GalleryItemsTable
                 TextColumn::make('sort_order')->label('#')->sortable(),
                 ImageColumn::make('image_path')
                     ->label('Image')
-                    ->disk('public')
+                    ->disk(Media::diskName())
                     ->height(56)
                     ->width(72)
                     ->extraImgAttributes([

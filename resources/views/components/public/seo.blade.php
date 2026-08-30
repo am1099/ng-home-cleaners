@@ -51,5 +51,5 @@
 @endif
 
 @if ($site->favicon_path)
-    <link rel="icon" href="{{ \Illuminate\Support\Facades\Storage::url($site->favicon_path) }}">
+    <link rel="icon" href="{{ \App\Support\Media::url($site->favicon_path) }}">
 @endif

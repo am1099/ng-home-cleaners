@@ -21,6 +21,7 @@ use App\Models\ServiceArea;
 use App\Models\ServiceExclusion;
 use App\Models\SiteSetting;
 use App\Models\Testimonial;
+use App\Support\Media;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -535,8 +536,8 @@ class CmsSeeder extends Seeder
             $beforePath = "recent-work/{$pair['slug']}-before.svg";
             $afterPath = "recent-work/{$pair['slug']}-after.svg";
 
-            Storage::disk('public')->put($beforePath, $this->demoSvg($pair['before_fill'], 'BEFORE'));
-            Storage::disk('public')->put($afterPath, $this->demoSvg($pair['after_fill'], 'AFTER'));
+            Storage::disk(Media::diskName())->put($beforePath, $this->demoSvg($pair['before_fill'], 'BEFORE'));
+            Storage::disk(Media::diskName())->put($afterPath, $this->demoSvg($pair['after_fill'], 'AFTER'));
 
             RecentWork::query()->updateOrCreate(
                 ['title' => $pair['title']],

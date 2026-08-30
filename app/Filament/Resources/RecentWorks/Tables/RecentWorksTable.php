@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\RecentWorks\Tables;
 
 use App\Filament\Support\StandardRecordActions;
+use App\Support\Media;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\ImageColumn;
@@ -20,7 +21,7 @@ class RecentWorksTable
                 TextColumn::make('sort_order')->label('#')->sortable(),
                 ImageColumn::make('before_image_path')
                     ->label('Before')
-                    ->disk('public')
+                    ->disk(Media::diskName())
                     ->height(56)
                     ->width(72)
                     ->extraImgAttributes([
@@ -28,7 +29,7 @@ class RecentWorksTable
                     ]),
                 ImageColumn::make('after_image_path')
                     ->label('After')
-                    ->disk('public')
+                    ->disk(Media::diskName())
                     ->height(56)
                     ->width(72)
                     ->extraImgAttributes([

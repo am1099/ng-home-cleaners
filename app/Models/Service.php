@@ -4,13 +4,13 @@ namespace App\Models;
 
 use App\Enums\ServiceIcon;
 use App\Models\Concerns\HasActiveScope;
+use App\Support\Media;
 use Database\Factories\ServiceFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 #[Fillable([
@@ -101,7 +101,7 @@ class Service extends Model
     public function cardImageUrl(): string
     {
         if (filled($this->card_image)) {
-            return Storage::disk('public')->url($this->card_image);
+            return Media::url($this->card_image) ?? asset('images/defaults/service-card.jpg');
         }
 
         return asset('images/defaults/service-card.jpg');
@@ -110,11 +110,11 @@ class Service extends Model
     public function heroImageUrl(): ?string
     {
         if (filled($this->hero_image)) {
-            return Storage::disk('public')->url($this->hero_image);
+            return Media::url($this->hero_image);
         }
 
         if (filled($this->card_image)) {
-            return Storage::disk('public')->url($this->card_image);
+            return Media::url($this->card_image);
         }
 
         return null;

@@ -6,6 +6,7 @@ use App\Models\GalleryItem;
 use App\Models\SiteSetting;
 use App\Models\User;
 use App\Services\SiteSettingsService;
+use App\Support\Media;
 use Database\Seeders\CmsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
@@ -24,8 +25,8 @@ class HomeLogoAndGalleryTest extends TestCase
 
     public function test_uploaded_logo_appears_in_public_header(): void
     {
-        Storage::fake('public');
-        Storage::disk('public')->put('brand/logo-test.png', 'fake-image');
+        Storage::fake(Media::diskName());
+        Storage::disk(Media::diskName())->put('brand/logo-test.png', 'fake-image');
 
         SiteSetting::instance()->update(['logo_path' => 'brand/logo-test.png']);
         app(SiteSettingsService::class)->forget();

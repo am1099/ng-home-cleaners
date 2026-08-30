@@ -2,8 +2,10 @@
 
 namespace App\Filament\Support;
 
+use App\Support\Media;
 use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\FileUpload;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
@@ -13,48 +15,50 @@ final class SecureImageUpload
      * Secure public image upload for CRM media.
      *
      * Caps file size, restricts MIME types, and stores under a random filename.
-     * Downscaling runs after the file is written to disk (not against the Livewire
-     * temp stream) to avoid TemporaryUploadedFile stream failures on Windows.
+     * Downscaling runs after the file is written to the media disk (local public
+     * or Laravel Cloud Object Storage / S3) — not against the Livewire temp stream.
      */
     public static function make(string $name, string $directory, int $maxWidth = 2000): FileUpload
     {
+        $disk = Media::diskName();
+
         return FileUpload::make($name)
             ->image()
-            ->disk('public')
+            ->disk($disk)
             ->directory($directory)
             ->visibility('public')
             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
             ->maxSize(5120)
             ->fetchFileInformation(false)
-            ->saveUploadedFileUsing(function (BaseFileUpload $component, TemporaryUploadedFile $file) use ($directory, $maxWidth): string {
+            ->saveUploadedFileUsing(function (BaseFileUpload $component, TemporaryUploadedFile $file) use ($directory, $maxWidth, $disk): string {
                 $filename = Str::uuid()->toString().'.'.strtolower($file->getClientOriginalExtension() ?: 'jpg');
                 $path = $file->storeAs(trim($directory, '/'), $filename, [
-                    'disk' => 'public',
+                    'disk' => $disk,
                 ]);
 
                 if (is_string($path) && $path !== '') {
-                    self::downscaleStoredImage($path, $maxWidth);
+                    self::downscaleStoredImage($disk, $path, $maxWidth);
                 }
 
                 return is_string($path) ? $path : trim($directory, '/').'/'.$filename;
             });
     }
 
-    private static function downscaleStoredImage(string $path, int $maxWidth): void
+    private static function downscaleStoredImage(string $disk, string $path, int $maxWidth): void
     {
         if (! function_exists('imagecreatefromstring') || $maxWidth < 1) {
             return;
         }
 
-        $absolute = storage_path('app/public/'.$path);
+        $storage = Storage::disk($disk);
 
-        if (! is_file($absolute)) {
+        if (! $storage->exists($path)) {
             return;
         }
 
-        $binary = @file_get_contents($absolute);
+        $binary = $storage->get($path);
 
-        if ($binary === false) {
+        if (! is_string($binary) || $binary === '') {
             return;
         }
 
@@ -88,16 +92,39 @@ final class SecureImageUpload
         imagesavealpha($resized, true);
         imagecopyresampled($resized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 
-        $extension = strtolower(pathinfo($absolute, PATHINFO_EXTENSION));
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $temp = tempnam(sys_get_temp_dir(), 'ngimg');
 
-        match ($extension) {
-            'png' => imagepng($resized, $absolute),
-            'gif' => imagegif($resized, $absolute),
-            'webp' => function_exists('imagewebp') ? imagewebp($resized, $absolute, 85) : imagejpeg($resized, $absolute, 85),
-            default => imagejpeg($resized, $absolute, 85),
+        if ($temp === false) {
+            imagedestroy($image);
+            imagedestroy($resized);
+
+            return;
+        }
+
+        $written = match ($extension) {
+            'png' => imagepng($resized, $temp),
+            'gif' => imagegif($resized, $temp),
+            'webp' => function_exists('imagewebp') ? imagewebp($resized, $temp, 85) : imagejpeg($resized, $temp, 85),
+            default => imagejpeg($resized, $temp, 85),
         };
 
         imagedestroy($image);
         imagedestroy($resized);
+
+        if ($written === false) {
+            @unlink($temp);
+
+            return;
+        }
+
+        $resizedBinary = file_get_contents($temp);
+        @unlink($temp);
+
+        if ($resizedBinary === false) {
+            return;
+        }
+
+        $storage->put($path, $resizedBinary, 'public');
     }
 }

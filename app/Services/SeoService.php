@@ -6,8 +6,8 @@ use App\Models\LegalPage;
 use App\Models\Service;
 use App\Models\ServiceArea;
 use App\Models\SiteSetting;
+use App\Support\Media;
 use App\Support\Seo\SeoPage;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 final class SeoService
@@ -358,7 +358,17 @@ final class SeoService
             return $path;
         }
 
-        return url(Storage::disk('public')->url($path));
+        $url = Media::url($path);
+
+        if (! filled($url)) {
+            return null;
+        }
+
+        if (Str::startsWith($url, ['http://', 'https://'])) {
+            return $url;
+        }
+
+        return url($url);
     }
 
     private function site(): SiteSetting

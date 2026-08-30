@@ -6,7 +6,7 @@
 @php
     $isInverse = $variant === 'inverse';
     $logoPath = $settings->logo_path ?? null;
-    $logoUrl = filled($logoPath) ? \Illuminate\Support\Facades\Storage::disk('public')->url($logoPath) : null;
+    $logoUrl = filled($logoPath) ? \App\Support\Media::url($logoPath) : null;
 @endphp
 
 <span {{ $attributes->class(['inline-flex items-center gap-3']) }}>

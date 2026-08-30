@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Filament\Pages\SiteSettings;
 use App\Models\SiteSetting;
 use App\Models\User;
+use App\Support\Media;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -35,7 +36,7 @@ class SecureImageUploadTest extends TestCase
 
     public function test_site_settings_logo_upload_persists_to_public_disk(): void
     {
-        Storage::fake('public');
+        Storage::fake(Media::diskName());
 
         $admin = User::factory()->create();
         $settings = SiteSetting::instance();
@@ -55,6 +56,6 @@ class SecureImageUploadTest extends TestCase
         $settings = SiteSetting::instance()->fresh();
 
         $this->assertNotNull($settings->logo_path);
-        Storage::disk('public')->assertExists($settings->logo_path);
+        Storage::disk(Media::diskName())->assertExists($settings->logo_path);
     }
 }

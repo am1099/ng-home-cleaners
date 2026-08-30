@@ -17,15 +17,8 @@ export function initMobileNav() {
     const iconClose = root.querySelector('[data-icon-close]');
 
     if (! toggle || ! panel || ! dialog) {
-        // #region agent log
-        fetch('http://127.0.0.1:7348/ingest/60f3acf6-e74c-49a4-b319-ca8e67d2d34c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0c7e53'},body:JSON.stringify({sessionId:'0c7e53',runId:'pre-fix',hypothesisId:'D',location:'mobile-nav.js:init',message:'mobile nav init aborted missing nodes',data:{hasToggle:!!toggle,hasPanel:!!panel,hasDialog:!!dialog},timestamp:Date.now()})}).catch(()=>{});
-        // #endregion
         return;
     }
-
-    // #region agent log
-    fetch('http://127.0.0.1:7348/ingest/60f3acf6-e74c-49a4-b319-ca8e67d2d34c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0c7e53'},body:JSON.stringify({sessionId:'0c7e53',runId:'pre-fix',hypothesisId:'D',location:'mobile-nav.js:init',message:'mobile nav init ok',data:{linkCount:links.length,vw:window.innerWidth},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
 
     const focusableSelector = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
     const motionMs = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 220;
@@ -63,25 +56,6 @@ export function initMobileNav() {
             window.requestAnimationFrame(() => {
                 const closeButton = dialog.querySelector('[data-mobile-nav-close]');
                 (closeButton ?? getFocusableElements()[0])?.focus();
-
-                // #region agent log
-                const navEl = dialog.querySelector('nav[aria-label="Primary mobile"]');
-                const navLinks = navEl ? Array.from(navEl.querySelectorAll('[data-mobile-nav-link]')) : [];
-                const cs = (el) => el ? window.getComputedStyle(el) : null;
-                const box = (el) => {
-                    if (! el) return null;
-                    const r = el.getBoundingClientRect();
-                    return { w: Math.round(r.width), h: Math.round(r.height), t: Math.round(r.top), l: Math.round(r.left), b: Math.round(r.bottom), r: Math.round(r.right) };
-                };
-                const pCs = cs(panel);
-                const dCs = cs(dialog);
-                const nCs = cs(navEl);
-                const firstLink = navLinks[0] || null;
-                const lCs = cs(firstLink);
-                                const ctaEl = dialog.querySelector('[data-mobile-nav-cta]');
-                const cCs = cs(ctaEl);
-                fetch('http://127.0.0.1:7348/ingest/60f3acf6-e74c-49a4-b319-ca8e67d2d34c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0c7e53'},body:JSON.stringify({sessionId:'0c7e53',runId:'post-fix',hypothesisId:'B',location:'mobile-nav.js:setOpen',message:'mobile nav open metrics',data:{dataOpen:panel.getAttribute('data-open'),panelHidden:panel.hidden,panelClassHidden:panel.classList.contains('hidden'),panelVis:pCs?.visibility,panelPE:pCs?.pointerEvents,panelDisplay:pCs?.display,panelBox:box(panel),drawerBg:dCs?.backgroundColor,drawerTransform:dCs?.transform,drawerDisplay:dCs?.display,drawerPos:dCs?.position,drawerBox:box(dialog),navDisplay:nCs?.display,navH:nCs?.height,navOverflow:nCs?.overflowY,navFlex:nCs?.flex,navBox:box(navEl),linkCount:navLinks.length,linkLabels:navLinks.map((a)=>a.textContent?.trim()),firstLinkBox:box(firstLink),firstLinkColor:lCs?.color,firstLinkOpacity:lCs?.opacity,firstLinkVis:lCs?.visibility,vw:window.innerWidth,vh:window.innerHeight,panelFillsViewport:!!(box(panel)&&box(panel).h>=(window.innerHeight-8)),linksInsideDrawer:!!(firstLink&&box(dialog)&&box(firstLink).t>=box(dialog).t&&box(firstLink).b<=box(dialog).b),drawerFullWidth:!!(box(dialog)&&box(dialog).w>=(window.innerWidth-2)),ctaBox:box(ctaEl),ctaVisible:!!(ctaEl&&box(ctaEl)&&box(ctaEl).h>40&&box(ctaEl).b<=window.innerHeight+2),firstLinkFontSize:lCs?.fontSize},timestamp:Date.now()})}).catch(()=>{});
-                // #endregion
             });
         } else {
             closeTimer = window.setTimeout(() => {

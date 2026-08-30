@@ -12,8 +12,8 @@
             <div class="mt-10 grid gap-6 md:grid-cols-2">
                 @foreach ($items as $index => $item)
                     @php
-                        $beforeSrc = \Illuminate\Support\Facades\Storage::disk('public')->url($item->before_image_path);
-                        $afterSrc = \Illuminate\Support\Facades\Storage::disk('public')->url($item->after_image_path);
+                        $beforeSrc = \App\Support\Media::url($item->before_image_path);
+                        $afterSrc = \App\Support\Media::url($item->after_image_path);
                     @endphp
                     <article
                         class="overflow-hidden rounded-[var(--radius-card)] bg-surface-card shadow-[var(--shadow-card)] transition duration-500 ease-out motion-reduce:transform-none motion-reduce:opacity-100"

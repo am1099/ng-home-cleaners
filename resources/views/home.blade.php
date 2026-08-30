@@ -53,7 +53,7 @@
                         <div class="relative size-full overflow-hidden rounded-full bg-brand-100 shadow-[var(--shadow-elevated)] ring-4 ring-white">
                             @if ($settings->home_hero_image)
                                 <img
-                                    src="{{ \Illuminate\Support\Facades\Storage::url($settings->home_hero_image) }}"
+                                    src="{{ \App\Support\Media::url($settings->home_hero_image) }}"
                                     alt=""
                                     class="size-full object-cover"
                                     width="640"
