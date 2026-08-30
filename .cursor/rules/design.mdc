@@ -1,0 +1,47 @@
+---
+alwaysApply: true
+---
+
+---
+description: Frontend styling, UI design systems, Blade/Livewire architecture, and Filament UI customization
+globs: ["**/*.blade.php", "app/Livewire/**/*.php", "app/Filament/**/*.php", "**/*.css", "**/*.js"]
+---
+
+# Design & Layout Directives (TALL Stack & Filament)
+
+## 1. Aesthetic Identity & Anti-AI Defaults
+- **Anti-Generic Defaults:** Strictly avoid generic AI purple/indigo gradients, oversized harsh drop-shadows, and cookie-cutter 3-column symmetrical card grids.
+- **Visual Personality:** Default to a crisp, high-end editorial or modern SaaS aesthetic (e.g., warm stone neutrals, deep charcoal zinc, or clean minimalist interfaces).
+- **Typography:** Use high-legibility fonts (e.g., Inter, Geist, Plus Jakarta Sans, Outfit). Maintain strict weight hierarchy (`font-semibold`/`font-bold` for headings, `font-normal` with balanced line heights `leading-relaxed` for prose).
+
+## 2. Spacing, Margins & Container Rhythm
+- **8pt Grid Consistency:** Strictly use Tailwind spacing tokens (`p-4`, `p-6`, `p-8`, `gap-4`, `gap-6`, `gap-8`, `gap-12`).
+- **Breathing Room:** Give sections generous vertical clearance (`py-12` to `py-24` on marketing/landing views; `py-6` to `py-8` on authenticated app layouts).
+- **Container Structure:** Wrap main view content in standard containers (`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`).
+- **Asymmetry & Balance:** Break boring layouts using offset grids (e.g., 8/4 or 7/5 grid column splits) and varied card spans.
+
+## 3. Color Palette & Surface Hierarchy (60-30-10 Rule)
+- **60% Base Surface:** Clean canvas layer (`bg-white` / `bg-neutral-50` for light mode; `bg-zinc-950` / `bg-neutral-900` for dark mode).
+- **30% Structural Elements:** Subdued card surfaces (`bg-white dark:bg-zinc-900`), delicate borders (`border-neutral-200/80 dark:border-zinc-800/80`), and muted text (`text-neutral-500 dark:text-zinc-400`).
+- **10% High-Intent Accent:** Reserve primary brand colors strictly for CTAs, active tab indicators, focus rings, and status badges.
+
+## 4. Blade Component Architecture & Reusability
+- **Atomic Blade Components:** Encapsulate repeating UI patterns into dedicated Blade components (`<x-button>`, `<x-card>`, `<x-badge>`, `<x-modal>`).
+- **Clean Prop Defaults:** Use `@props(['variant' => 'primary', 'size' => 'md'])` to manage styling variations rather than duplicating raw markup across views.
+- **Slot Management:** Use explicit named slots (`<x-slot:header>`, `<x-slot:footer>`) to keep card and modal layouts consistent.
+
+## 5. Livewire UX & Visual State Handling
+- **Smooth Loading States:** Always pair async actions with visual feedback (`wire:loading.class="opacity-50 cursor-wait"` or `<x-spinner wire:loading wire:target="save" />`).
+- **State Preservation & DOM Stability:** Always set unique `wire:key` attributes on loops to avoid DOM jumps and layout thrashing during morphing.
+- **Optimistic UI:** Pair `wire:target` disabling with immediate tactile feedback on buttons during network requests.
+
+## 6. Alpine.js Transitions & Micro-Interactions
+- **Zero-Flicker Cloak:** Always use `x-cloak` on conditional dropdowns/modals, backed by `[x-cloak] { display: none !important; }` in CSS.
+- **Standardized Transitions:** Use consistent enter/leave transition timing:
+  ```html
+  x-transition:enter="transition ease-out duration-200"
+  x-transition:enter-start="opacity-0 scale-95"
+  x-transition:enter-end="opacity-100 scale-100"
+  x-transition:leave="transition ease-in duration-150"
+  x-transition:leave-start="opacity-100 scale-100"
+  x-transition:leave-end="opacity-0 scale-95"

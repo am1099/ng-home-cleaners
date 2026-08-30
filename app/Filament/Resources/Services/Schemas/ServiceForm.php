@@ -3,9 +3,13 @@
 namespace App\Filament\Resources\Services\Schemas;
 
 use App\Enums\ServiceIcon;
+use App\Filament\Resources\Services\RelationManagers\ExclusionsRelationManager;
+use App\Filament\Resources\Services\RelationManagers\FaqsRelationManager;
+use App\Filament\Resources\Services\RelationManagers\InclusionsRelationManager;
 use App\Filament\Support\AutoSlug;
 use App\Filament\Support\SecureImageUpload;
 use App\Models\Service;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -13,6 +17,8 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Text;
+use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 
 class ServiceForm
@@ -107,9 +113,12 @@ class ServiceForm
                                     ->columns(3)
                                     ->schema([
                                         SecureImageUpload::make('hero_image', 'services/hero', 2000)
-                                            ->label('Hero image'),
+                                            ->label('Hero image')
+                                            ->helperText('Optional full-width photo on the service page. Leave blank to use the card image.'),
                                         SecureImageUpload::make('card_image', 'services/cards', 1200)
-                                            ->label('Card image'),
+                                            ->label('Card image')
+                                            ->required()
+                                            ->helperText('Required. This is the listing photo — it fills the top 40% of the service card.'),
                                         SecureImageUpload::make('og_image', 'services/og', 1200)
                                             ->label('Social share image'),
                                     ]),
@@ -127,8 +136,73 @@ class ServiceForm
                                             ->columnSpan(2),
                                     ]),
                             ]),
+                        Tab::make('Service details')
+                            ->schema([
+                                Section::make('Inclusions')
+                                    ->description('Checklist items shown under “What is included” on this service’s public page.')
+                                    ->collapsed()
+                                    ->schema(self::relationDrawer(
+                                        InclusionsRelationManager::class,
+                                        'Save the service first, then add inclusions here.',
+                                    )),
+                                Section::make('Exclusions')
+                                    ->description('Tasks outside the standard checklist. Shown under “What is not included”.')
+                                    ->collapsed()
+                                    ->schema(self::relationDrawer(
+                                        ExclusionsRelationManager::class,
+                                        'Save the service first, then add exclusions here.',
+                                    )),
+                                Section::make('FAQs')
+                                    ->description('Questions shown on this service’s public page. Homepage FAQs are seeded separately.')
+                                    ->collapsed()
+                                    ->schema(self::relationDrawer(
+                                        FaqsRelationManager::class,
+                                        'Save the service first, then add FAQs here.',
+                                    )),
+                                Section::make('Optional add-ons')
+                                    ->description('Attach existing extras from Pricing → Add-ons. This does not create a new product — tick those you want on the estimate form for this service.')
+                                    ->collapsed()
+                                    ->schema([
+                                        CheckboxList::make('addons')
+                                            ->relationship(titleAttribute: 'label')
+                                            ->searchable()
+                                            ->bulkToggleable()
+                                            ->columns(2),
+                                    ]),
+                            ]),
                     ])
                     ->columnSpanFull(),
             ]);
+    }
+
+    /**
+     * @return array<int, Text|View>
+     */
+    private static function relationDrawer(string $manager, string $createHint): array
+    {
+        return [
+            Text::make($createHint)
+                ->visible(fn (mixed $livewire): bool => ! self::hasPersistedRecord($livewire)),
+            View::make('filament.services.embedded-relation')
+                ->visible(fn (mixed $livewire): bool => self::hasPersistedRecord($livewire))
+                ->viewData(function (mixed $livewire) use ($manager): array {
+                    return [
+                        'component' => $manager,
+                        'ownerRecord' => $livewire->getRecord(),
+                        'pageClass' => $livewire::class,
+                    ];
+                }),
+        ];
+    }
+
+    private static function hasPersistedRecord(mixed $livewire): bool
+    {
+        if (! is_object($livewire) || ! method_exists($livewire, 'getRecord')) {
+            return false;
+        }
+
+        $record = $livewire->getRecord();
+
+        return $record instanceof Service && $record->exists;
     }
 }

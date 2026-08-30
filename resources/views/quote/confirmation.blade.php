@@ -4,7 +4,7 @@
             <div class="max-w-2xl">
                 <p class="ng-eyebrow">Request received</p>
                 <h1 class="ng-display mt-3 text-3xl sm:text-4xl">Thank you, {{ $quoteRequest->first_name }}.</h1>
-                <p class="ng-body-lg mt-3 text-ink-muted">
+                <p class="ng-body-lg mt-3 text-neutral-700">
                     Your estimate request is saved. We will confirm availability and send your fixed price in writing within one working day.
                 </p>
             </div>

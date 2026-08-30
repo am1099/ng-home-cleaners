@@ -39,12 +39,7 @@ class ServiceResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            RelationManagers\InclusionsRelationManager::class,
-            RelationManagers\ExclusionsRelationManager::class,
-            RelationManagers\FaqsRelationManager::class,
-            RelationManagers\AddonsRelationManager::class,
-        ];
+        return [];
     }
 
     public static function getPages(): array

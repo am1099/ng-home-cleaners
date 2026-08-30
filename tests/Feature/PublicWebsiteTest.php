@@ -83,7 +83,21 @@ class PublicWebsiteTest extends TestCase
         $this->get(route('services.show', $service))
             ->assertOk()
             ->assertSee('What is included', false)
-            ->assertSee('What is not included', false);
+            ->assertSee('What is not included', false)
+            ->assertSee('<details', false)
+            ->assertSee('01', false)
+            ->assertSee('md:grid-cols-2 md:items-start', false)
+            ->assertSee('md:hidden', false);
+    }
+
+    public function test_inner_pages_use_faint_text_hero_band(): void
+    {
+        foreach (['/services', '/about', '/contact', '/areas'] as $route) {
+            $this->get($route)
+                ->assertOk()
+                ->assertSee('from-brand-50', false)
+                ->assertSee('via-surface-page', false);
+        }
     }
 
     public function test_contact_page_shows_settings_contact_details(): void

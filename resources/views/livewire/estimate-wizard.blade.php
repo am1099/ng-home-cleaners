@@ -40,7 +40,7 @@
                     <h1 class="ng-display ng-display-hero mt-0">
                         Get your <em class="italic">instant estimate</em>.
                     </h1>
-                    <p class="ng-body-lg mt-[18px]">
+                    <p class="ng-body-lg mt-[18px] text-neutral-700">
                         Answer a few quick questions and see a guide price straight away. Send your request when you are ready - nothing is booked until you say yes.
                     </p>
                 </div>

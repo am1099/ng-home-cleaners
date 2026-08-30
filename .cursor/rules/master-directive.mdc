@@ -1,0 +1,49 @@
+---
+description: NG Home Cleaners Master Build Directive — authoritative project rules for all Cursor agents
+alwaysApply: true
+---
+
+# NG Home Cleaners — Master Build Directive
+
+This is a **production** Laravel application for a UK cleaning business. It is not a prototype.
+
+## Locked stack
+
+- Laravel 13, PHP 8.3+, PostgreSQL, Blade, Livewire 4, Tailwind CSS 4, Filament 5, Pest, Vite
+- Do **not** add React, Vue, Inertia, Next.js, or separate API frontends
+
+## Working rules
+
+1. Inspect existing code before changing it
+2. Preserve working functionality; reuse components
+3. No TODO placeholders, fake buttons, lorem ipsum, or dead links
+4. If a feature is implemented, it must work end-to-end
+5. Business content belongs in CRM, not hard-coded in Blade
+6. Pricing must have one source of truth (when built)
+7. British English for public copy; no unverified trust claims
+
+## Phase discipline
+
+- **Phase 1 (complete):** Infrastructure only — Laravel, PostgreSQL config, Livewire/Filament installed, queues, storage, admin auth, branded `/admin` login, `/up` health check, Pest, architecture docs
+- **Phase 2 (complete):** Reference audit refresh, shared public design system, base layout (header/footer/mobile nav), design tokens — no full page content or business modules yet
+- **Phase 3 (complete):** Core CMS data model and Filament CRUD (services, add-ons, pricing, areas, gallery, reviews, settings)
+- **Phase 12 (complete):** Engineering hardening — performance, uploads, a11y, security, errors, analytics hooks
+- **Later phases:** Optional FAQ/legal Filament CRUD, self-hosted fonts / srcset when photography ships
+
+Do not build business modules ahead of the active phase.
+
+## CRM navigation (when built)
+
+Dashboard, Leads, Bookings, Customers, Services, Pricing, Gallery, Reviews, Service Areas, Settings — keep it small; no enterprise modules in v1.
+
+## SEO
+
+Server-rendered HTML, unique titles/descriptions, sitemap, canonical URLs, no indexing of `/admin`.
+
+## Documentation
+
+Maintain `README.md`, `docs/architecture.md`, `docs/testing.md`, `docs/deployment.md`, `docs/reference-audit.md`, `docs/reference-pricing.md`.
+
+## Phase handoff
+
+At each phase end report: Implemented, Files/modules, Database, Tests, Manual verification, Remaining. Run formatter, tests, build, and migrations before stopping.

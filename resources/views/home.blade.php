@@ -10,7 +10,7 @@
                     <h1 class="ng-display ng-display-hero mt-0 max-w-xl text-brand-950">
                         {{ $settings->home_hero_title ?? 'There are better uses for a Saturday morning.' }}
                     </h1>
-                    <p class="ng-body-lg mt-[18px] max-w-lg">
+                    <p class="ng-body-lg mt-[18px] max-w-lg text-neutral-700">
                         {{ $settings->home_hero_subtitle ?? 'Your home cleaned by a vetted, DBS-checked cleaner working to a written standard, with a fixed price agreed before we start.' }}
                     </p>
                     <div class="mt-8 flex flex-wrap items-center gap-3">
@@ -82,7 +82,7 @@
                 subtitle="Whatever you book, the same checklist and the same standard."
             />
             @if ($services->isNotEmpty())
-                <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="mt-10 grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach ($services as $service)
                         <x-public.service-card :service="$service" />
                     @endforeach
@@ -193,6 +193,7 @@
                     subtitle="Anything else, ring {{ $settings->phoneDisplay() }}. You will get a straight answer, not a sales call."
                     align="center"
                     class="mx-auto"
+                    style="justify-self: center;"
                 />
                 <div class="mt-10">
                     <x-public.faq-list :faqs="$faqs" />

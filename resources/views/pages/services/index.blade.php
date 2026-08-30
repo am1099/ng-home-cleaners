@@ -7,7 +7,7 @@
         subtitle="Four services, one checklist, and a fixed price agreed in writing before a cleaner sets foot in the property."
     />
 
-    <x-public.section spacing="follow">
+    <x-public.section>
         <x-public.container>
             <x-public.heading
                 eyebrow="What is included"
@@ -15,7 +15,7 @@
                 subtitle="Here is exactly where the line sits, so nothing is a surprise on the day."
             />
             @if ($services->isNotEmpty())
-                <div class="mt-10 grid gap-6 sm:grid-cols-2">
+                <div class="mt-10 grid items-stretch gap-6 sm:grid-cols-2">
                     @foreach ($services as $service)
                         <x-public.service-card :service="$service" />
                     @endforeach

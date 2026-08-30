@@ -121,14 +121,15 @@
         padding-bottom: var(--spacing-hero-gap);
     }
 
-    /* Content immediately after a page hero — no extra top band */
+    /* Content after a text hero — intentional top space instead of a hairline divider */
     .ng-section-follow {
-        padding-top: 0;
+        padding-top: clamp(2.75rem, 5vw, 4rem);
         padding-bottom: var(--spacing-section-y);
     }
 
+    /* Surface change alone separates major bands — no hairline border-y */
     .ng-section-sunken {
-        @apply border-y border-border bg-surface-sunken;
+        @apply bg-surface-sunken;
     }
 
     .ng-section-ink {
@@ -156,7 +157,7 @@
     }
 
     .ng-body-lg {
-        @apply max-w-[620px] text-lg leading-relaxed text-ink-muted;
+        @apply text-lg leading-relaxed;
     }
 
     .prose-ng {
@@ -287,4 +288,45 @@
 
 [x-cloak] {
     display: none !important;
+}
+
+/* Right-hand mobile navigation drawer */
+.ng-mobile-nav {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.ng-mobile-nav[data-open='true'] {
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.ng-mobile-nav__backdrop {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.ng-mobile-nav[data-open='true'] .ng-mobile-nav__backdrop {
+    opacity: 1;
+}
+
+.ng-mobile-nav__drawer {
+    transform: translateX(100%);
+    transition: transform 0.22s ease;
+    will-change: transform;
+}
+
+.ng-mobile-nav[data-open='true'] .ng-mobile-nav__drawer {
+    transform: translateX(0);
+}
+
+.ng-exclusion-item summary::-webkit-details-marker {
+    display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ng-mobile-nav__backdrop,
+    .ng-mobile-nav__drawer {
+        transition: none;
+    }
 }

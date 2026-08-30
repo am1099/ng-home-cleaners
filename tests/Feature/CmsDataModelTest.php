@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\Services\Pages\EditService;
+use App\Filament\Resources\Services\RelationManagers\InclusionsRelationManager;
 use App\Models\Addon;
 use App\Models\Service;
 use App\Models\SiteSetting;
@@ -10,6 +12,7 @@ use App\Services\SiteSettingsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class CmsDataModelTest extends TestCase
@@ -57,5 +60,34 @@ class CmsDataModelTest extends TestCase
         $this->actingAs($user)
             ->get('/admin/services')
             ->assertOk();
+    }
+
+    public function test_service_edit_page_keeps_detail_drawers_without_create_hint(): void
+    {
+        $user = User::factory()->create();
+        $service = Service::factory()->create();
+
+        $this->actingAs($user)
+            ->get('/admin/services/'.$service->getKey().'/edit')
+            ->assertOk()
+            ->assertSee('Service details', false)
+            ->assertSee('Inclusions', false)
+            ->assertSee('Optional add-ons', false)
+            ->assertDontSee('Save the service first, then add inclusions here.', false);
+
+        Livewire::actingAs($user)
+            ->test(EditService::class, ['record' => $service->getKey()])
+            ->assertOk()
+            ->assertSeeLivewire(InclusionsRelationManager::class);
+    }
+
+    public function test_service_create_page_asks_to_save_before_detail_rows(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get('/admin/services/create')
+            ->assertOk()
+            ->assertSee('Save the service first, then add inclusions here.', false);
     }
 }

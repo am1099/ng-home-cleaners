@@ -9,6 +9,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -29,28 +30,43 @@ class FaqsRelationManager extends RelationManager
                 ->required()
                 ->rows(3)
                 ->columnSpanFull(),
-            TextInput::make('sort_order')
-                ->numeric()
-                ->default(0)
-                ->required(),
         ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->description('Service-specific questions shown on this service’s public page. Site-wide FAQs on the homepage are managed separately in Website → FAQs when available.')
+            ->heading(null)
+            ->description(null)
+            ->paginated(false)
             ->columns([
-                TextColumn::make('sort_order')->label('#')->sortable(),
-                TextColumn::make('question')->searchable(),
+                TextColumn::make('question')
+                    ->searchable()
+                    ->wrap()
+                    ->limit(80),
+                TextColumn::make('answer')
+                    ->searchable()
+                    ->wrap()
+                    ->limit(120),
             ])
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
-            ->headerActions([
-                CreateAction::make(),
+            ->toolbarActions([
+                CreateAction::make()
+                    ->label('Add FAQ')
+                    ->modalHeading('Add FAQ')
+                    ->modalWidth(Width::Medium)
+                    ->createAnother(false)
+                    ->mutateFormDataUsing(function (array $data): array {
+                        $data['sort_order'] = (int) ($this->getOwnerRecord()->faqs()->max('sort_order') ?? 0) + 1;
+
+                        return $data;
+                    }),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->modalHeading('Edit FAQ')
+                    ->modalWidth(Width::Medium),
                 DeleteAction::make(),
             ]);
     }

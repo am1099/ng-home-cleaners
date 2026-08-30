@@ -4,6 +4,7 @@
     'subtitle' => null,
     'level' => 'h2',
     'align' => 'left',
+    'subtitleClass' => 'text-neutral-700',
 ])
 
 @php
@@ -31,6 +32,7 @@
     @if ($subtitle)
         <p @class([
             'ng-body-lg',
+            $subtitleClass,
             'mt-[18px]' => $level === 'h1',
             'mt-4' => $level !== 'h1',
         ])>{{ $subtitle }}</p>

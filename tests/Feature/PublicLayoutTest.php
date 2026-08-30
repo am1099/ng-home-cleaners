@@ -29,6 +29,10 @@ class PublicLayoutTest extends TestCase
         $response->assertSee('id="main-content"', false);
         $response->assertSee('data-mobile-nav-toggle', false);
         $response->assertSee('aria-controls="mobile-navigation"', false);
+        $response->assertSee('ng-mobile-nav', false);
+        $response->assertSee('ng-mobile-nav__drawer', false);
+        $response->assertSee('data-open="false"', false);
+        $response->assertSee('Get a free estimate', false);
         $response->assertSee($settings->phoneDisplay(), false);
         $response->assertSee($settings->email, false);
     }
