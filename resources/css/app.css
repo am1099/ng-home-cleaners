@@ -1,0 +1,290 @@
+@import 'tailwindcss';
+@import 'flowbite/src/themes/default';
+
+@plugin 'flowbite/plugin';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@source '../../node_modules/flowbite';
+
+@theme {
+    /* Typography */
+    --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-body: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+    --text-5xl: 3rem;
+
+    --tracking-tight: -0.02em;
+    --tracking-eyebrow: 0.14em;
+
+    /* Brand palette */
+    --color-brand-950: #0e3b36;
+    --color-brand-900: #124840;
+    --color-brand-800: #1a6b62;
+    --color-brand-700: #208378;
+    --color-brand-600: #269b8e;
+    --color-brand-500: #2eb3a4;
+    --color-brand-100: #d9f2ef;
+    --color-brand-50: #edf8f6;
+
+    /* Surfaces — white page, soft grey only for true mid-page bands */
+    --color-paper: #ffffff;
+    --color-surface-page: #ffffff;
+    --color-surface-sunken: #f5f7f6;
+    --color-surface-card: #ffffff;
+    --color-surface-ink: #0e3b36;
+
+    /* Text */
+    --color-ink: #1c2422;
+    --color-ink-muted: #5c6663;
+    --color-ink-subtle: #7a8582;
+    --color-ink-inverse: #ffffff;
+    --color-ink-inverse-muted: #c8ddd9;
+
+    /* Borders & accents */
+    --color-border: #e4e8e7;
+    --color-border-strong: #cfd6d4;
+    --color-accent-brass: #b8956a;
+
+    /* Radii */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.625rem;
+    --radius-lg: 0.875rem;
+    --radius-xl: 1.125rem;
+    --radius-card: 1rem;
+    --radius-pill: 9999px;
+
+    /* Shadows */
+    --shadow-card: 0 1px 2px rgb(14 59 54 / 0.04), 0 4px 16px rgb(14 59 54 / 0.06);
+    --shadow-elevated: 0 4px 8px rgb(14 59 54 / 0.06), 0 12px 32px rgb(14 59 54 / 0.1);
+
+    /* Layout — tighter than before to avoid stacked empty bands */
+    --width-content: 75rem;
+    --height-header: 4.5rem;
+    --spacing-section-y: clamp(2.5rem, 5vw, 4rem);
+    --spacing-section-y-hero: clamp(2rem, 4vw, 3rem);
+    --spacing-hero-gap: clamp(1.25rem, 2.5vw, 1.75rem);
+    --spacing-section-x: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+@layer base {
+    html {
+        @apply scroll-smooth;
+    }
+
+    body {
+        @apply min-h-screen font-[family-name:var(--font-body)] text-ink antialiased;
+        background-color: var(--color-surface-page);
+    }
+
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-brand-600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+@layer components {
+    .ng-container {
+        @apply mx-auto w-full max-w-[var(--width-content)] px-[var(--spacing-section-x)];
+    }
+
+    .ng-section {
+        padding-block: var(--spacing-section-y);
+    }
+
+    /* Page intro: comfortable top, short bottom so content sits close underneath */
+    .ng-section-hero {
+        padding-top: var(--spacing-section-y-hero);
+        padding-bottom: var(--spacing-hero-gap);
+    }
+
+    /* Content immediately after a page hero — no extra top band */
+    .ng-section-follow {
+        padding-top: 0;
+        padding-bottom: var(--spacing-section-y);
+    }
+
+    .ng-section-sunken {
+        @apply border-y border-border bg-surface-sunken;
+    }
+
+    .ng-section-ink {
+        @apply bg-surface-ink text-ink-inverse;
+    }
+
+    .ng-eyebrow {
+        @apply mb-3 text-xs font-semibold uppercase tracking-[var(--tracking-eyebrow)] text-brand-600;
+    }
+
+    .ng-section-ink .ng-eyebrow {
+        @apply text-brand-100;
+    }
+
+    .ng-display {
+        @apply font-[family-name:var(--font-display)] font-semibold leading-[1.05] tracking-[var(--tracking-tight)] text-balance;
+    }
+
+    .ng-display-hero {
+        @apply text-[clamp(1.875rem,4.6vw,3rem)] leading-[1.05];
+    }
+
+    .ng-display-section {
+        @apply text-[clamp(1.5rem,3vw,2rem)] leading-[1.15];
+    }
+
+    .ng-body-lg {
+        @apply max-w-[620px] text-lg leading-relaxed text-ink-muted;
+    }
+
+    .prose-ng {
+        @apply max-w-none text-base leading-relaxed text-ink-muted;
+    }
+
+    .prose-ng p + p {
+        @apply mt-4;
+    }
+
+    .prose-ng h2 {
+        @apply mt-8 font-[family-name:var(--font-display)] text-[clamp(1.5rem,3vw,2rem)] font-semibold leading-[1.15] tracking-[var(--tracking-tight)] text-ink;
+    }
+
+    .prose-ng h3 {
+        @apply mt-6 text-lg font-semibold text-ink;
+    }
+
+    .prose-ng ul {
+        @apply list-disc space-y-2 pl-5;
+    }
+
+    .ng-area-card {
+        @apply flex h-full flex-col gap-2.5 rounded-[var(--radius-card)] border border-border bg-surface-card p-6 shadow-[var(--shadow-card)] transition-shadow hover:shadow-[var(--shadow-elevated)];
+    }
+
+    /* Sticky guide estimate — body must not use overflow-x clip or sticky fails */
+    .ng-sticky-estimate {
+        position: sticky;
+        top: calc(var(--height-header) + 1rem);
+        max-height: calc(100vh - var(--height-header) - 2rem);
+        overflow-y: auto;
+    }
+
+    .ng-link {
+        @apply font-semibold text-brand-800 underline-offset-4 transition-colors hover:text-brand-600 hover:underline;
+    }
+
+    .ng-section-ink .ng-link {
+        @apply text-ink-inverse hover:text-brand-100;
+    }
+
+    .ng-reveal-in {
+        animation: ng-fade-up 0.45s ease-out both;
+    }
+
+    @keyframes ng-fade-up {
+        from {
+            opacity: 0;
+            transform: translateY(0.75rem);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ng-reveal-in {
+            animation: none;
+        }
+    }
+
+    .ng-skip-link {
+        @apply sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-surface-card focus:px-4 focus:py-2 focus:shadow-elevated;
+    }
+}
+
+/* Full-size image lightbox (gallery + recent work) */
+.ng-lightbox {
+    max-width: min(96vw, 72rem);
+    max-height: 92vh;
+    margin: auto;
+    border: none;
+    padding: 0;
+    background: transparent;
+    overflow: visible;
+}
+
+.ng-lightbox::backdrop {
+    background: rgb(15 23 22 / 0.82);
+}
+
+.ng-lightbox__image {
+    display: block;
+    max-width: min(96vw, 72rem);
+    max-height: 84vh;
+    margin: 0 auto;
+    border-radius: 0.75rem;
+    object-fit: contain;
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.45);
+}
+
+.ng-lightbox__caption {
+    margin: 0.75rem 0 0;
+    text-align: center;
+    font-size: 0.875rem;
+    color: #edf8f6;
+}
+
+.ng-lightbox__close-wrap {
+    position: absolute;
+    right: 0;
+    top: -2.75rem;
+}
+
+.ng-lightbox__close {
+    display: inline-flex;
+    height: 2.5rem;
+    width: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: none;
+    background: rgb(255 255 255 / 0.12);
+    color: white;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.ng-lightbox__close:hover,
+.ng-lightbox__close:focus-visible {
+    background: rgb(255 255 255 / 0.22);
+    outline: 2px solid #d9f2ef;
+    outline-offset: 2px;
+}
+
+[x-cloak] {
+    display: none !important;
+}

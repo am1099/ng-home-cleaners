@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="ext-resource-dependency" content="assets/logo-lockup-ink.png" data-resource-id="logoInk" />
+<meta name="ext-resource-dependency" content="assets/logo-lockup-white.png" data-resource-id="logoWhite" />
+<meta name="ext-resource-dependency" content="assets/logo-monogram-ink.png" data-resource-id="logoMono" />
+<script>
+(function(){
+  var map = {"assets/logo-lockup-ink.png":"logoInk","assets/logo-lockup-white.png":"logoWhite","assets/logo-monogram-ink.png":"logoMono","assets/logo-square-ink.png":"logoSquare"};
+  function fix(root){
+    (root.querySelectorAll ? root.querySelectorAll('img') : []).forEach(function(img){
+      var raw = img.getAttribute('src') || '';
+      for(var k in map){
+        if(raw.indexOf(k) !== -1){
+          var r = window.__resources && window.__resources[map[k]];
+          if(r && raw !== r) img.setAttribute('src', r);
+        }
+      }
+    });
+  }
+  new MutationObserver(function(){ fix(document); }).observe(document.documentElement, {childList:true, subtree:true, attributes:true, attributeFilter:['src']});
+  document.addEventListener('DOMContentLoaded', function(){ fix(document); });
+  fix(document);
+})();
+</script>
+<template id="__bundler_thumbnail" data-bg-color="#0E3B36">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="800" fill="#0E3B36"/><g fill="#F6F1E7"><rect x="420" y="300" width="360" height="42" rx="21"/><rect x="480" y="372" width="240" height="28" rx="14"/><circle cx="600" cy="470" r="34"/></g></svg>
+</template>
+<title>About us — vetted cleaners in Nottingham · NG Home Cleaners</title>
+<meta name="description" content="A small Nottingham cleaning team working across NG1–NG16 with vetted, DBS-checked cleaners. How we vet, how we price, and what we promise.">
+<meta property="og:title" content="About NG Home Cleaners — vetted domestic cleaners in Nottingham">
+<meta property="og:description" content="How we vet our cleaners, how we price, and what we promise.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/favicon-ng.png">
+<link rel="apple-touch-icon" href="assets/favicon-ng.png">
+<link rel="stylesheet" href="_ds/ng-home-cleaners-design-system-28bf6795-6216-4e83-84f5-3554eccce596/styles.css">
+<script src="_ds/ng-home-cleaners-design-system-28bf6795-6216-4e83-84f5-3554eccce596/_ds_bundle.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"NG Home Cleaners","url":"https://nghomecleaners.co.uk","email":"hello@nghomecleaners.co.uk","telephone":"+447503651476","areaServed":"Nottingham, NG1–NG16","description":"Nottingham cleaning company working with vetted, DBS-checked subcontractor cleaners."}</script>
+<style>
+  html,body{margin:0;padding:0;background:var(--surface-page)}
+  a{text-decoration:none;transition:color 120ms cubic-bezier(.2,.8,.2,1)}
+  a:hover{color:var(--teal-700)}
+</style>
+</helmet>
+<div style="background:var(--surface-page);color:var(--text-primary);font-family:var(--font-body)">
+  <dc-import name="SiteNav" hint-size="100%,72px"></dc-import>
+
+  <main>
+    <section>
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(32px,5vw,64px);align-items:center">
+        <div>
+          <div style="font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--teal-600);margin-bottom:16px">About us</div>
+          <h1 style="font-family:var(--font-display);font-weight:600;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spacing:var(--tracking-display);margin:0 0 18px;text-wrap:pretty">A small Nottingham team, not a national franchise.</h1>
+          <p style="font:var(--type-body-lg);color:var(--text-secondary);margin:0;max-width:480px">A small family-run team working across NG1 to NG16 — the city centre, West Bridgford, Lenton, Beeston, Sherwood, Arnold, Bulwell, Wollaton and the districts in between. We have no plans to spread thinner than that.</p>
+        </div>
+        <img src="assets/photo-team.jpg" alt="Four NG Home Cleaners team members in branded navy polo shirts cleaning a hallway in a Nottingham home" style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:var(--radius-media);border:1px solid var(--border-subtle);display:block">
+      </div>
+    </section>
+
+    <section style="background:var(--surface-sunken);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,64px);align-items:start">
+        <div>
+          <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 14px">Local, and staying that way</h2>
+        </div>
+        <div style="max-width:560px">
+          <p style="font:var(--type-body);color:var(--text-secondary);margin:0 0 18px">Every clean is carried out by a vetted, DBS-checked cleaner working to our checklist. Not a rota of strangers — you will always know who is coming to your home.</p>
+          <p style="font:var(--type-body);color:var(--text-secondary);margin:0">We quote a fixed price before we start, and that is the number you pay. If we arrive and the property is in worse condition than described, you hear what it will cost before we do the work — never afterwards on an invoice.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px)">
+        <div style="font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--teal-600);margin-bottom:16px">Vetting</div>
+        <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 40px;max-width:640px">How someone earns a place on our team</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px">
+          <sc-for list="{{ vetting }}" as="step" hint-placeholder-count="4">
+            <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600);margin-bottom:14px">
+                <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="{{ step.icon }}" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+              </span>
+              <h3 style="font:var(--type-h3);margin:0 0 8px">{{ step.title }}</h3>
+              <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">{{ step.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:var(--surface-sunken);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,64px);align-items:start">
+        <div>
+          <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 14px">What we promise, in plain terms</h2>
+          <p style="font:var(--type-body);color:var(--text-secondary);margin:0;max-width:400px">Four commitments. Break one and we put it right on our own time, at our own cost.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <sc-for list="{{ promises }}" as="item" hint-placeholder-count="4">
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="check" size="{{ 18 }}" color="var(--teal-500)" style="margin-top:4px" hint-size="18px,18px"></x-import>
+              <span style="font:var(--type-body);color:var(--text-secondary)">{{ item }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px)">
+        <div style="font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--teal-600);margin-bottom:16px">The small print, up front</div>
+        <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 12px">Booking, cancellation and valuables</h2>
+        <p style="font:var(--type-body);color:var(--text-secondary);margin:0 0 40px;max-width:620px">Three policies worth reading before you book, so nothing between us has to be argued about later.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px">
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:12px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600)">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="calendar-check" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+            </span>
+            <h3 style="font:var(--type-h3);margin:0">Booking</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">Tell us the date you want and we will confirm it, or offer you the nearest slot we can genuinely keep. Then choose how you pay: in full by card before the clean, or half up front to secure the slot with the balance on the day. Either way the amount is the fixed price you already agreed.</p>
+          </div>
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:12px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600)">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="clock" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+            </span>
+            <h3 style="font:var(--type-h3);margin:0">Cancellation</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">Move or cancel up to 24 hours before, free of charge. Inside 24 hours, or if we cannot get in on the day, we charge half the visit.</p>
+          </div>
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:12px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600)">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="shield-check" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+            </span>
+            <h3 style="font:var(--type-h3);margin:0">Valuables and breakages</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">Please put cash, jewellery and anything irreplaceable away before we arrive. If we break something we tell you the same day and our £1m insurance covers it — we will not hide it and hope you miss it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:var(--surface-sunken);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px)">
+        <div style="font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--teal-600);margin-bottom:16px">Coverage</div>
+        <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 32px">Cleaning across Nottingham and the surrounding areas</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px 32px">
+          <sc-for list="{{ areas }}" as="area" hint-placeholder-count="12">
+            <span style="font:var(--type-body);color:var(--text-secondary)">{{ area }}</span>
+          </sc-for>
+        </div>
+        <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-muted);margin:28px 0 0">Not sure if you are inside the line? <a href="areas.dc.html" style="color:var(--teal-600);font-weight:var(--weight-semibold)">See the district list</a> or send your postcode and we will tell you straight.</p>
+      </div>
+    </section>
+
+    <section style="background:var(--surface-ink);color:var(--text-inverse)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,64px);align-items:center">
+        <h2 style="font-family:var(--font-display);font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.05;letter-spacing:var(--tracking-display);color:var(--text-inverse);margin:0;text-wrap:pretty">Check your postcode, get your price</h2>
+        <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+          <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Button" href="contact.dc.html" size="lg" variant="inverse" icon-right="arrow-right" hint-size="180px,52px">Book my first clean</x-import>
+          <span style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-inverse-muted)">Or ring <a href="tel:07503651476" style="color:var(--text-inverse);font-weight:var(--weight-semibold)">07503 651476</a> · <a href="https://wa.me/message/SXLIHLSZYTFHD1" target="_blank" rel="noopener" style="color:var(--text-inverse);font-weight:var(--weight-semibold)">WhatsApp us</a>, every day 8am–7pm.</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dc-import name="SiteFooter" hint-size="100%,380px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals(){
+    return {
+      vetting:[
+        {icon:'badge-check',title:'Identity and right to work',body:'Photo ID, proof of address and right-to-work checked and recorded before a first job is offered.'},
+        {icon:'shield-check',title:'DBS check and references',body:'A DBS check plus two references we actually ring. No check, no work, no exceptions.'},
+        {icon:'spray-can',title:'A trial clean with us',body:'First clean is walked through against our checklist so standards are agreed before they work alone.'},
+        {icon:'info',title:'Insured on every visit',body:'£1m public liability cover applies to every clean. Certificate sent the day you ask.'}
+      ],
+      promises:[
+        'The price we quote is the price you pay.',
+        'We tell you who is coming before they arrive.',
+        'You can move or cancel a clean up to 24 hours before, free.',
+        'If something is missed, we come back and finish it.'
+      ],
+      areas:['NG1 · City centre','NG2 · West Bridgford','NG3 · Mapperley','NG5 · Sherwood · Arnold','NG6 · Bulwell','NG7 · Lenton · Radford','NG8 · Wollaton · Bilborough','NG9 · Beeston · Stapleford','NG11 · Clifton · Ruddington','NG12 · Radcliffe · Keyworth','NG14 · Burton Joyce','NG16 · Eastwood · Kimberley']
+    };
+  }
+}
+</script>
+</body>
+</html>

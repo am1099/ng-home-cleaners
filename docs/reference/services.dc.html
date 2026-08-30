@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="ext-resource-dependency" content="assets/logo-lockup-ink.png" data-resource-id="logoInk" />
+<meta name="ext-resource-dependency" content="assets/logo-lockup-white.png" data-resource-id="logoWhite" />
+<meta name="ext-resource-dependency" content="assets/logo-monogram-ink.png" data-resource-id="logoMono" />
+<script>
+(function(){
+  var map = {"assets/logo-lockup-ink.png":"logoInk","assets/logo-lockup-white.png":"logoWhite","assets/logo-monogram-ink.png":"logoMono","assets/logo-square-ink.png":"logoSquare"};
+  function fix(root){
+    (root.querySelectorAll ? root.querySelectorAll('img') : []).forEach(function(img){
+      var raw = img.getAttribute('src') || '';
+      for(var k in map){
+        if(raw.indexOf(k) !== -1){
+          var r = window.__resources && window.__resources[map[k]];
+          if(r && raw !== r) img.setAttribute('src', r);
+        }
+      }
+    });
+  }
+  new MutationObserver(function(){ fix(document); }).observe(document.documentElement, {childList:true, subtree:true, attributes:true, attributeFilter:['src']});
+  document.addEventListener('DOMContentLoaded', function(){ fix(document); });
+  fix(document);
+})();
+</script>
+<template id="__bundler_thumbnail" data-bg-color="#0E3B36">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="800" fill="#0E3B36"/><g fill="#F6F1E7"><rect x="420" y="300" width="360" height="42" rx="21"/><rect x="480" y="372" width="240" height="28" rx="14"/><circle cx="600" cy="470" r="34"/></g></svg>
+</template>
+<title>Cleaning services in Nottingham — regular, deep, end of tenancy &amp; commercial · NG Home Cleaners</title>
+<meta name="description" content="House cleaning Nottingham: regular cleans, deep cleans, end of tenancy and office cleaning. See exactly what each service includes across NG1–NG16 and ask for a fixed quote.">
+<meta property="og:title" content="Cleaning services in Nottingham · NG Home Cleaners">
+<meta property="og:description" content="Regular, deep, end of tenancy and commercial cleaning across Nottingham. Fixed quotes, vetted cleaners.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/favicon-ng.png">
+<link rel="apple-touch-icon" href="assets/favicon-ng.png">
+<link rel="stylesheet" href="_ds/ng-home-cleaners-design-system-28bf6795-6216-4e83-84f5-3554eccce596/styles.css">
+<script src="_ds/ng-home-cleaners-design-system-28bf6795-6216-4e83-84f5-3554eccce596/_ds_bundle.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","serviceType":"Residential and commercial cleaning","provider":{"@type":"LocalBusiness","name":"NG Home Cleaners","telephone":"+447503651476","email":"hello@nghomecleaners.co.uk","url":"https://nghomecleaners.co.uk"},"areaServed":"Nottingham, NG1–NG16","hasOfferCatalog":{"@type":"OfferCatalog","name":"Cleaning services","itemListElement":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Regular clean"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Deep clean"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"End of tenancy clean"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Office and commercial clean"}}]}}</script>
+<style>
+  html,body{margin:0;padding:0;background:var(--surface-page)}
+  a{text-decoration:none;transition:color 120ms cubic-bezier(.2,.8,.2,1)}
+  a:hover{color:var(--teal-700)}
+</style>
+</helmet>
+<div style="background:var(--surface-page);color:var(--text-primary);font-family:var(--font-body)">
+  <dc-import name="SiteNav" hint-size="100%,72px"></dc-import>
+
+  <main>
+    <section>
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(20px,5vw,48px)">
+        <div style="font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--teal-600);margin-bottom:16px">Services · Nottingham NG1–NG16</div>
+        <h1 style="font-family:var(--font-display);font-weight:600;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spacing:var(--tracking-display);margin:0 0 18px;max-width:800px;text-wrap:pretty">Pay for the clean your home needs.</h1>
+        <p style="font:var(--type-body-lg);color:var(--text-secondary);margin:0;max-width:620px">Four services, one checklist, and a fixed price agreed in writing before a cleaner sets foot in the property.</p>
+      </div>
+    </section>
+
+    <section style="background:var(--surface-sunken);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,64px)">
+        <div>
+          <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 14px">What's included</h2>
+          <p style="font:var(--type-body);color:var(--text-secondary);margin:0 0 24px;max-width:420px">Each clean covers a different amount of ground. Here is exactly where the line sits, so nothing is a surprise on the day.</p>
+          <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Card" tone="accent" padding="md" elevation="none" hint-size="100%,110px">
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--teal-700);margin:0">Products and equipment supplied. Eco-friendly range on request at no extra cost.</p>
+          </x-import>
+          <img src="assets/photo-room-tidy.jpg" alt="Sitting room in a Nottingham home left clean after a visit — clear surfaces, daylight, wooden floor" loading="lazy" style="width:100%;aspect-ratio:5/4;object-fit:cover;border-radius:var(--radius-media);border:1px solid var(--border-subtle);display:block;margin-top:24px">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px">
+            <h3 style="font:var(--type-h3);margin:0 0 6px">Regular clean</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-muted);margin:0 0 16px">Weekly or fortnightly, two-hour minimum</p>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ regularIncluded }}" as="item" hint-placeholder-count="4">
+                <div style="display:flex;align-items:flex-start;gap:12px">
+                  <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="check" size="{{ 18 }}" color="var(--teal-500)" style="margin-top:4px" hint-size="18px,18px"></x-import>
+                  <span style="font:var(--type-body);color:var(--text-secondary)">{{ item }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px">
+            <h3 style="font:var(--type-h3);margin:0 0 6px">Deep clean</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-muted);margin:0 0 16px">Everything in a regular clean, plus:</p>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ deepIncluded }}" as="item" hint-placeholder-count="4">
+                <div style="display:flex;align-items:flex-start;gap:12px">
+                  <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="check" size="{{ 18 }}" color="var(--teal-500)" style="margin-top:4px" hint-size="18px,18px"></x-import>
+                  <span style="font:var(--type-body);color:var(--text-secondary)">{{ item }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background:var(--surface-card);border:2px solid var(--ink-900);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px">
+            <h3 style="font:var(--type-h3);margin:0 0 6px">End of tenancy</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-muted);margin:0 0 16px">Everything in a deep clean, plus:</p>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ tenancyIncluded }}" as="item" hint-placeholder-count="4">
+                <div style="display:flex;align-items:flex-start;gap:12px">
+                  <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="check" size="{{ 18 }}" color="var(--teal-500)" style="margin-top:4px" hint-size="18px,18px"></x-import>
+                  <span style="font:var(--type-body);color:var(--text-secondary)">{{ item }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px">
+            <h3 style="font:var(--type-h3);margin:0 0 6px">Office &amp; commercial</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-muted);margin:0 0 16px">Small premises, cleaned around your opening hours</p>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ commercialIncluded }}" as="item" hint-placeholder-count="4">
+                <div style="display:flex;align-items:flex-start;gap:12px">
+                  <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="check" size="{{ 18 }}" color="var(--teal-500)" style="margin-top:4px" hint-size="18px,18px"></x-import>
+                  <span style="font:var(--type-body);color:var(--text-secondary)">{{ item }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,64px);align-items:start">
+        <div>
+          <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 14px">What is not included</h2>
+          <p style="font:var(--type-body);color:var(--text-secondary);margin:0;max-width:420px">Most companies leave this off their website. We would rather you knew now than found out on the day — every one of these can be added to your quote if you ask.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <sc-for list="{{ notIncluded }}" as="item" hint-placeholder-count="6">
+            <div style="display:flex;align-items:flex-start;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--border-subtle)">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="x" size="{{ 18 }}" color="var(--text-muted)" style="margin-top:4px" hint-size="18px,18px"></x-import>
+              <div>
+                <div style="font:var(--type-body)">{{ item.task }}</div>
+                <div style="font:var(--type-caption);color:var(--text-muted)">{{ item.note }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:var(--surface-sunken);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,64px);align-items:start">
+        <div>
+          <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 14px">How we price it</h2>
+          <p style="font:var(--type-body);color:var(--text-secondary);margin:0;max-width:420px">A rate card would mean somebody overpaying — a 3 bed in Beeston and a 3 bed student let are not the same job. Fill in the estimate form and you get your own range instantly, then a fixed price in writing.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <sc-for list="{{ pricing }}" as="item" hint-placeholder-count="4">
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="check" size="{{ 18 }}" color="var(--teal-500)" style="margin-top:4px" hint-size="18px,18px"></x-import>
+              <span style="font:var(--type-body);color:var(--text-secondary)">{{ item }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:var(--surface-ink);color:var(--text-inverse)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,64px);align-items:center">
+        <h2 style="font-family:var(--font-display);font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.05;letter-spacing:var(--tracking-display);color:var(--text-inverse);margin:0;text-wrap:pretty">Send a postcode, get a price you can hold us to</h2>
+        <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+          <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Button" href="contact.dc.html" size="lg" variant="inverse" icon-right="arrow-right" hint-size="180px,52px">Book my first clean</x-import>
+          <span style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-inverse-muted)">Or ring <a href="tel:07503651476" style="color:var(--text-inverse);font-weight:var(--weight-semibold)">07503 651476</a> · <a href="https://wa.me/message/SXLIHLSZYTFHD1" target="_blank" rel="noopener" style="color:var(--text-inverse);font-weight:var(--weight-semibold)">WhatsApp us</a>, every day 8am–7pm.</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dc-import name="SiteFooter" hint-size="100%,380px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals(){
+    return {
+      regularIncluded:['Dusting throughout','Hoovering all floors and carpets','Mopping hard floors','Bathrooms and toilets cleaned'],
+      deepIncluded:['Kitchen and oven degreased','Skirting boards cleaned','Inside cabinets and cupboards','Limescale, tiles and shower screens'],
+      tenancyIncluded:['Inside all wardrobes and drawers','Wall marks, doors and light fittings','Fridge, freezer and appliances emptied and cleaned','Cleaned to inventory standard, ready for the check-out inspection'],
+      commercialIncluded:['Desks, touch points, glass and reception areas','Kitchens, washrooms and consumables restocked','Floors, bins and waste out to your collection point','Evenings, early mornings or weekends, worked around your opening hours'],
+      pricing:['One fixed price for the job, agreed in writing before we start.','No hourly meter running, and no extras added afterwards.','Products, equipment and travel inside NG1–NG16 included.','Your quote back within one working day, with no obligation.'],
+      notIncluded:[
+        {task:'Inside the oven, fridge and freezer on a regular clean',note:'Included as standard on deep and end of tenancy cleans'},
+        {task:'Inside cabinets and cupboards on a regular clean',note:'Included as standard on deep and end of tenancy cleans'},
+        {task:'External windows',note:'Internal glass is a paid extra from £20. Outside needs a window cleaner, and we can recommend one'},
+        {task:'Heavy mould treatment',note:'Surface mould yes. Anything structural needs a specialist, not a cleaner'},
+        {task:'Rubbish and furniture removal',note:'We bag waste and take it to your bin. Van loads are quoted separately'},
+        {task:'Carpet and upholstery shampooing',note:'Vacuuming is included. Wet extraction is a separate trade we can arrange'},
+        {task:'Lofts, garages and outbuildings',note:'Only if you mention them on the quote form'},
+        {task:'Anything needing a ladder above head height',note:'Insurance and safety, not reluctance'}
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

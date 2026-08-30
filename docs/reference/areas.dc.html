@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="ext-resource-dependency" content="assets/logo-lockup-ink.png" data-resource-id="logoInk" />
+<meta name="ext-resource-dependency" content="assets/logo-lockup-white.png" data-resource-id="logoWhite" />
+<meta name="ext-resource-dependency" content="assets/logo-monogram-ink.png" data-resource-id="logoMono" />
+<script>
+(function(){
+  var map = {"assets/logo-lockup-ink.png":"logoInk","assets/logo-lockup-white.png":"logoWhite","assets/logo-monogram-ink.png":"logoMono","assets/logo-square-ink.png":"logoSquare"};
+  function fix(root){
+    (root.querySelectorAll ? root.querySelectorAll('img') : []).forEach(function(img){
+      var raw = img.getAttribute('src') || '';
+      for(var k in map){
+        if(raw.indexOf(k) !== -1){
+          var r = window.__resources && window.__resources[map[k]];
+          if(r && raw !== r) img.setAttribute('src', r);
+        }
+      }
+    });
+  }
+  new MutationObserver(function(){ fix(document); }).observe(document.documentElement, {childList:true, subtree:true, attributes:true, attributeFilter:['src']});
+  document.addEventListener('DOMContentLoaded', function(){ fix(document); });
+  fix(document);
+})();
+</script>
+<template id="__bundler_thumbnail" data-bg-color="#0E3B36">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="800" fill="#0E3B36"/><g fill="#F6F1E7"><rect x="420" y="300" width="360" height="42" rx="21"/><rect x="480" y="372" width="240" height="28" rx="14"/><circle cx="600" cy="470" r="34"/></g></svg>
+</template>
+<title>Areas we cover — cleaners across Nottingham NG1–NG16 · NG Home Cleaners</title>
+<meta name="description" content="Domestic and commercial cleaners covering West Bridgford, Beeston, Lenton, Sherwood, Wollaton, Arnold, Bulwell, Mapperley and the rest of Nottingham NG1–NG16.">
+<meta property="og:title" content="Areas we cover — cleaners across Nottingham NG1–NG16">
+<meta property="og:description" content="House cleaning in West Bridgford, Beeston, Lenton, Sherwood, Wollaton and every district between.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/favicon-ng.png">
+<link rel="apple-touch-icon" href="assets/favicon-ng.png">
+<link rel="stylesheet" href="_ds/ng-home-cleaners-design-system-28bf6795-6216-4e83-84f5-3554eccce596/styles.css">
+<script src="_ds/ng-home-cleaners-design-system-28bf6795-6216-4e83-84f5-3554eccce596/_ds_bundle.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"NG Home Cleaners","url":"https://nghomecleaners.co.uk","telephone":"+447503651476","email":"hello@nghomecleaners.co.uk","address":{"@type":"PostalAddress","addressLocality":"Nottingham","addressCountry":"GB"},"areaServed":[{"@type":"City","name":"Nottingham"},{"@type":"Place","name":"West Bridgford"},{"@type":"Place","name":"Beeston"},{"@type":"Place","name":"Lenton"},{"@type":"Place","name":"Sherwood"},{"@type":"Place","name":"Wollaton"},{"@type":"Place","name":"Arnold"},{"@type":"Place","name":"Bulwell"},{"@type":"Place","name":"Mapperley"},{"@type":"Place","name":"Clifton"},{"@type":"Place","name":"Stapleford"},{"@type":"Place","name":"Ruddington"}],"openingHours":"Mo-Su 08:00-19:00"}</script>
+<style>
+  html,body{margin:0;padding:0;background:var(--surface-page)}
+  a{text-decoration:none;transition:color 120ms cubic-bezier(.2,.8,.2,1)}
+  a:hover{color:var(--teal-700)}
+</style>
+</helmet>
+<div style="background:var(--surface-page);color:var(--text-primary);font-family:var(--font-body)">
+  <dc-import name="SiteNav" hint-size="100%,72px"></dc-import>
+
+  <main>
+    <section>
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(20px,5vw,48px)">
+        <div style="font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--teal-600);margin-bottom:16px">Areas we cover</div>
+        <h1 style="font-family:var(--font-display);font-weight:600;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spacing:var(--tracking-display);margin:0 0 18px;max-width:800px;text-wrap:pretty">Nottingham only, and we intend to keep it that way.</h1>
+        <p style="font:var(--type-body-lg);color:var(--text-secondary);margin:0;max-width:620px">We cover NG1 to NG16 and nowhere else. Staying local means we hold the slot we give you rather than running late from the other side of the county.</p>
+      </div>
+    </section>
+
+    <section style="background:var(--surface-sunken);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px)">
+        <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 32px">District by district</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px">
+          <sc-for list="{{ districts }}" as="area" hint-placeholder-count="12">
+            <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="map-pin" size="{{ 16 }}" color="var(--teal-600)" hint-size="16px,16px"></x-import>
+                <span style="font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--teal-600)">{{ area.code }}</span>
+              </div>
+              <h3 style="font:var(--type-h3);margin:0">{{ area.name }}</h3>
+              <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">{{ area.note }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,64px);align-items:start">
+        <div>
+          <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 14px">Just outside the line?</h2>
+          <p style="font:var(--type-body);color:var(--text-secondary);margin:0;max-width:420px">NG17 and beyond usually means a longer drive than we can fit around the day's other jobs. Send the postcode anyway — if we can make it work, we will say so, and if we cannot we will point you to someone who can.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <sc-for list="{{ facts }}" as="item" hint-placeholder-count="4">
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="check" size="{{ 18 }}" color="var(--teal-500)" style="margin-top:4px" hint-size="18px,18px"></x-import>
+              <span style="font:var(--type-body);color:var(--text-secondary)">{{ item }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:var(--surface-ink);color:var(--text-inverse)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,64px);align-items:center">
+        <div>
+          <h2 style="font-family:var(--font-display);font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.05;letter-spacing:var(--tracking-display);color:var(--text-inverse);margin:0 0 16px;text-wrap:pretty">Check your postcode</h2>
+          <p style="font:var(--type-body-lg);color:var(--text-inverse-muted);margin:0;max-width:420px">Tell us where you are and we will confirm we cover you, then match you with the right cleaner.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+          <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Button" href="contact.dc.html" size="lg" variant="inverse" icon-right="arrow-right" hint-size="180px,52px">Book my first clean</x-import>
+          <span style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-inverse-muted)">Or ring <a href="tel:07503651476" style="color:var(--text-inverse);font-weight:var(--weight-semibold)">07503 651476</a> · <a href="https://wa.me/message/SXLIHLSZYTFHD1" target="_blank" rel="noopener" style="color:var(--text-inverse);font-weight:var(--weight-semibold)">WhatsApp us</a>, every day 8am–7pm.</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dc-import name="SiteFooter" hint-size="100%,380px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals(){
+    return {
+      districts:[
+        {code:'NG1',name:'City centre',note:'Apartments and city-centre lets, often between tenants. Parking arranged with you before the first visit.'},
+        {code:'NG2',name:'West Bridgford',note:'Family homes and rentals south of the Trent. One of our busiest districts for fortnightly cleans.'},
+        {code:'NG3',name:'Mapperley and St Ann\u2019s',note:'Victorian terraces and semis, where a deep clean usually comes before a regular routine starts.'},
+        {code:'NG5',name:'Sherwood and Arnold',note:'Larger family houses. Weekday morning slots are usually the easiest to get here.'},
+        {code:'NG6',name:'Bulwell',note:'Houses and landlord turnarounds, booked around your check-out or re-let date.'},
+        {code:'NG7',name:'Lenton and Radford',note:'Student lets and shared houses. End of tenancy work to inventory standard, with the deposit in mind.'},
+        {code:'NG8',name:'Wollaton and Bilborough',note:'Detached and semi-detached homes, often a one-off deep clean before hosting.'},
+        {code:'NG9',name:'Beeston and Stapleford',note:'Professionals and families. Weekly or fortnightly upkeep on a set day.'},
+        {code:'NG11',name:'Clifton and Ruddington',note:'Suburban and village homes to the south. Travel inside the district is included.'},
+        {code:'NG12',name:'Radcliffe and Keyworth',note:'Village properties east and south, from cottages to newer family homes.'},
+        {code:'NG14',name:'Burton Joyce and Lowdham',note:'Edge-of-city villages along the Trent, including larger detached properties.'},
+        {code:'NG16',name:'Eastwood and Kimberley',note:'North-west of the city. Regular customers here are usually booked in a standing weekly slot.'}
+      ],
+      facts:[
+        'Travel inside NG1\u2013NG16 is included in the price, never added on.',
+        'Weekday and Saturday slots across the whole coverage area.',
+        'The same standard and checklist wherever you are in the coverage area.',
+        'Not sure of your district? Send the full postcode and we will confirm.'
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="ext-resource-dependency" content="assets/work-01.jpg" data-resource-id="gal1" />
+<meta name="ext-resource-dependency" content="assets/work-06.jpg" data-resource-id="gal2" />
+<meta name="ext-resource-dependency" content="assets/photo-living-room-clean.jpg" data-resource-id="gal3" />
+<meta name="ext-resource-dependency" content="assets/photo-hallway.jpg" data-resource-id="gal4" />
+<meta name="ext-resource-dependency" content="assets/work-09.jpg" data-resource-id="gal5" />
+<meta name="ext-resource-dependency" content="assets/work-03.jpg" data-resource-id="gal6" />
+<meta name="ext-resource-dependency" content="assets/work-04.jpg" data-resource-id="gal7" />
+<meta name="ext-resource-dependency" content="assets/work-10-sm.jpg" data-resource-id="gal8" />
+<meta name="ext-resource-dependency" content="assets/logo-lockup-ink.png" data-resource-id="logoInk" />
+<meta name="ext-resource-dependency" content="assets/logo-lockup-white.png" data-resource-id="logoWhite" />
+<meta name="ext-resource-dependency" content="assets/logo-monogram-ink.png" data-resource-id="logoMono" />
+<script>
+(function(){
+  var map = {"assets/logo-lockup-ink.png":"logoInk","assets/logo-lockup-white.png":"logoWhite","assets/logo-monogram-ink.png":"logoMono","assets/logo-square-ink.png":"logoSquare"};
+  function fix(root){
+    (root.querySelectorAll ? root.querySelectorAll('img') : []).forEach(function(img){
+      var raw = img.getAttribute('src') || '';
+      for(var k in map){
+        if(raw.indexOf(k) !== -1){
+          var r = window.__resources && window.__resources[map[k]];
+          if(r && raw !== r) img.setAttribute('src', r);
+        }
+      }
+    });
+  }
+  new MutationObserver(function(){ fix(document); }).observe(document.documentElement, {childList:true, subtree:true, attributes:true, attributeFilter:['src']});
+  document.addEventListener('DOMContentLoaded', function(){ fix(document); });
+  fix(document);
+})();
+</script>
+<template id="__bundler_thumbnail" data-bg-color="#0E3B36">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="800" fill="#0E3B36"/><g fill="#F6F1E7"><rect x="420" y="300" width="360" height="42" rx="21"/><rect x="480" y="372" width="240" height="28" rx="14"/><circle cx="600" cy="470" r="34"/></g></svg>
+</template>
+<title>House cleaning in Nottingham · NG Home Cleaners</title>
+<meta name="description" content="Vetted, DBS-checked cleaners across Nottingham and surrounding areas. Regular cleans, deep cleans, end of tenancy and commercial cleaning at a fixed price quoted before we start.">
+<meta property="og:title" content="House cleaning in Nottingham · NG Home Cleaners">
+<meta property="og:description" content="Vetted, DBS-checked cleaners across Nottingham and surrounding areas. Fixed prices, no contracts.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/favicon-ng.png">
+<link rel="apple-touch-icon" href="assets/favicon-ng.png">
+<link rel="stylesheet" href="_ds/ng-home-cleaners-design-system-28bf6795-6216-4e83-84f5-3554eccce596/styles.css">
+<script src="_ds/ng-home-cleaners-design-system-28bf6795-6216-4e83-84f5-3554eccce596/_ds_bundle.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"NG Home Cleaners","description":"Residential and commercial cleaning in Nottingham — regular cleans, deep cleans, end of tenancy and office cleaning by vetted, DBS-checked cleaners.","telephone":"+447503651476","email":"hello@nghomecleaners.co.uk","url":"https://nghomecleaners.co.uk","areaServed":"Nottingham and surrounding areas","address":{"@type":"PostalAddress","addressLocality":"Nottingham","addressCountry":"GB"},"openingHours":"Mo-Su 08:00-19:00"}</script>
+<style>
+  html,body{margin:0;padding:0;background:var(--surface-page)}
+  a{text-decoration:none;transition:color 120ms cubic-bezier(.2,.8,.2,1)}
+  a:hover{color:var(--teal-700)}
+  summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:20px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:'+';font-family:var(--font-body);font-size:20px;color:var(--teal-600)}
+  details[open] summary::after{content:'–'}
+</style>
+</helmet>
+<div style="background:var(--surface-page);color:var(--text-primary);font-family:var(--font-body)">
+  <dc-import name="SiteNav" hint-size="100%,72px"></dc-import>
+
+  <main>
+    <section>
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(48px,7vw,88px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(32px,5vw,64px);align-items:center">
+        <div>
+          <div style="font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--teal-600);margin-bottom:16px;line-height:1.35;max-width:26ch">Cleaning · Nottingham and surrounding areas</div>
+          <h1 style="font-family:var(--font-display);font-weight:600;font-size:clamp(32px,5vw,54px);line-height:1.05;letter-spacing:var(--tracking-display);margin:0 0 18px;text-wrap:pretty">There are better uses for a Saturday morning.</h1>
+          <p style="font:var(--type-body-lg);color:var(--text-secondary);margin:0 0 28px;max-width:480px;text-wrap:pretty">Your home cleaned by a vetted, DBS-checked cleaner working to a written standard — so there is nothing left for you to go back over.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px">
+            <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Button" href="contact.dc.html" size="lg" icon-right="arrow-right" hint-size="180px,52px">Book my first clean</x-import>
+            <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Button" href="services.dc.html" variant="outline" size="lg" hint-size="200px,52px">See what's included</x-import>
+          </div>
+          <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0 0 28px;max-width:460px">If anything is missed, tell us within 48 hours and we come back and finish it at our cost. Or <a href="https://wa.me/message/SXLIHLSZYTFHD1" target="_blank" rel="noopener" style="color:var(--teal-600);font-weight:var(--weight-semibold)">ask us on WhatsApp</a> first.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Badge" tone="brass" icon="star" hint-size="150px,26px">Five-star Google reviews</x-import>
+            <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Badge" tone="accent" icon="shield-check" hint-size="150px,26px">£1m public liability</x-import>
+            <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Badge" tone="accent" icon="badge-check" hint-size="150px,26px">DBS-checked cleaners</x-import>
+          </div>
+        </div>
+        <img src="assets/photo-team.jpg" alt="Four NG Home Cleaners team members in branded navy polo shirts cleaning a hallway in a Nottingham home" style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:var(--radius-media);border:1px solid var(--border-subtle);display:block">
+      </div>
+    </section>
+
+    <section style="background:var(--surface-sunken);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px)">
+        <div style="max-width:600px;margin-bottom:40px">
+          <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 12px">What we clean</h2>
+          <p style="font:var(--type-body);color:var(--text-secondary);margin:0">Homes and small commercial premises across Nottingham. Whatever you book, the same checklist and the same standard.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px">
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:14px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600)">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="house" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+            </span>
+            <h3 style="font:var(--type-h3);margin:0">Regular clean</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">Get your evenings and Sundays back. Weekly or fortnightly on a day that suits you — dusting, hoovering, mopping, bathrooms and toilets.</p>
+            <a href="services.dc.html" style="font:var(--weight-semibold) var(--text-sm)/1.4 var(--font-body);color:var(--teal-600);margin-top:auto">What's included</a>
+          </div>
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:14px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600)">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="sparkles" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+            </span>
+            <h3 style="font:var(--type-h3);margin:0">Deep clean</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">For the house you would rather nobody saw. Kitchen and hob degreased, skirting boards, inside cabinets, limescale. Oven interior and internal windows are add-ons.</p>
+            <a href="services.dc.html" style="font:var(--weight-semibold) var(--text-sm)/1.4 var(--font-body);color:var(--teal-600);margin-top:auto">What's included</a>
+          </div>
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:14px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600)">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="key" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+            </span>
+            <h3 style="font:var(--type-h3);margin:0">End of tenancy</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">Your deposit is the reason this clean exists. Cleaned to inventory standard, so your agent has nothing to deduct for.</p>
+            <a href="services.dc.html" style="font:var(--weight-semibold) var(--text-sm)/1.4 var(--font-body);color:var(--teal-600);margin-top:auto">What's included</a>
+          </div>
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:14px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600)">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="building-2" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+            </span>
+            <h3 style="font:var(--type-h3);margin:0">Office &amp; commercial</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">Your staff should not be emptying bins. Evenings and weekends, worked around your opening hours and priced per visit after a walk-round.</p>
+            <a href="services.dc.html" style="font:var(--weight-semibold) var(--text-sm)/1.4 var(--font-body);color:var(--teal-600);margin-top:auto">What's included</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px)">
+        <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 40px">How it works</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:32px">
+          <div>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600);font:var(--weight-semibold) var(--text-sm)/1 var(--font-display);margin-bottom:14px">01</span>
+            <h3 style="font:var(--type-h3);margin:0 0 8px">Tell us about your home</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">Postcode, rooms, which clean and when. Send a one-minute walkthrough video with it and the price comes back tighter.</p>
+          </div>
+          <div>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600);font:var(--weight-semibold) var(--text-sm)/1 var(--font-display);margin-bottom:14px">02</span>
+            <h3 style="font:var(--type-h3);margin:0 0 8px">We put it in writing</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">In writing, within one working day, with every task listed. If the property is worse than the video showed, we agree the extra before we start.</p>
+          </div>
+          <div>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600);font:var(--weight-semibold) var(--text-sm)/1 var(--font-display);margin-bottom:14px">03</span>
+            <h3 style="font:var(--type-h3);margin:0 0 8px">Meet your cleaner</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">You meet whoever is cleaning your home before the first visit, and we tell you in advance who is coming.</p>
+          </div>
+          <div>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600);font:var(--weight-semibold) var(--text-sm)/1 var(--font-display);margin-bottom:14px">04</span>
+            <h3 style="font:var(--type-h3);margin:0 0 8px">Pay whichever way suits you</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">In full by card before the clean, or half to hold the slot and the balance on the day. No contract, no subscription, and no cash to find on a Friday.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:var(--surface-sunken);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px)">
+        <div style="text-align:center;margin-bottom:40px">
+          <div style="font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--teal-600);margin-bottom:12px">Our recent work</div>
+          <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 12px">Explore homes we have cleaned</h2>
+          <p style="font:var(--type-body);color:var(--text-secondary);margin:0 auto 20px;max-width:520px">City-centre apartments, family bathrooms and open-plan kitchens across Nottingham and the surrounding areas.</p>
+          <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Button" href="areas.dc.html" variant="outline" size="sm" icon-right="arrow-right" hint-size="160px,36px">Areas we cover</x-import>
+        </div>
+        <div style="display:grid;grid-template-columns:{{ galleryCols }};grid-auto-rows:{{ galleryRow }};gap:clamp(10px,1.6vw,16px)">
+          <sc-for list="{{ work }}" as="shot" hint-placeholder-count="8">
+            <figure style="{{ shot.cell }}">
+              <img src="{{ shot.src }}" alt="{{ shot.alt }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block"></figure>
+            </sc-for>
+        </div>
+        <p style="font:var(--type-caption);color:var(--text-muted);margin:20px 0 0">Every photograph is one of our own jobs in Nottingham, taken with the customer's permission. No stock, no staging.</p>
+      </div>
+    </section>
+
+    <section>
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px)">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:40px">
+          <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0">What customers say</h2>
+          <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Button" href="https://www.google.com/search?q=NG+Home+Cleaners+Nottingham" variant="outline" size="sm" icon-right="arrow-right" hint-size="200px,36px">Read them all on Google</x-import>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px">
+          <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.TestimonialCard" quote="Very good service overall, would highly recommend. Cleaner done a very deep clean and didn't miss a single spot. Cleaner was also very professional all the way through." name="Faris Ateigo" meta="Deep clean · Verified Google review" hint-size="100%,240px"></x-import>
+          <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.TestimonialCard" quote="I'd highly recommend this cleaning company. We hired them for an end-of-tenancy clean, and they completely exceeded our expectations." name="Marada Kochi" meta="End of tenancy · Verified Google review" hint-size="100%,240px"></x-import>
+          <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.TestimonialCard" quote="Needed a clean after moving out of my student accommodation. Super friendly, super quick, super clean. 1000% recommend." name="Abeer Elzaidabi" meta="Move-out · Verified Google review" hint-size="100%,240px"></x-import>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:var(--surface-sunken);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px)">
+        <div style="max-width:620px;margin-bottom:40px">
+          <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 12px">The part you only notice when it goes wrong</h2>
+          <p style="font:var(--type-body);color:var(--text-secondary);margin:0">You can find a cleaner in Nottingham for less, and plenty of people do. Three things they cannot offer you.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px">
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:14px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600)">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="users" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+            </span>
+            <h3 style="font:var(--type-h3);margin:0">Cover when yours is away</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">Illness or holiday means a vetted replacement that same week. An independent cleaner going away means a month of doing it yourself while you look for someone new.</p>
+          </div>
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:14px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600)">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="phone" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+            </span>
+            <h3 style="font:var(--type-h3);margin:0">Someone to ring when it goes wrong</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">A missed room, a breakage, a clean that was not up to standard — you raise it with us and we put it right, rather than having to have that conversation with the person who did the work.</p>
+          </div>
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:14px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600)">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="shield-check" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+            </span>
+            <h3 style="font:var(--type-h3);margin:0">The bill if something breaks</h3>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0">If we damage something we tell you the same day and our £1m public liability cover pays for it. An uninsured cleaner leaves that bill sitting with you, and most people only find that out afterwards.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,64px);align-items:start">
+        <div>
+          <h2 style="font:var(--type-h2);letter-spacing:var(--tracking-tight);margin:0 0 14px">The things people ask first</h2>
+          <p style="font:var(--type-body);color:var(--text-secondary);margin:0;max-width:400px">Anything else, ring <a href="tel:07503651476" style="color:var(--teal-600);font-weight:var(--weight-semibold)">07503 651476</a>. You will get a straight answer, not a sales call.</p>
+        </div>
+        <div>
+          <details style="border-bottom:1px solid var(--border-subtle);padding:18px 0">
+            <summary style="font:var(--type-h3);color:var(--text-primary)">How does it work out on cost?</summary>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.7 var(--font-body);color:var(--text-secondary);margin:12px 0 0;max-width:560px">Known before we start. Fill in the <a href="contact.dc.html" style="color:var(--teal-600);font-weight:var(--weight-semibold)">estimate form</a> and you see your range instantly — it depends on the property, so a 3 bed in Beeston and a 3 bed student let are priced differently. Your fixed price follows in writing within one working day.</p>
+          </details>
+          <details style="border-bottom:1px solid var(--border-subtle);padding:18px 0">
+            <summary style="font:var(--type-h3);color:var(--text-primary)">How and when do I pay?</summary>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.7 var(--font-body);color:var(--text-secondary);margin:12px 0 0;max-width:560px">Two options, whichever you prefer: pay in full by card before the clean, or pay half to secure the slot and the balance on the day. No cash needed, no subscription, and the total is the fixed price you agreed in writing — we do not add to it afterwards.</p>
+          </details>
+          <details style="border-bottom:1px solid var(--border-subtle);padding:18px 0">
+            <summary style="font:var(--type-h3);color:var(--text-primary)">Why are you more than the cleaner down the road?</summary>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.7 var(--font-body);color:var(--text-secondary);margin:12px 0 0;max-width:560px">Because an independent cleaner is cheaper by leaving costs with you — no cover when she is ill, no insurance if something breaks, no DBS check on the person let into your home, and nobody to raise it with but her. We carry all four. If that is not worth the difference to you, an independent cleaner is genuinely the better buy and we will say so.</p>
+          </details>
+          <details style="border-bottom:1px solid var(--border-subtle);padding:18px 0">
+            <summary style="font:var(--type-h3);color:var(--text-primary)">Do I need to be home during the clean?</summary>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.7 var(--font-body);color:var(--text-secondary);margin:12px 0 0;max-width:560px">No, and most customers are not. You meet your cleaner first, then agree how they get in on the day. Every cleaner is DBS-checked and referenced before their first job.</p>
+          </details>
+          <details style="border-bottom:1px solid var(--border-subtle);padding:18px 0">
+            <summary style="font:var(--type-h3);color:var(--text-primary)">When could you start?</summary>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.7 var(--font-body);color:var(--text-secondary);margin:12px 0 0;max-width:560px">Tell us the date you have in mind on the quote form and we will confirm it or offer you the closest we can. Moving out on a fixed date, or need a Saturday? Say so and we will work to it.</p>
+          </details>
+          <details style="border-bottom:1px solid var(--border-subtle);padding:18px 0">
+            <summary style="font:var(--type-h3);color:var(--text-primary)">What if there is more work than expected?</summary>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.7 var(--font-body);color:var(--text-secondary);margin:12px 0 0;max-width:560px">We quote from the details and the walkthrough video you send. If the property turns out to need considerably more work than that showed, the cleaner stops and rings you with a number before carrying on. You will never find extra labour added to an invoice you have not agreed to.</p>
+          </details>
+          <details style="border-bottom:1px solid var(--border-subtle);padding:18px 0">
+            <summary style="font:var(--type-h3);color:var(--text-primary)">How do I pay?</summary>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.7 var(--font-body);color:var(--text-secondary);margin:12px 0 0;max-width:560px">A 50% deposit by card secures your slot and the balance is paid on the day of the clean. Regular weekly and fortnightly customers skip the deposit — you are invoiced per visit once we have cleaned. No subscription, no contract to get out of.</p>
+          </details>
+          <details style="border-bottom:1px solid var(--border-subtle);padding:18px 0">
+            <summary style="font:var(--type-h3);color:var(--text-primary)">Do you bring products and equipment?</summary>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.7 var(--font-body);color:var(--text-secondary);margin:12px 0 0;max-width:560px">Yes, and they are in the price. If you would rather we used your own products, or need the eco-friendly range for a child or a pet, say so when you book — it costs nothing extra.</p>
+          </details>
+          <details style="border-bottom:1px solid var(--border-subtle);padding:18px 0">
+            <summary style="font:var(--type-h3);color:var(--text-primary)">What if the clean is not up to standard?</summary>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.7 var(--font-body);color:var(--text-secondary);margin:12px 0 0;max-width:560px">Tell us within 48 hours and we come back and finish it at our cost.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:var(--surface-ink);color:var(--text-inverse)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,64px);align-items:center">
+        <div>
+          <div style="font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--teal-300);margin-bottom:16px;line-height:1.35;max-width:26ch">Nottingham and surrounding areas</div>
+          <h2 style="font-family:var(--font-display);font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.05;letter-spacing:var(--tracking-display);color:var(--text-inverse);margin:0 0 16px;text-wrap:pretty">Book a clean you will not have to chase</h2>
+          <p style="font:var(--type-body-lg);color:var(--text-inverse-muted);margin:0;max-width:420px">Tell us about your home and we will match you with the right cleaner. Everything in writing first, and nothing happens until you say yes.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+          <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Button" href="contact.dc.html" size="lg" variant="inverse" icon-right="arrow-right" hint-size="180px,52px">Book my first clean</x-import>
+          <span style="font:var(--weight-semibold) var(--text-sm)/1.6 var(--font-body);color:var(--text-inverse)">Miss anything and we come back inside 48 hours, at our cost.</span>
+          <span style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-inverse-muted)">Or ring <a href="tel:07503651476" style="color:var(--text-inverse);font-weight:var(--weight-semibold)">07503 651476</a> · <a href="https://wa.me/message/SXLIHLSZYTFHD1" target="_blank" rel="noopener" style="color:var(--text-inverse);font-weight:var(--weight-semibold)">WhatsApp us</a>, every day 8am–7pm.</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dc-import name="SiteFooter" hint-size="100%,380px"></dc-import>
+
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+    <div>
+      <div style="height:76px"></div>
+      <div style="position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;gap:10px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:var(--surface-card);border-top:1px solid var(--border-subtle);box-shadow:0 -8px 24px rgba(16,32,38,.10)">
+        <a href="contact.dc.html" style="flex:1 1 0;display:flex;align-items:center;justify-content:center;min-height:52px;padding:0 16px;border-radius:var(--radius-md);background:var(--teal-600);color:var(--text-inverse);font:var(--weight-semibold) var(--text-base)/1 var(--font-body);letter-spacing:var(--tracking-tight)" style-active="transform:translateY(1px)">Book my clean</a>
+        <a href="https://wa.me/447503651476" style="flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 18px;border-radius:var(--radius-md);border:1px solid var(--border-strong);background:var(--surface-card);color:var(--text-primary);font:var(--weight-semibold) var(--text-base)/1 var(--font-body)" style-active="transform:translateY(1px)">WhatsApp</a>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { isMobile:false };
+  componentDidMount(){
+    this._mq = window.matchMedia('(max-width: 720px)');
+    this._sync = () => this.setState({ isMobile:this._mq.matches });
+    this._sync();
+    this._mq.addEventListener('change', this._sync);
+  }
+  componentWillUnmount(){ if(this._mq) this._mq.removeEventListener('change', this._sync); }
+  renderVals(){
+    var m = this.state.isMobile;
+    var work=[
+        {src:(window.__resources&&window.__resources.gal1)||'assets/work-01.jpg',alt:'City-centre apartment bedroom after a clean, carpet vacuumed and bed made'},
+        {src:(window.__resources&&window.__resources.gal2)||'assets/work-06.jpg',alt:'Family bathroom after a deep clean, jacuzzi bath, basin and mosaic tiling left spotless'},
+        {src:(window.__resources&&window.__resources.gal3)||'assets/photo-living-room-clean.jpg',alt:'Living room in a Nottingham apartment after a clean, surfaces cleared and floor mopped'},
+        {src:(window.__resources&&window.__resources.gal4)||'assets/photo-hallway.jpg',alt:'Hallway and front door of a Nottingham house with the wooden floor mopped'},
+        {src:(window.__resources&&window.__resources.gal5)||'assets/work-09.jpg',alt:'Open-plan kitchen and living area cleaned, worktops degreased and floor mopped'},
+        {src:(window.__resources&&window.__resources.gal6)||'assets/work-03.jpg',alt:'Apartment hallway vacuumed, skirting boards and doors wiped down'},
+        {src:(window.__resources&&window.__resources.gal7)||'assets/work-04.jpg',alt:'Second bedroom cleaned, surfaces cleared and mirror polished'},
+        {src:(window.__resources&&window.__resources.gal8)||'assets/work-10-sm.jpg',alt:'Travertine loft bathroom after a deep clean, freestanding bath and stone tiling left spotless'}
+      ];
+    // magazine spread: alternating wide/narrow pairs, every row sums to 3 columns
+    var spans = m ? [1,1,1,1,1,1,1,1] : [2,1,1,2,2,1,1,2];
+    work.forEach(function(s,i){
+      s.cell = 'margin:0;overflow:hidden;border-radius:var(--radius-media);background:var(--ink-100);'
+             + 'grid-column:span ' + spans[i] + ';min-height:0';
+    });
+    return {
+      isMobile:m, work:work,
+      galleryCols:m ? '1fr' : 'repeat(3,1fr)',
+      galleryRow:m ? 'clamp(200px,56vw,340px)' : 'clamp(190px,21vw,300px)'
+    };
+  }
+}
+</script>
+</body>
+</html>

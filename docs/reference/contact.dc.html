@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="ext-resource-dependency" content="assets/logo-lockup-ink.png" data-resource-id="logoInk" />
+<meta name="ext-resource-dependency" content="assets/logo-lockup-white.png" data-resource-id="logoWhite" />
+<meta name="ext-resource-dependency" content="assets/logo-monogram-ink.png" data-resource-id="logoMono" />
+<script>
+(function(){
+  var map = {"assets/logo-lockup-ink.png":"logoInk","assets/logo-lockup-white.png":"logoWhite","assets/logo-monogram-ink.png":"logoMono","assets/logo-square-ink.png":"logoSquare"};
+  function fix(root){
+    (root.querySelectorAll ? root.querySelectorAll('img') : []).forEach(function(img){
+      var raw = img.getAttribute('src') || '';
+      for(var k in map){
+        if(raw.indexOf(k) !== -1){
+          var r = window.__resources && window.__resources[map[k]];
+          if(r && raw !== r) img.setAttribute('src', r);
+        }
+      }
+    });
+  }
+  new MutationObserver(function(){ fix(document); }).observe(document.documentElement, {childList:true, subtree:true, attributes:true, attributeFilter:['src']});
+  document.addEventListener('DOMContentLoaded', function(){ fix(document); });
+  fix(document);
+})();
+</script>
+<template id="__bundler_thumbnail" data-bg-color="#0E3B36">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="800" fill="#0E3B36"/><g fill="#F6F1E7"><rect x="420" y="300" width="360" height="42" rx="21"/><rect x="480" y="372" width="240" height="28" rx="14"/><circle cx="600" cy="470" r="34"/></g></svg>
+</template>
+<title>Get a free cleaning estimate in Nottingham · NG Home Cleaners</title>
+<meta name="description" content="Get an instant guide price for cleaning in Nottingham. Tell us about the property and your fixed price follows in writing within one working day.">
+<meta property="og:title" content="Get a free cleaning estimate · NG Home Cleaners, Nottingham">
+<meta property="og:description" content="Instant guide price, fixed quote in writing within one working day. NG1–NG16.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/favicon-ng.png">
+<link rel="apple-touch-icon" href="assets/favicon-ng.png">
+<link rel="stylesheet" href="_ds/ng-home-cleaners-design-system-28bf6795-6216-4e83-84f5-3554eccce596/styles.css">
+<script src="_ds/ng-home-cleaners-design-system-28bf6795-6216-4e83-84f5-3554eccce596/_ds_bundle.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ContactPage","name":"Contact NG Home Cleaners","mainEntity":{"@type":"LocalBusiness","name":"NG Home Cleaners","telephone":"+447503651476","email":"hello@nghomecleaners.co.uk","url":"https://nghomecleaners.co.uk","areaServed":"Nottingham, NG1–NG16","openingHours":"Mo-Su 08:00-19:00"}}</script>
+<style>
+  html,body{margin:0;padding:0;background:var(--surface-page)}
+  a{text-decoration:none;transition:color 120ms cubic-bezier(.2,.8,.2,1)}
+  a:hover{color:var(--teal-700)}
+  input,textarea,select{font-family:var(--font-body);font-size:16px;line-height:1.5;color:var(--text-primary);background:var(--paper);border:1px solid var(--ink-300);border-radius:var(--radius-md);padding:11px 14px;width:100%;box-sizing:border-box;transition:border-color 120ms cubic-bezier(.2,.8,.2,1),box-shadow 120ms cubic-bezier(.2,.8,.2,1)}
+  input[type="text"],input[type="email"],input[type="tel"],input[type="date"],select{height:44px}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--teal-500);box-shadow:var(--ring-focus)}
+  textarea{resize:vertical}
+  .pill{position:relative;display:inline-flex}
+  .pill input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer}
+  .pill span{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 18px;border:1px solid var(--ink-300);border-radius:var(--radius-md);background:var(--paper);font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body);color:var(--text-primary);transition:background 120ms cubic-bezier(.2,.8,.2,1),border-color 120ms cubic-bezier(.2,.8,.2,1),color 120ms cubic-bezier(.2,.8,.2,1)}
+  .pill:hover span{background:var(--ink-100)}
+  .pill input:checked + span{background:var(--ink-900);border-color:var(--ink-900);color:var(--paper)}
+  .pill input:focus-visible + span{box-shadow:var(--ring-focus);border-color:var(--teal-500)}
+  .check{display:flex;align-items:center;gap:12px;min-height:44px;padding:10px 14px;border:1px solid var(--border-subtle);border-radius:var(--radius-md);background:var(--paper);font:var(--type-body);cursor:pointer;transition:background 120ms cubic-bezier(.2,.8,.2,1)}
+  .check:hover{background:var(--ink-100)}
+  .check input{width:18px;height:18px;flex:none;accent-color:var(--teal-600);margin:0;padding:0}
+  .stepper button{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--ink-300);border-radius:var(--radius-md);background:var(--paper);font-family:var(--font-body);font-size:18px;line-height:1;color:var(--text-primary);cursor:pointer;transition:background 120ms cubic-bezier(.2,.8,.2,1)}
+  .stepper button:hover{background:var(--ink-100)}
+  .stepper button:focus-visible{outline:none;box-shadow:var(--ring-focus);border-color:var(--teal-500)}
+</style>
+</helmet>
+<div style="background:var(--surface-page);color:var(--text-primary);font-family:var(--font-body)">
+  <dc-import name="SiteNav" hint-size="100%,72px"></dc-import>
+  <iframe name="nghc-crm" title="Quote submission" style="display:none;width:0;height:0;border:0"></iframe>
+
+  <main>
+    <section>
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(20px,5vw,48px)">
+        <div style="font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--teal-600);margin-bottom:16px">Book your clean</div>
+        <h1 style="font-family:var(--font-display);font-weight:600;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spacing:var(--tracking-display);margin:0 0 18px;max-width:800px;text-wrap:pretty">Tell us about your home.</h1>
+        <p style="font:var(--type-body-lg);color:var(--text-secondary);margin:0;max-width:620px">You will see a guide range as you go, then a fixed price in writing within one working day. Nothing is booked until you say yes to it.</p>
+      </div>
+    </section>
+
+    <section style="border-top:1px solid var(--border-subtle)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(32px,5vw,64px);align-items:start">
+
+        <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);padding:clamp(24px,4vw,40px)">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-accent-soft);color:var(--teal-600);margin-bottom:18px">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="check" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+            </span>
+            <h2 style="font-family:var(--font-display);font-weight:600;font-size:26px;line-height:1.1;letter-spacing:var(--tracking-tight);margin:0 0 14px">That is with us.</h2>
+            <p style="font:var(--type-body);color:var(--text-secondary);margin:0 0 14px">We read every enquiry the same day and come back with a fixed price in writing within one working day. If we need a detail you have not mentioned, we will ask before quoting.</p>
+            <p style="font:var(--type-body);color:var(--text-secondary);margin:0 0 24px">Sending a one-minute walkthrough video on <a href="https://wa.me/message/SXLIHLSZYTFHD1" target="_blank" rel="noopener" style="color:var(--teal-600);font-weight:var(--weight-semibold)">WhatsApp</a> tightens the price and usually means we can commit to the top of your range coming down.</p>
+            <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Button" href="https://wa.me/message/SXLIHLSZYTFHD1" target="_blank" rel="noopener" size="lg" icon-left="message-circle" hint-size="220px,52px">Send your walkthrough</x-import>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+          <form method="post" action="https://docs.google.com/forms/d/e/1FAIpQLSe1-azAyaNfnggKiOdOjkmv7t1u61PFQ0Bk2xD__jF3oJyDsg/formResponse" target="nghc-crm" onSubmit="{{ onSubmit }}" style="display:flex;flex-direction:column;gap:36px">
+
+            <input type="hidden" name="entry.45945005" value="{{ fullName }}">
+            <input type="hidden" name="entry.2133749823" value="{{ firstName }}">
+            <input type="hidden" name="entry.75497963" value="{{ company }}">
+            <input type="hidden" name="entry.1030656069" value="{{ email }}">
+            <input type="hidden" name="entry.1144706062" value="{{ postcode }}">
+            <input type="hidden" name="entry.1412408001" value="{{ phone }}">
+            <input type="hidden" name="entry.860632411" value="{{ propertyDetails }}">
+            <input type="hidden" name="entry.1731757169" value="{{ date }}">
+            <input type="hidden" name="entry.1912039907" value="{{ estimateForCrm }}">
+            <input type="hidden" name="entry.904054668" value="{{ crmType }}">
+            <input type="hidden" name="entry.1646095870" value="{{ crmSource }}">
+
+            <fieldset style="border:none;margin:0;padding:0">
+              <legend style="padding:0;margin:0 0 16px">
+                <span style="display:block;font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">Step 1</span>
+                <span style="display:block;font:var(--type-h3)">Which clean do you need?</span>
+              </legend>
+              <div style="display:flex;flex-wrap:wrap;gap:10px">
+                <label class="pill"><input name="svc" type="radio" value="Regular clean" required="{{ true }}" onChange="{{ onService }}"><span>Regular clean</span></label>
+                <label class="pill"><input name="svc" type="radio" value="Deep clean" onChange="{{ onService }}"><span>Deep clean</span></label>
+                <label class="pill"><input name="svc" type="radio" value="End of tenancy clean" onChange="{{ onService }}"><span>End of tenancy</span></label>
+                <label class="pill"><input name="svc" type="radio" value="Office or commercial clean" onChange="{{ onService }}"><span>Office or commercial</span></label>
+              </div>
+              <sc-if value="{{ isRegular }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;max-width:280px">
+                  <label for="frequency" style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body)">How often?</label>
+                  <select id="frequency" onChange="{{ onFrequency }}">
+                    <option value="Weekly">Weekly</option>
+                    <option value="Fortnightly">Fortnightly</option>
+                    <option value="Monthly">Monthly</option>
+                  </select>
+                </div>
+              </sc-if>
+              <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:14px 0 0">Regular cleans have a two-hour minimum visit and usually start with one deep clean, so the upkeep visits after it are quicker.</p>
+            </fieldset>
+
+            <fieldset style="border:none;margin:0;padding:0">
+              <legend style="padding:0;margin:0 0 16px">
+                <span style="display:block;font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">Step 2</span>
+                <span style="display:block;font:var(--type-h3)">What are we cleaning?</span>
+              </legend>
+              <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px">
+                <label class="pill"><input name="ptype" type="radio" value="Flat" onChange="{{ onType }}" checked="{{ isFlat }}"><span>Flat</span></label>
+                <label class="pill"><input name="ptype" type="radio" value="House" onChange="{{ onType }}" checked="{{ isHouse }}"><span>House</span></label>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px">
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label for="size" style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body)">Bedrooms</label>
+                  <select id="size" required="{{ true }}" onChange="{{ onBeds }}" value="{{ beds }}">
+                    <option value="">Select bedrooms</option>
+                    <option value="0">Studio (flat only)</option>
+                    <option value="1">1 bed</option>
+                    <option value="2">2 bed</option>
+                    <option value="3">3 bed</option>
+                    <option value="4">4 bed</option>
+                    <option value="5">5 bed or more</option>
+                  </select>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label for="status" style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body)">Property status</label>
+                  <select id="status" onChange="{{ onStatus }}">
+                    <option value="Furnished">Furnished</option>
+                    <option value="Part-furnished">Part-furnished</option>
+                    <option value="Empty">Empty</option>
+                  </select>
+                </div>
+              </div>
+              <sc-if value="{{ isCommercial }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:20px;display:flex;flex-direction:column;gap:6px;max-width:320px">
+                  <label for="company" style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body)">Business name</label>
+                  <input id="company" type="text" placeholder="Whitmore &amp; Co" onChange="{{ onCompany }}" onInput="{{ onCompany }}">
+                </div>
+              </sc-if>
+            </fieldset>
+
+            <fieldset style="border:none;margin:0;padding:0">
+              <legend style="padding:0;margin:0 0 16px">
+                <span style="display:block;font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">Step 3</span>
+                <span style="display:block;font:var(--type-h3)">Rooms and floors</span>
+              </legend>
+              <div style="display:flex;flex-direction:column">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 0;border-bottom:1px solid var(--border-subtle)">
+                  <div>
+                    <div style="font:var(--type-body)">Bathrooms</div>
+                    <div style="font:var(--type-caption);color:var(--text-muted)">With a bath or shower</div>
+                  </div>
+                  <div class="stepper" style="display:flex;align-items:center;gap:12px">
+                    <button type="button" aria-label="One fewer bathroom" onClick="{{ bathsDown }}">–</button>
+                    <span aria-live="polite" style="font:var(--weight-semibold) var(--text-base)/1 var(--font-display);min-width:20px;text-align:center">{{ baths }}</span>
+                    <button type="button" aria-label="One more bathroom" onClick="{{ bathsUp }}">+</button>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 0;border-bottom:1px solid var(--border-subtle)">
+                  <div>
+                    <div style="font:var(--type-body)">Separate toilets</div>
+                    <div style="font:var(--type-caption);color:var(--text-muted)">Toilet only, no bath or shower</div>
+                  </div>
+                  <div class="stepper" style="display:flex;align-items:center;gap:12px">
+                    <button type="button" aria-label="One fewer separate toilet" onClick="{{ wcsDown }}">–</button>
+                    <span aria-live="polite" style="font:var(--weight-semibold) var(--text-base)/1 var(--font-display);min-width:20px;text-align:center">{{ wcs }}</span>
+                    <button type="button" aria-label="One more separate toilet" onClick="{{ wcsUp }}">+</button>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 0;border-bottom:1px solid var(--border-subtle)">
+                  <div>
+                    <div style="font:var(--type-body)">Kitchens</div>
+                    <div style="font:var(--type-caption);color:var(--text-muted)">Count a separate utility room as one</div>
+                  </div>
+                  <div class="stepper" style="display:flex;align-items:center;gap:12px">
+                    <button type="button" aria-label="One fewer kitchen" onClick="{{ kitchensDown }}">–</button>
+                    <span aria-live="polite" style="font:var(--weight-semibold) var(--text-base)/1 var(--font-display);min-width:20px;text-align:center">{{ kitchens }}</span>
+                    <button type="button" aria-label="One more kitchen" onClick="{{ kitchensUp }}">+</button>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 0;border-bottom:1px solid var(--border-subtle)">
+                  <div>
+                    <div style="font:var(--type-body)">Living and dining rooms</div>
+                    <div style="font:var(--type-caption);color:var(--text-muted)">Any reception room</div>
+                  </div>
+                  <div class="stepper" style="display:flex;align-items:center;gap:12px">
+                    <button type="button" aria-label="One fewer reception room" onClick="{{ livingDown }}">–</button>
+                    <span aria-live="polite" style="font:var(--weight-semibold) var(--text-base)/1 var(--font-display);min-width:20px;text-align:center">{{ living }}</span>
+                    <button type="button" aria-label="One more reception room" onClick="{{ livingUp }}">+</button>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 0;border-bottom:1px solid var(--border-subtle)">
+                  <div>
+                    <div style="font:var(--type-body)">Floors</div>
+                    <div style="font:var(--type-caption);color:var(--text-muted)">Including any loft conversion</div>
+                  </div>
+                  <div class="stepper" style="display:flex;align-items:center;gap:12px">
+                    <button type="button" aria-label="One fewer floor" onClick="{{ floorsDown }}">–</button>
+                    <span aria-live="polite" style="font:var(--weight-semibold) var(--text-base)/1 var(--font-display);min-width:20px;text-align:center">{{ floors }}</span>
+                    <button type="button" aria-label="One more floor" onClick="{{ floorsUp }}">+</button>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top:20px">
+                <div style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body);margin-bottom:10px">Any of these rooms?</div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
+                  <label class="check"><input type="checkbox" onChange="{{ onRoom }}" data-room="Conservatory"><span>Conservatory</span></label>
+                  <label class="check"><input type="checkbox" onChange="{{ onRoom }}" data-room="Office"><span>Office</span></label>
+                  <label class="check"><input type="checkbox" onChange="{{ onRoom }}" data-room="Utility room"><span>Utility room</span></label>
+                  <label class="check"><input type="checkbox" onChange="{{ onRoom }}" data-room="Loft room"><span>Loft room</span></label>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset style="border:none;margin:0;padding:0">
+              <legend style="padding:0;margin:0 0 16px">
+                <span style="display:block;font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">Step 4</span>
+                <span style="display:block;font:var(--type-h3)">Condition of the property</span>
+              </legend>
+              <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0 0 14px">Tick anything that applies. Being honest here costs you nothing — it just means the price we send is the price you pay.</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
+                <label class="check"><input type="checkbox" onChange="{{ onCondition }}" data-flag="Heavy limescale"><span>Heavy limescale</span></label>
+                <label class="check"><input type="checkbox" onChange="{{ onCondition }}" data-flag="Mould"><span>Mould or damp patches</span></label>
+                <label class="check"><input type="checkbox" onChange="{{ onCondition }}" data-flag="Pets"><span>Pets in the home</span></label>
+                <label class="check"><input type="checkbox" onChange="{{ onCondition }}" data-flag="Heavy grease"><span>Heavy kitchen grease</span></label>
+                <label class="check"><input type="checkbox" onChange="{{ onCondition }}" data-flag="Clutter"><span>Cluttered surfaces</span></label>
+                <label class="check"><input type="checkbox" onChange="{{ onCondition }}" data-flag="Not cleaned in months"><span>Not cleaned in months</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset style="border:none;margin:0;padding:0">
+              <legend style="padding:0;margin:0 0 16px">
+                <span style="display:block;font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">Step 5 · optional</span>
+                <span style="display:block;font:var(--type-h3)">Anything extra?</span>
+              </legend>
+              <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-secondary);margin:0 0 14px">Tick what you would like adding. Each one is priced separately on top of the clean, so you can see exactly what it costs.</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px">
+                <sc-for list="{{ extraOptions }}" as="x" hint-placeholder-count="8">
+                  <label class="check"><input type="checkbox" onChange="{{ onExtra }}" data-extra="{{ x.key }}"><span>{{ x.label }}</span></label>
+                </sc-for>
+              </div>
+              <sc-for list="{{ extraNotes }}" as="n" hint-placeholder-count="0">
+                <p style="font:var(--type-caption);color:var(--text-secondary);margin:12px 0 0;padding-left:12px;border-left:2px solid var(--border-strong);max-width:560px"><strong style="font-weight:var(--weight-semibold)">{{ n.label }}:</strong> {{ n.note }}</p>
+              </sc-for>
+              <p style="font:var(--type-caption);color:var(--text-muted);margin:12px 0 0">We do not do carpet or upholstery cleaning, outside windows, gutters or jet washing — ask and we will point you to someone who does.</p>
+            </fieldset>
+
+            <fieldset style="border:none;margin:0;padding:0">
+              <legend style="padding:0;margin:0 0 16px">
+                <span style="display:block;font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">Step 6</span>
+                <span style="display:block;font:var(--type-h3)">Where and when</span>
+              </legend>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px">
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label for="postcode" style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body)">Postcode</label>
+                  <input id="postcode" type="text" required="{{ true }}" pattern="[Nn][Gg] ?([1-9]|1[0-6]).*" autocomplete="postal-code" placeholder="NG7 2AB" aria-describedby="postcode-help" onChange="{{ onPostcode }}" onInput="{{ onPostcode }}">
+                  <span id="postcode-help" style="font:var(--type-caption);color:var(--text-muted)">We cover Nottingham and the surrounding areas.</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label for="parking" style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body)">Parking</label>
+                  <select id="parking" onChange="{{ onParking }}">
+                    <option value="Free parking outside">Free parking outside</option>
+                    <option value="Permit parking">Permit parking</option>
+                    <option value="Paid or metered">Paid or metered</option>
+                    <option value="Unsure">Unsure</option>
+                  </select>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label for="date" style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body)">Preferred date</label>
+                  <input id="date" type="date" min="{{ minDate }}" aria-describedby="date-help" onChange="{{ onDate }}">
+                  <span id="date-help" style="font:var(--type-caption);color:var(--text-muted)">Our next available slots. Tell us if you need sooner and we will try.</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label for="arrival" style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body)">Preferred start time</label>
+                  <select id="arrival" aria-describedby="arrival-help" onChange="{{ onArrival }}">
+                    <option value="No preference">No preference</option>
+                    <sc-for list="{{ slots }}" as="slot" hint-placeholder-count="6">
+                      <option value="{{ slot }}">{{ slot }}</option>
+                    </sc-for>
+                  </select>
+                  <span id="arrival-help" style="font:var(--type-caption);color:var(--text-muted)">A preference, not a fixed slot. We confirm the arrival window with your price.</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label for="access" style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body)">Access on the day</label>
+                  <select id="access" onChange="{{ onAccess }}">
+                    <option value="I will be home">I will be home</option>
+                    <option value="Someone will let you in">Someone will let you in</option>
+                    <option value="Agent or landlord will arrange access">Agent or landlord will arrange access</option>
+                    <option value="To be arranged">To be arranged</option>
+                  </select>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset style="border:none;margin:0;padding:0">
+              <legend style="padding:0;margin:0 0 16px">
+                <span style="display:block;font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">Step 7</span>
+                <span style="display:block;font:var(--type-h3)">Where do we send the price?</span>
+              </legend>
+              <div style="display:flex;flex-direction:column;gap:20px">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px">
+                  <div style="display:flex;flex-direction:column;gap:6px">
+                    <label for="name" style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body)">Your name</label>
+                    <input id="name" type="text" required="{{ true }}" autocomplete="name" placeholder="Jane Whitmore" onChange="{{ onName }}" onInput="{{ onName }}">
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:6px">
+                    <label for="phone" style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body)">Phone</label>
+                    <input id="phone" type="tel" required="{{ true }}" autocomplete="tel" placeholder="07000 000000" onChange="{{ onPhone }}" onInput="{{ onPhone }}">
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label for="email" style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body)">Email</label>
+                  <input id="email" type="email" required="{{ true }}" autocomplete="email" placeholder="jane@example.com" onChange="{{ onEmail }}" onInput="{{ onEmail }}">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label for="details" style="font:var(--weight-semibold) var(--text-sm)/1.2 var(--font-body)">Anything else we should know</label>
+                  <textarea id="details" rows="4" placeholder="A room to skip, hard water, where the stopcock is, the date your tenancy ends." onChange="{{ onDetails }}" onInput="{{ onDetails }}"></textarea>
+                </div>
+                <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Button" type="submit" size="lg" full-width="{{ true }}" disabled="{{ sending }}" icon-right="arrow-right" hint-size="100%,52px">{{ submitLabel }}</x-import>
+                <p style="font:var(--type-caption);color:var(--text-muted);margin:0">We use your details to quote this job and nothing else. No marketing list, no sharing.</p>
+              </div>
+            </fieldset>
+          </form>
+        </sc-if>
+
+        <div style="display:flex;flex-direction:column;gap:24px;position:sticky;top:96px">
+          <div aria-live="polite" style="background:var(--surface-accent-soft);border:1px solid var(--teal-200);border-radius:var(--radius-card);padding:28px">
+            <div style="font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--teal-600);margin-bottom:12px">Your estimate</div>
+            <div style="font-family:var(--font-display);font-weight:600;font-size:clamp(28px,4vw,38px);line-height:1.05;letter-spacing:var(--tracking-tight);color:var(--teal-700);margin-bottom:10px">{{ estHeadline }}</div>
+            <p style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--teal-700);margin:0 0 16px">{{ estDetail }}</p>
+            <div style="border-top:1px solid var(--teal-200);padding-top:16px;display:flex;flex-direction:column;gap:8px">
+              <span style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--teal-700)">{{ estBasis }}</span>
+              <span style="font:var(--type-caption);color:var(--teal-700)">{{ estCaption }}</span>
+            </div>
+            <div style="border-top:1px solid var(--teal-200);margin-top:16px;padding-top:16px;display:flex;flex-direction:column;gap:10px">
+              <span style="font:var(--weight-semibold) var(--text-xs)/1 var(--font-body);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--teal-600)">Included in every price</span>
+              <span style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--teal-700)">DBS-checked cleaner · £1m insurance · products and equipment · free re-clean if we miss anything. Pay in full by card before the clean, or half to secure the slot and the balance on the day.</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <a href="tel:07503651476" style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-subtle);font:var(--type-body);color:var(--text-primary);min-height:44px">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="phone" size="{{ 20 }}" color="var(--teal-600)" hint-size="20px,20px"></x-import>
+              <span>07503 651476</span>
+            </a>
+            <a href="https://wa.me/message/SXLIHLSZYTFHD1" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-subtle);font:var(--type-body);color:var(--text-primary);min-height:44px">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="message-circle" size="{{ 20 }}" color="var(--teal-600)" hint-size="20px,20px"></x-import>
+              <span>Send your walkthrough on WhatsApp</span>
+            </a>
+            <a href="mailto:hello@nghomecleaners.co.uk" style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-subtle);font:var(--type-body);color:var(--text-primary);min-height:44px">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="mail" size="{{ 20 }}" color="var(--teal-600)" hint-size="20px,20px"></x-import>
+              <span>hello@nghomecleaners.co.uk</span>
+            </a>
+            <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-subtle);font:var(--type-body);color:var(--text-secondary)">
+              <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Icon" name="clock" size="{{ 20 }}" color="var(--teal-600)" hint-size="20px,20px"></x-import>
+              <span>Every day, 8am–7pm</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:var(--surface-ink);color:var(--text-inverse)">
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,5vw,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(32px,5vw,64px);align-items:center">
+        <h2 style="font-family:var(--font-display);font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.05;letter-spacing:var(--tracking-display);color:var(--text-inverse);margin:0;text-wrap:pretty">Would rather just ask someone?</h2>
+        <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+          <x-import component-from-global-scope="NGHomeCleanersDesignSystem_28bf67.Button" href="tel:07503651476" size="lg" variant="inverse" icon-left="phone" hint-size="200px,52px">Call 07503 651476</x-import>
+          <span style="font:var(--weight-regular) var(--text-sm)/1.6 var(--font-body);color:var(--text-inverse-muted)">Or <a href="https://wa.me/message/SXLIHLSZYTFHD1" target="_blank" rel="noopener" style="color:var(--text-inverse);font-weight:var(--weight-semibold)">message us on WhatsApp</a>, every day 8am–7pm.</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dc-import name="SiteFooter" hint-size="100%,380px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;crmSource&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;CRM&quot;,&quot;label&quot;:&quot;Source value&quot;},&quot;crmType&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;CRM&quot;,&quot;label&quot;:&quot;Type value&quot;}}">
+class Component extends DCLogic {
+  state = {
+    sending:false,
+    service:'', frequency:'Fortnightly', type:'House', beds:'', status:'Furnished',
+    baths:1, wcs:0, kitchens:1, living:1, floors:2, rooms:[], flags:[],
+    postcode:'', parking:'Free parking outside', date:'', access:'I will be home',
+    name:'', phone:'', email:'', company:'', details:'', arrival:'No preference', extras:[], sent:false
+  };
+
+  // Extras are priced on top of the clean at the same £20/hr sub cost and
+  // ~£33/hr charge-out the main bands use.
+  extraList(){
+    return [
+      {key:'Single oven',            label:'Oven interior (single)',            lo:45,  hi:55},
+      {key:'Double oven',           label:'Double oven or range cooker',       lo:70,  hi:85},
+      {key:'Fridge and freezer',    label:'Inside fridge and freezer',         lo:40,  hi:50},
+      {key:'Inside wardrobes',      label:'Inside wardrobes and drawers',      lo:35,  hi:45},
+      {key:'Wall wipe',             label:'Light wall wipe-down throughout',   lo:45,  hi:65,
+        note:'Removal of scuff marks, crayon, pen, grease and other visible wall marks where possible. Results vary with the type and severity of the marks — some may be permanent and cannot be fully removed without repainting. Areas that cannot be safely reached without specialist access equipment are excluded.'},
+      {key:'Limescale treatment',   label:'Heavy limescale or mould treatment (per bathroom)',lo:30,  hi:70, perBath:true,
+        note:'Treatment of built-up limescale on taps, screens and tiling, and surface mould on sealant and grout. Results vary with how long it has been there — heavy staining, perished sealant and mould that has gone into the grout may not come back fully and can need replacing rather than cleaning.'},
+      {key:'Rubbish removal',       label:'Rubbish removal',                   lo:40,  hi:120, from:true}
+    ];
+  }
+
+  extrasTotal(){
+    const picked = this.state.extras;
+    const baths = Math.max(1, this.state.baths + this.state.wcs);
+    return this.extraList().filter(x => picked.indexOf(x.key) !== -1)
+      .reduce((a,x) => {
+        const mult = x.perBath ? baths : 1;
+        return {lo:a.lo + x.lo * mult, hi:a.hi + x.hi * mult};
+      }, {lo:0, hi:0});
+  }
+
+  slots(){
+    const out = [];
+    for(let m = 8*60; m <= 19*60; m += 30){
+      const h = Math.floor(m/60), mm = m % 60;
+      const h12 = h > 12 ? h - 12 : h;
+      out.push(h12 + ':' + String(mm).padStart(2,'0') + (h < 12 ? 'am' : 'pm'));
+    }
+    return out;
+  }
+
+  bands(){
+    return {
+      // Regular clean from the margin model: fee sits at ~£38-43/hr charge-out
+      // against a £15/hr sub, £3 supplies and £2.50 travel (~55-60% gross).
+      // Deep = hours ×1.8 @ £32/hr, EOT = hours ×2.2 @ £34/hr (sub £20).
+      'Regular clean':{
+        Flat:{0:[65,75],1:[75,85],2:[85,100],3:[110,125],4:[140,160],5:[165,190]},
+        House:{0:[70,80],1:[75,90],2:[95,110],3:[130,150],4:[170,195],5:[205,235]}
+      },
+      'Deep clean':{
+        Flat:{0:[130,150],1:[155,180],2:[185,215],3:[215,250],4:[245,280],5:[275,315]},
+        House:{0:[145,165],1:[170,200],2:[200,230],3:[230,265],4:[260,300],5:[290,330]}
+      },
+      'End of tenancy clean':{
+        Flat:{0:[170,195],1:[205,235],2:[245,280],3:[280,320],4:[320,365],5:[355,405]},
+        House:{0:[185,215],1:[225,255],2:[260,300],3:[300,340],4:[340,385],5:[375,430]}
+      }
+    };
+  }
+
+  round5(n){ return Math.round(n / 5) * 5; }
+
+  minDate(){
+    const d = new Date();
+    d.setDate(d.getDate() + 3);
+    return d.toISOString().slice(0,10);
+  }
+
+  estimate(){
+    const s = this.state;
+    if(!s.service) return {headline:'Pick a service to start', detail:'The estimate appears as soon as you choose a clean.', basis:'', crm:''};
+    if(s.service === 'Office or commercial clean') return {
+      headline:'Priced per visit',
+      detail:'Commercial premises are quoted after a short walk-round, usually within a few days of asking.',
+      basis:'Send the form and we will arrange a time to look round.',
+      crm:'Quote after walk-round'
+    };
+    if(s.beds === '') return {headline:'Add the bedrooms', detail:'Bedrooms set the base range — rooms, floors and condition adjust it.', basis:'', crm:''};
+
+    const n = parseInt(s.beds,10);
+    const row = this.bands()[s.service][s.type][n];
+    let lo = row[0], hi = row[1];
+    const regular = s.service === 'Regular clean';
+    const notes = [];
+
+    const add = (count, rLo, rHi, label) => {
+      if(!count) return;
+      lo += count * (regular ? rLo[0] : rHi[0]);
+      hi += count * (regular ? rLo[1] : rHi[1]);
+      notes.push(label(count));
+    };
+
+    // Extras priced from the same hours: 0.75h bathroom, 0.25h WC, 0.5h kitchen
+    // or reception, 0.25h floor or extra room.
+    add(Math.max(s.baths - 1,0), [18,20], [40,50], c => c + ' extra bathroom' + (c>1?'s':''));
+    add(s.wcs, [6,8], [15,18], c => c + ' separate toilet' + (c>1?'s':''));
+    add(Math.max(s.kitchens - 1,0), [12,15], [28,35], c => c + ' extra kitchen' + (c>1?'s':''));
+    add(Math.max(s.living - 1,0), [12,15], [28,35], c => c + ' extra reception room' + (c>1?'s':''));
+    add(Math.max(s.floors - 2,0), [6,8], [15,20], c => c + ' extra floor' + (c>1?'s':''));
+    add(s.rooms.length, [6,8], [15,20], c => c + ' extra room' + (c>1?'s':''));
+
+    if(!regular && s.status === 'Empty'){ lo *= 0.92; hi *= 0.92; notes.push('empty property'); }
+    if(!regular && s.status === 'Furnished'){ lo *= 1.05; hi *= 1.05; notes.push('furnished'); }
+    if(regular){ lo = Math.max(lo, 55); hi = Math.max(hi, 65); } // 2h minimum at £24/hr
+    // Condition flags raise the price (both ends) rather than widening the band.
+    if(s.flags.length){
+      const uplift = 1 + Math.min(s.flags.length * 0.07, 0.28);
+      lo *= uplift; hi *= uplift;
+    }
+
+    const label = n === 0 ? 'studio flat' : (n === 5 ? '5 bed or larger ' : n + ' bed ') + s.type.toLowerCase();
+    let basis = notes.length ? 'Includes ' + notes.join(', ') + '.' : 'Based on ' + s.baths + ' bathroom, ' + s.kitchens + ' kitchen, ' + s.floors + ' floors.';
+    if(s.flags.length) basis += (regular ? ' Price allows for ' : ' The top of the range allows for ') + s.flags.join(', ').toLowerCase() + '.';
+
+    // Narrow the range as the customer tells us more. Each answered detail
+    // pulls both ends toward the midpoint, up to ~55% tighter.
+    const signals = [
+      s.flags.length > 0 || s.rooms.length > 0,
+      s.postcode.trim().length >= 3,
+      s.date !== '',
+      s.parking !== 'Free parking outside' || s.access !== 'I will be home',
+      s.details.trim().length > 12
+    ].filter(Boolean).length;
+    const mid = (lo + hi) / 2;
+    const half = ((hi - lo) / 2) * (1 - Math.min(signals * 0.12, 0.5));
+    lo = mid - half;
+    hi = mid + half;
+
+    // Extras sit on top of the clean and are not narrowed — each is its own job.
+    const ex = this.extrasTotal();
+    if(ex.lo){
+      lo += ex.lo; hi += ex.hi;
+      const exNote = s.extras.length + ' extra' + (s.extras.length > 1 ? 's' : '') + ' (' + s.extras.join(', ').toLowerCase() + ')';
+      basis = basis.replace(/\.$/, '') + (notes.length ? ', plus ' : '. Plus ') + exNote + '.';
+    }
+
+    // Regular cleans are predictable enough to commit to one per-visit price.
+    if(regular){
+      const freqOff = s.frequency === 'Weekly' ? 0.05 : s.frequency === 'Fortnightly' ? 0.025 : 0;
+      const single = Math.max(55, this.round5((lo + (hi - lo) * 0.6) * (1 - freqOff)));
+      const freqNote = freqOff ? ' ' + s.frequency + ' visits include a ' + (freqOff * 100) + '% standing discount.' : '';
+      return {
+        headline: 'From £' + single + ' a visit',
+        crm: 'From £' + single + ' a visit',
+        detail: 'Per visit for a ' + label + ', two-hour minimum. Dusting, hoovering, mopping, bathrooms and toilets.' + freqNote,
+        basis: basis,
+        caption: 'Starting price for a standard visit. Confirmed in writing before anything is booked, and if the property is worse than described we agree any difference with you first.'
+      };
+    }
+
+    const range = '£' + this.round5(lo) + '–' + this.round5(hi);
+    return {
+      headline: range,
+      crm: range,
+      detail: s.service === 'End of tenancy clean'
+        ? 'One-off price for a ' + label + ', cleaned to inventory standard. Inside cupboards and appliances, bathrooms descaled, floors done last.'
+        : 'One-off price for a ' + label + '. Kitchen and oven degreased, skirting boards, inside cabinets and limescale included.',
+      basis: basis + (signals < 2 ? ' Answer the condition and access questions and this range narrows.' : ' Narrowed from what you have told us.'),
+      caption: s.service === 'End of tenancy clean'
+        ? 'Guide range only. Your fixed price is confirmed in writing before anything is booked. Tell us your check-out date and we will work to it, and if anything is queried on the inventory we come back inside 48 hours at our cost.'
+        : 'Guide range only. Your fixed price is confirmed in writing before anything is booked, and if the property is worse than described we agree any difference with you first.'
+    };
+  }
+
+  propertyDetails(){
+    const s = this.state;
+    const parts = [];
+    parts.push('SERVICE: ' + (s.service || 'not specified'));
+    if(s.service === 'Regular clean') parts.push('FREQUENCY: ' + s.frequency);
+    if(s.beds !== ''){
+      const size = s.beds === '0' ? 'Studio' : (s.beds === '5' ? '5+ bed' : s.beds + ' bed');
+      parts.push('PROPERTY: ' + size + ' ' + s.type + ', ' + s.status.toLowerCase());
+    } else {
+      parts.push('PROPERTY: ' + s.type + ', ' + s.status.toLowerCase());
+    }
+    parts.push('ROOMS: ' + s.baths + ' bathroom(s), ' + s.wcs + ' separate WC, ' + s.kitchens + ' kitchen(s), ' + s.living + ' reception, ' + s.floors + ' floor(s)');
+    if(s.rooms.length) parts.push('ALSO: ' + s.rooms.join(', '));
+    if(s.extras.length) parts.push('EXTRAS: ' + s.extras.join(', '));
+    parts.push('CONDITION: ' + (s.flags.length ? s.flags.join(', ') : 'nothing flagged'));
+    parts.push('PARKING: ' + s.parking);
+    parts.push('ACCESS: ' + s.access);
+    if(s.details) parts.push('NOTES: ' + s.details);
+    parts.push('SOURCE: Website quote form');
+    return parts.join('\n');
+  }
+
+  bump(key, delta, min, max){
+    return () => this.setState(st => ({ [key]: Math.min(Math.max(st[key] + delta, min), max) }));
+  }
+
+  toggle(key, value, on){
+    this.setState(st => ({ [key]: on ? st[key].concat([value]) : st[key].filter(v => v !== value) }));
+  }
+
+  field(key){
+    return e => this.setState({ [key]: e.target.value });
+  }
+
+  renderVals(){
+    const est = this.estimate();
+    const s = this.state;
+    const name = s.name.trim();
+    return {
+      sent:s.sent, notSent:!s.sent,
+      baths:s.baths, wcs:s.wcs, kitchens:s.kitchens, living:s.living, floors:s.floors,
+      beds:s.beds, isFlat:s.type === 'Flat', isHouse:s.type === 'House',
+      isRegular:s.service === 'Regular clean',
+      isCommercial:s.service === 'Office or commercial clean',
+      minDate:this.minDate(),
+      date:s.date ? (s.arrival && s.arrival !== 'No preference' ? s.date + ' · ' + s.arrival : s.date) : '',
+      estHeadline:est.headline, estDetail:est.detail, estBasis:est.basis,
+      estCaption:est.caption ?? 'Starting price only. Your fixed price is confirmed in writing before anything is booked.',
+
+      fullName:name,
+      firstName:name.split(/\s+/)[0] || '',
+      company:s.company,
+      email:s.email,
+      phone:s.phone,
+      postcode:s.postcode,
+      propertyDetails:this.propertyDetails(),
+      estimateForCrm:est.crm || '',
+      crmSource:this.props.crmSource || 'Website quote form',
+      crmType:this.props.crmType || s.service || 'Not specified',
+
+      onService: e => this.setState({service:e.target.value}),
+      onFrequency:this.field('frequency'),
+      onType: e => this.setState(st => ({ type:e.target.value, beds: e.target.value === 'House' && st.beds === '0' ? '1' : st.beds })),
+      onBeds: e => this.setState({ beds:e.target.value, type: e.target.value === '0' ? 'Flat' : this.state.type }),
+      onStatus:this.field('status'),
+      onPostcode:this.field('postcode'),
+      onParking:this.field('parking'),
+      onDate:this.field('date'),
+      onArrival:this.field('arrival'),
+      slots:this.slots(),
+      onAccess:this.field('access'),
+      onName:this.field('name'),
+      onPhone:this.field('phone'),
+      onEmail:this.field('email'),
+      onCompany:this.field('company'),
+      onDetails:this.field('details'),
+      onRoom: e => this.toggle('rooms', e.target.getAttribute('data-room'), e.target.checked),
+      onCondition: e => this.toggle('flags', e.target.getAttribute('data-flag'), e.target.checked),
+      onExtra: e => this.toggle('extras', e.target.getAttribute('data-extra'), e.target.checked),
+      extraOptions: this.extraList().map(x => ({key:x.key, label:x.label + ' · ' + (x.from ? 'from £' : '£') + x.lo, note:x.note || ''})),
+      extraNotes: this.extraList().filter(x => x.note && this.state.extras.indexOf(x.key) !== -1),
+      sending:!!s.sending,
+      submitLabel:s.sending ? 'Sending…' : 'Send my quote request',
+      onSubmit: e => {
+        if(this.state.sending){ if(e) e.preventDefault(); return; }
+        this.setState({sending:true});
+        // wait for Google to actually respond in the hidden iframe, with a 6s fallback
+        const frame = document.querySelector('iframe[name="nghc-crm"]');
+        let done = false;
+        const finish = () => { if(done) return; done = true; this.setState({sent:true, sending:false}); };
+        if(frame) frame.addEventListener('load', finish, {once:true});
+        setTimeout(finish, 6000);
+      },
+
+      bathsUp:this.bump('baths',1,1,5), bathsDown:this.bump('baths',-1,1,5),
+      wcsUp:this.bump('wcs',1,0,3), wcsDown:this.bump('wcs',-1,0,3),
+      kitchensUp:this.bump('kitchens',1,1,3), kitchensDown:this.bump('kitchens',-1,1,3),
+      livingUp:this.bump('living',1,1,4), livingDown:this.bump('living',-1,1,4),
+      floorsUp:this.bump('floors',1,1,4), floorsDown:this.bump('floors',-1,1,4)
+    };
+  }
+}
+</script>
+</body>
+</html>
