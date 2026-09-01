@@ -69,6 +69,21 @@ class EstimateWizardTest extends TestCase
             ->assertSee('From £', false);
     }
 
+    public function test_selecting_an_addon_updates_the_guide_estimate_card(): void
+    {
+        $deep = Service::query()->where('slug', 'deep-clean')->firstOrFail();
+        $addon = $deep->addons()->active()->orderBy('sort_order')->firstOrFail();
+
+        Livewire::test(EstimateWizard::class)
+            ->set('serviceId', $deep->id)
+            ->set('propertyStatus', 'furnished')
+            ->set('propertyType', PropertyType::House->value)
+            ->assertSee('None selected.', false)
+            ->set('addonIds', [$addon->id])
+            ->assertDontSee('None selected.', false)
+            ->assertSee($addon->label, false);
+    }
+
     public function test_flat_defaults_to_one_floor(): void
     {
         Livewire::test(EstimateWizard::class)
@@ -194,7 +209,44 @@ class EstimateWizardTest extends TestCase
             ->assertSee('About the property', false)
             ->assertSee('Rooms and layout', false)
             ->assertSee('When &amp; your details', false)
-            ->assertSee('Send my estimate request', false);
+            ->assertSee('Send my estimate request', false)
+            ->assertSee('Continue on WhatsApp', false)
+            ->assertSee('Choose parking', false)
+            ->assertSee('Choose access', false)
+            ->assertSee('On-street (free)', false)
+            ->assertSee('Someone will be home', false)
+            ->assertSee('ngDatePicker', false)
+            ->assertDontSee('id="preferredDate" type="date"', false);
+    }
+
+    public function test_parking_and_access_dropdowns_persist_on_the_lead(): void
+    {
+        $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
+
+        Livewire::test(EstimateWizard::class)
+            ->set('serviceId', $regular->id)
+            ->set('frequency', CleaningFrequency::Weekly->value)
+            ->set('propertyType', PropertyType::Flat->value)
+            ->set('bedrooms', 1)
+            ->set('floors', 1)
+            ->set('preferredDate', now()->addWeek()->toDateString())
+            ->set('arrivalWindow', 'flexible')
+            ->set('firstName', 'Alex')
+            ->set('lastName', 'Taylor')
+            ->set('phone', '07503651476')
+            ->set('email', 'alex@example.com')
+            ->set('postcode', 'NG1 1AA')
+            ->set('addressLine1', '1 Test Street')
+            ->set('city', 'Nottingham')
+            ->set('parkingNotes', 'Driveway')
+            ->set('accessNotes', 'Key safe')
+            ->call('submit');
+
+        $this->assertDatabaseHas('quote_requests', [
+            'email' => 'alex@example.com',
+            'parking_notes' => 'Driveway',
+            'access_notes' => 'Key safe',
+        ]);
     }
 
     public function test_submission_redirects_to_confirmation_page(): void

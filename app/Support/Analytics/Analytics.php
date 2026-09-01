@@ -14,6 +14,10 @@ final class Analytics
 
     public const QUOTE_COMPLETED = 'quote_completed';
 
+    public const QUOTE_PHOTOS_ADDED = 'quote_photos_added';
+
+    public const QUOTE_WHATSAPP_CLICKED = 'quote_whatsapp_clicked';
+
     public const WHATSAPP_QUOTE = 'whatsapp_quote';
 
     public const WHATSAPP_CLICKED = 'whatsapp_clicked';

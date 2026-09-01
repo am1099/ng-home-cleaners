@@ -36,11 +36,13 @@ final class SecureImageUpload
                     'disk' => $disk,
                 ]);
 
-                if (is_string($path) && $path !== '') {
-                    self::downscaleStoredImage($disk, $path, $maxWidth);
+                if (! is_string($path) || $path === '') {
+                    throw new \RuntimeException("CRM image upload failed on disk [{$disk}]. Check AWS credentials, bucket attachment, and AWS_URL.");
                 }
 
-                return is_string($path) ? $path : trim($directory, '/').'/'.$filename;
+                self::downscaleStoredImage($disk, $path, $maxWidth);
+
+                return $path;
             });
     }
 

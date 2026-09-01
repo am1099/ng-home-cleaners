@@ -29,7 +29,11 @@ return [
     |
     */
 
-    'media' => env('MEDIA_DISK') ?: (env('FILESYSTEM_DISK', 'local') === 's3' ? 's3' : 'public'),
+    'media' => env('MEDIA_DISK') ?: (
+        filled(env('AWS_BUCKET')) || env('FILESYSTEM_DISK', 'local') === 's3'
+            ? 's3'
+            : 'public'
+    ),
 
     /*
     |--------------------------------------------------------------------------

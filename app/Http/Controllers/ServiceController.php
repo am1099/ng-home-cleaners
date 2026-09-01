@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RecentWork;
 use App\Models\Service;
 use App\Models\ServiceArea;
 use App\Models\ServiceExclusion;
@@ -46,8 +47,18 @@ class ServiceController extends Controller
 
         $pageSeo = $seo->forService($service);
 
+        $recentWorks = RecentWork::query()
+            ->published()
+            ->where(function ($query) use ($service): void {
+                $query->where('service_id', $service->id)->orWhereNull('service_id');
+            })
+            ->orderBy('sort_order')
+            ->limit(4)
+            ->get();
+
         return view('pages.services.show', [
             'service' => $service,
+            'recentWorks' => $recentWorks,
             'seo' => $pageSeo,
             'jsonLd' => array_values(array_filter([
                 $seo->organizationJsonLd(),

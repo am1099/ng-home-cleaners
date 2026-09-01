@@ -3,6 +3,7 @@
         ['label' => 'Home', 'href' => route('home')],
         ['label' => 'Services', 'href' => route('services')],
         ['label' => 'Areas', 'href' => route('areas')],
+        ['label' => 'Reviews', 'href' => route('reviews')],
         ['label' => 'About', 'href' => route('about')],
         ['label' => 'Contact', 'href' => route('contact')],
     ];
@@ -18,7 +19,7 @@
 <footer @class([
     'bg-surface-ink text-ink-inverse',
     'border-t border-border' => ! request()->routeIs('home'),
-    'pb-20 lg:pb-0' => request()->routeIs('home'),
+    'pb-20 lg:pb-0',
 ])>
     <x-public.container>
         <div class="grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 lg:py-16">

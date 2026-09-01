@@ -59,9 +59,17 @@ class PublicLayoutTest extends TestCase
 
     public function test_quote_wizard_has_sticky_guide_estimate(): void
     {
-        $this->get('/get-a-quote')
+        $html = $this->get('/get-a-quote')
             ->assertOk()
             ->assertSee('ng-sticky-estimate', false)
-            ->assertSee('Your guide estimate', false);
+            ->assertSee('Your guide estimate', false)
+            ->assertSee('window.livewireScriptConfig', false)
+            ->getContent();
+
+        $this->assertLessThan(
+            strpos($html, '/build/assets/'),
+            strpos($html, 'window.livewireScriptConfig'),
+            'Livewire script config must load before the Vite bundle.',
+        );
     }
 }

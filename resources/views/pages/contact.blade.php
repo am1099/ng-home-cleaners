@@ -49,4 +49,6 @@
             @endif
         </x-public.container>
     </x-public.section>
+
+    <x-public.final-cta />
 @endsection

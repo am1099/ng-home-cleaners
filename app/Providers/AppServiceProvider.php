@@ -9,11 +9,13 @@ use App\Models\PricingExtraRoom;
 use App\Models\PricingSetting;
 use App\Models\PricingStartingPrice;
 use App\Models\SiteSetting;
+use App\Observers\GalleryItemObserver;
 use App\Observers\PricingCacheObserver;
 use App\Observers\SiteSettingObserver;
 use App\Pricing\AddonPriceFormatter;
 use App\Pricing\PricingEngine;
 use App\Services\SiteSettingsService;
+use App\Support\GalleryNav;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -36,11 +38,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureWritableTempDirectory();
+        $this->configurePublicLivewireBundle();
         $this->configureAdminDateFields();
         $this->configureAdminSelectFields();
         $this->configureAdminActionIcons();
 
         SiteSetting::observe(SiteSettingObserver::class);
+        GalleryItem::observe(GalleryItemObserver::class);
 
         foreach ([
             PricingSetting::class,
@@ -59,14 +63,37 @@ class AppServiceProvider extends ServiceProvider
             if (! $view->offsetExists('settings')) {
                 $view->with('settings', app(SiteSettingsService::class)->get());
             }
+        });
 
+        View::composer(['layouts.public', 'layouts.quote', 'components.layouts.quote'], function ($view): void {
             if (! $view->offsetExists('showGalleryNav')) {
-                $view->with(
-                    'showGalleryNav',
-                    GalleryItem::query()->published()->exists(),
-                );
+                $view->with('showGalleryNav', GalleryNav::visible());
             }
         });
+
+        $this->warnWhenCloudMediaMisconfigured();
+    }
+
+    private function warnWhenCloudMediaMisconfigured(): void
+    {
+        if ($this->app->runningInConsole() && ! $this->app->runningUnitTests()) {
+            return;
+        }
+
+        if (! $this->app->environment('production')) {
+            return;
+        }
+
+        $bucket = config('filesystems.disks.s3.bucket');
+        $mediaDisk = config('filesystems.media');
+
+        if (filled($bucket) && $mediaDisk === 'public') {
+            logger()->warning('CRM media is on the public disk but AWS_BUCKET is set. Uploads will not persist on Laravel Cloud — remove MEDIA_DISK=public or set MEDIA_DISK=s3.');
+        }
+
+        if ($mediaDisk === 's3' && blank(config('filesystems.disks.s3.url'))) {
+            logger()->warning('Media disk is s3 but AWS_URL is empty. Public image URLs may 404 — set AWS_URL to the bucket public URL in Laravel Cloud.');
+        }
     }
 
     /**
@@ -96,6 +123,26 @@ class AppServiceProvider extends ServiceProvider
         $_SERVER['TEMP'] = $tmp;
         $_SERVER['TMPDIR'] = $tmp;
         @ini_set('upload_tmp_dir', $tmp);
+    }
+
+    /**
+     * Public pages bundle Livewire + Alpine once in Vite. Auto-injection
+     * would start a second Alpine and break wire:model / wire:click.
+     * The Filament admin panel still uses Livewire’s injected assets.
+     */
+    private function configurePublicLivewireBundle(): void
+    {
+        if ($this->app->runningInConsole() && ! $this->app->runningUnitTests()) {
+            return;
+        }
+
+        $request = request();
+
+        if ($request->is('admin', 'admin/*', 'filament/*')) {
+            return;
+        }
+
+        config(['livewire.inject_assets' => false]);
     }
 
     /**

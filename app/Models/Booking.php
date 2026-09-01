@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Actions\SendReviewRequest;
 use App\Enums\ArrivalWindow;
 use App\Enums\BookingStatus;
 use App\Enums\PaymentType;
@@ -28,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'status',
     'internal_notes',
     'completed_at',
+    'review_request_sent_at',
     'cancelled_at',
 ])]
 class Booking extends Model
@@ -56,6 +58,7 @@ class Booking extends Model
             'arrival_window' => ArrivalWindow::class,
             'status' => BookingStatus::class,
             'completed_at' => 'datetime',
+            'review_request_sent_at' => 'datetime',
             'cancelled_at' => 'datetime',
         ];
     }
@@ -102,6 +105,10 @@ class Booking extends Model
         $this->status = $status;
         $this->recordStatusTimestamp($status);
         $this->save();
+
+        if ($status === BookingStatus::Completed) {
+            app(SendReviewRequest::class)->handle($this);
+        }
     }
 
     /** Net money received toward this booking (refunds reduce the total). */

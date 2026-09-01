@@ -18,7 +18,7 @@
         <x-public.section variant="sunken" spacing="follow">
             <x-public.container>
                 <div class="max-w-3xl py-8 lg:py-10">
-                    <p class="text-lg leading-relaxed text-neutral-700">{{ $service->full_description }}</p>
+                    <p class="text-lg leading-relaxed text-ink-muted">{{ $service->full_description }}</p>
                 </div>
             </x-public.container>
         </x-public.section>
@@ -38,7 +38,7 @@
                         @endforeach
                     </ul>
                 @else
-                    <p class="mt-5 text-sm text-neutral-700">Ask us what is included for your property when you request an estimate.</p>
+                    <p class="mt-5 text-sm text-ink-muted">Ask us what is included for your property when you request an estimate.</p>
                 @endif
             </div>
 
@@ -47,7 +47,7 @@
                 @if ($service->exclusions->isNotEmpty())
                     <x-public.exclusion-list :exclusions="$service->exclusions" class="mt-5" />
                 @else
-                    <p class="mt-5 text-sm text-neutral-700">We will confirm anything outside the standard checklist before we start.</p>
+                    <p class="mt-5 text-sm text-ink-muted">We will confirm anything outside the standard checklist before we start.</p>
                 @endif
             </div>
         </x-public.container>
@@ -95,7 +95,7 @@
                 <ul class="mt-6 flex flex-wrap gap-2">
                     @foreach ($service->serviceAreas as $area)
                         <li>
-                            <a href="{{ route('areas.show', $area) }}" class="inline-flex rounded-[var(--radius-pill)] border border-border bg-surface-card px-4 py-2 text-sm font-semibold text-brand-800 hover:bg-brand-50">
+                            <a href="{{ route('areas.service', [$area, $service]) }}" class="inline-flex rounded-[var(--radius-pill)] border border-border bg-surface-card px-4 py-2 text-sm font-semibold text-brand-800 hover:bg-brand-50">
                                 {{ $area->name }}
                             </a>
                         </li>
@@ -108,6 +108,10 @@
                 </p>
             </x-public.container>
         </x-public.section>
+    @endif
+
+    @if (isset($recentWorks) && $recentWorks->isNotEmpty())
+        <x-public.recent-work :items="$recentWorks" />
     @endif
 
     <x-public.final-cta />

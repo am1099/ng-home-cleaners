@@ -9,6 +9,10 @@
 
     <x-public.section spacing="follow">
         <x-public.container>
+            <div class="mb-10 max-w-xl">
+                <livewire:coverage-checker />
+            </div>
+
             <h2 class="ng-display ng-display-section mb-6 text-ink">District by district</h2>
 
             @if ($areas->isNotEmpty())

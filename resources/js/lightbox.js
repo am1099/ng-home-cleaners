@@ -34,6 +34,35 @@ export function initImageLightbox() {
 
     const image = dialog.querySelector('.ng-lightbox__image');
     const caption = dialog.querySelector('.ng-lightbox__caption');
+    const focusableSelector = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+
+    const getFocusableElements = () => Array.from(dialog.querySelectorAll(focusableSelector))
+        .filter((element) => ! element.hasAttribute('disabled') && element.getAttribute('tabindex') !== '-1');
+
+    const trapFocus = (event) => {
+        if (! dialog.open || event.key !== 'Tab') {
+            return;
+        }
+
+        const focusable = getFocusableElements();
+
+        if (focusable.length === 0) {
+            return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (! event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    };
+
+    dialog.addEventListener('keydown', trapFocus);
 
     triggers.forEach((trigger) => {
         if (trigger.dataset.lightboxBound === '1') {
@@ -66,6 +95,9 @@ export function initImageLightbox() {
             }
 
             dialog.showModal();
+            window.requestAnimationFrame(() => {
+                dialog.querySelector('.ng-lightbox__close')?.focus();
+            });
         });
     });
 }

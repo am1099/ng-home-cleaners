@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Bookings\Pages;
 
+use App\Actions\SendReviewRequest;
 use App\Enums\BookingStatus;
 use App\Filament\Resources\Bookings\BookingResource;
 use Filament\Actions\Action;
@@ -26,6 +27,17 @@ class ViewBooking extends ViewRecord
                 ->action(function (): void {
                     $this->getRecord()->markStatus(BookingStatus::Completed);
                     Notification::make()->title('Booking marked completed')->success()->send();
+                }),
+            Action::make('requestReview')
+                ->label('Request Google review')
+                ->icon(Heroicon::OutlinedStar)
+                ->visible(fn (): bool => $this->getRecord()->status === BookingStatus::Completed)
+                ->requiresConfirmation()
+                ->action(function (): void {
+                    $booking = $this->getRecord();
+                    $booking->forceFill(['review_request_sent_at' => null])->save();
+                    app(SendReviewRequest::class)->handle($booking);
+                    Notification::make()->title('Review request queued')->success()->send();
                 }),
             Action::make('markCancelled')
                 ->label('Cancel booking')

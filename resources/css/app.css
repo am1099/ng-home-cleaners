@@ -1,18 +1,15 @@
 @import 'tailwindcss';
-@import 'flowbite/src/themes/default';
-
-@plugin 'flowbite/plugin';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
-@source '../../node_modules/flowbite';
 
 @theme {
     /* Typography */
     --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
     --font-body: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+    /* Self-host Fraunces / DM Sans woff2 under public/fonts when brand files are ready. */
 
     --text-xs: 0.75rem;
     --text-sm: 0.875rem;
@@ -109,6 +106,57 @@
 @layer components {
     .ng-container {
         @apply mx-auto w-full max-w-[var(--width-content)] px-[var(--spacing-section-x)];
+    }
+
+    .ng-container.ng-container-wide {
+        max-width: 90rem;
+        padding-inline: clamp(0.75rem, 2vw, 1.25rem);
+    }
+
+    /* Quote page: one width for header, breadcrumbs, hero, form, and footer */
+    .ng-quote-page {
+        --width-content: 90rem;
+        --spacing-section-x: clamp(0.75rem, 2vw, 1.25rem);
+    }
+
+    /* Flowbite-like public fields — use on every input, select, and textarea */
+    .ng-field {
+        display: block;
+        width: 100%;
+        min-height: 2.75rem;
+        margin-top: 0.25rem;
+        padding: 0.625rem 0.75rem;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        color: var(--color-ink);
+        background-color: var(--color-surface-card);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        box-shadow: 0 1px 2px rgb(14 59 54 / 0.04);
+    }
+
+    .ng-field:focus {
+        outline: none;
+        border-color: var(--color-brand-500);
+        box-shadow: 0 0 0 2px var(--color-brand-100);
+    }
+
+    .ng-field[aria-invalid='true'] {
+        border-color: #dc2626;
+    }
+
+    textarea.ng-field {
+        min-height: 6.5rem;
+    }
+
+    select.ng-field {
+        cursor: pointer;
+        appearance: none;
+        padding-right: 2.5rem;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%231a6b62' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1.1rem 1.1rem;
     }
 
     .ng-section {

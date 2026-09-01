@@ -47,6 +47,12 @@ class CrmDemoSeeder extends Seeder
         $endOfTenancy = $services->firstWhere('slug', 'end-of-tenancy') ?? $services->skip(2)->first() ?? $regular;
 
         $now = now();
+        $thisMonth = function (int $day, int $hour = 10) use ($now): Carbon {
+            $start = $now->copy()->startOfMonth();
+            $target = $start->copy()->day(min($day, (int) $now->day))->setTime($hour, 0);
+
+            return $target->greaterThan($now) ? $now->copy()->subHours(2) : $target;
+        };
 
         $customers = collect([
             $this->customer('Amelia', 'Hart', '07503110001', 'amelia.hart@example.com', 'NG1 2AB', '14 Bridlesmith Gate'),
@@ -59,26 +65,26 @@ class CrmDemoSeeder extends Seeder
 
         $leadSpecs = [
             // New
-            ['cust' => 0, 'service' => $regular, 'status' => QuoteRequestStatus::New, 'when' => $now->copy()->subHours(6), 'source' => QuoteRequestSource::Web, 'quote' => null],
-            ['cust' => 1, 'service' => $deep, 'status' => QuoteRequestStatus::New, 'when' => $now->copy()->subDay(), 'source' => QuoteRequestSource::Whatsapp, 'quote' => null],
+            ['cust' => 0, 'service' => $regular, 'status' => QuoteRequestStatus::New, 'when' => $thisMonth(1, 8), 'source' => QuoteRequestSource::Web, 'quote' => null],
+            ['cust' => 1, 'service' => $deep, 'status' => QuoteRequestStatus::New, 'when' => $thisMonth(1, 12), 'source' => QuoteRequestSource::Whatsapp, 'quote' => null],
             // Contacted
-            ['cust' => 2, 'service' => $regular, 'status' => QuoteRequestStatus::Contacted, 'when' => $now->copy()->subDays(2), 'source' => QuoteRequestSource::Phone, 'quote' => null],
+            ['cust' => 2, 'service' => $regular, 'status' => QuoteRequestStatus::Contacted, 'when' => $thisMonth(1, 9), 'source' => QuoteRequestSource::Phone, 'quote' => null],
             // Quote sent (awaiting response)
-            ['cust' => 3, 'service' => $endOfTenancy, 'status' => QuoteRequestStatus::QuoteSent, 'when' => $now->copy()->subDays(3), 'source' => QuoteRequestSource::Web, 'quote' => 18500],
-            ['cust' => 4, 'service' => $deep, 'status' => QuoteRequestStatus::QuoteSent, 'when' => $now->copy()->subDays(4), 'source' => QuoteRequestSource::Web, 'quote' => 22000],
+            ['cust' => 3, 'service' => $endOfTenancy, 'status' => QuoteRequestStatus::QuoteSent, 'when' => $thisMonth(1, 11), 'source' => QuoteRequestSource::Web, 'quote' => 18500],
+            ['cust' => 4, 'service' => $deep, 'status' => QuoteRequestStatus::QuoteSent, 'when' => $thisMonth(1, 14), 'source' => QuoteRequestSource::Web, 'quote' => 22000],
             // Won this month → bookings
-            ['cust' => 0, 'service' => $regular, 'status' => QuoteRequestStatus::Won, 'when' => $now->copy()->subDays(8), 'source' => QuoteRequestSource::Web, 'quote' => 9500, 'won' => $now->copy()->subDays(6)],
-            ['cust' => 1, 'service' => $deep, 'status' => QuoteRequestStatus::Won, 'when' => $now->copy()->subDays(12), 'source' => QuoteRequestSource::Phone, 'quote' => 16000, 'won' => $now->copy()->subDays(10)],
-            ['cust' => 2, 'service' => $regular, 'status' => QuoteRequestStatus::Won, 'when' => $now->copy()->subDays(15), 'source' => QuoteRequestSource::Web, 'quote' => 11000, 'won' => $now->copy()->subDays(14)],
+            ['cust' => 0, 'service' => $regular, 'status' => QuoteRequestStatus::Won, 'when' => $thisMonth(1, 7), 'source' => QuoteRequestSource::Web, 'quote' => 9500, 'won' => $thisMonth(1, 16)],
+            ['cust' => 1, 'service' => $deep, 'status' => QuoteRequestStatus::Won, 'when' => $thisMonth(1, 6), 'source' => QuoteRequestSource::Phone, 'quote' => 16000, 'won' => $thisMonth(1, 15)],
+            ['cust' => 2, 'service' => $regular, 'status' => QuoteRequestStatus::Won, 'when' => $thisMonth(1, 5), 'source' => QuoteRequestSource::Web, 'quote' => 11000, 'won' => $thisMonth(1, 13)],
             // Lost this month
-            ['cust' => 5, 'service' => $deep, 'status' => QuoteRequestStatus::Lost, 'when' => $now->copy()->subDays(9), 'source' => QuoteRequestSource::Web, 'quote' => 19000, 'lost' => $now->copy()->subDays(7)],
+            ['cust' => 5, 'service' => $deep, 'status' => QuoteRequestStatus::Lost, 'when' => $thisMonth(1, 4), 'source' => QuoteRequestSource::Web, 'quote' => 19000, 'lost' => $thisMonth(1, 17)],
             // Last month leads (for comparisons)
             ['cust' => 3, 'service' => $regular, 'status' => QuoteRequestStatus::Won, 'when' => $now->copy()->subMonthNoOverflow()->day(8)->setTime(10, 0), 'source' => QuoteRequestSource::Web, 'quote' => 9000, 'won' => $now->copy()->subMonthNoOverflow()->day(10)->setTime(11, 0)],
             ['cust' => 4, 'service' => $regular, 'status' => QuoteRequestStatus::Lost, 'when' => $now->copy()->subMonthNoOverflow()->day(12)->setTime(9, 0), 'source' => QuoteRequestSource::Whatsapp, 'quote' => null, 'lost' => $now->copy()->subMonthNoOverflow()->day(14)->setTime(16, 0)],
             ['cust' => 5, 'service' => $endOfTenancy, 'status' => QuoteRequestStatus::Won, 'when' => $now->copy()->subMonthNoOverflow()->day(18)->setTime(14, 0), 'source' => QuoteRequestSource::Phone, 'quote' => 17500, 'won' => $now->copy()->subMonthNoOverflow()->day(20)->setTime(10, 0)],
             // Extra regular-clean requests so it is most requested
-            ['cust' => 0, 'service' => $regular, 'status' => QuoteRequestStatus::Contacted, 'when' => $now->copy()->subDays(5), 'source' => QuoteRequestSource::Manual, 'quote' => null],
-            ['cust' => 1, 'service' => $regular, 'status' => QuoteRequestStatus::New, 'when' => $now->copy()->subHours(30), 'source' => QuoteRequestSource::Web, 'quote' => null],
+            ['cust' => 0, 'service' => $regular, 'status' => QuoteRequestStatus::Contacted, 'when' => $thisMonth(1, 18), 'source' => QuoteRequestSource::Manual, 'quote' => null],
+            ['cust' => 1, 'service' => $regular, 'status' => QuoteRequestStatus::New, 'when' => $now->copy()->subHours(2), 'source' => QuoteRequestSource::Web, 'quote' => null],
         ];
 
         $reference = 9100;
@@ -136,11 +142,11 @@ class CrmDemoSeeder extends Seeder
             $customers[3],
             $regular,
             null,
-            $now->copy()->subDays(4),
+            $thisMonth(1, 15),
             ArrivalWindow::Morning,
             9000,
             BookingStatus::Completed,
-            $now->copy()->subDays(4)->setTime(15, 0),
+            $thisMonth(1, 15),
         );
 
         // Completed last month
@@ -160,9 +166,9 @@ class CrmDemoSeeder extends Seeder
         $this->booking($refs->next(), $customers[5], $deep, null, $now->copy()->addDays(2), ArrivalWindow::Morning, 15000, BookingStatus::Cancelled, null, $now->copy()->subDay());
 
         // Payments — revenue this month
-        $this->payment($upcomingA, 3000, PaymentType::Deposit, PaymentMethod::Card, $now->copy()->subDays(5));
-        $this->payment($upcomingB, 5000, PaymentType::Deposit, PaymentMethod::BankTransfer, $now->copy()->subDays(8));
-        $this->payment($completedA, 9000, PaymentType::Full, PaymentMethod::Cash, $now->copy()->subDays(4));
+        $this->payment($upcomingA, 3000, PaymentType::Deposit, PaymentMethod::Card, $thisMonth(1, 10));
+        $this->payment($upcomingB, 5000, PaymentType::Deposit, PaymentMethod::BankTransfer, $thisMonth(1, 11));
+        $this->payment($completedA, 9000, PaymentType::Full, PaymentMethod::Cash, $thisMonth(1, 15));
 
         // Outstanding on upcoming C (full agreed unpaid) and partial on A/B
         // Last month revenue
@@ -170,7 +176,7 @@ class CrmDemoSeeder extends Seeder
         $this->payment($completedLast, 7500, PaymentType::Balance, PaymentMethod::Card, $now->copy()->subMonthNoOverflow()->day(22));
 
         // Small refund this month (reduces revenue)
-        $this->payment($completedA, 500, PaymentType::Refund, PaymentMethod::Cash, $now->copy()->subDays(2));
+        $this->payment($completedA, 500, PaymentType::Refund, PaymentMethod::Cash, $thisMonth(1, 16));
 
         $this->command?->info('CRM demo data seeded for dashboard verification.');
     }

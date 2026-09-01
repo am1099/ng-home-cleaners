@@ -36,6 +36,24 @@ class HomeLogoAndGalleryTest extends TestCase
             ->assertSee('brand/logo-test.png', false);
     }
 
+    public function test_uploaded_hero_image_appears_on_the_homepage(): void
+    {
+        Storage::fake(Media::diskName());
+        Storage::disk(Media::diskName())->put('brand/hero/hero-test.jpg', 'fake-image');
+
+        SiteSetting::instance()->update([
+            'home_hero_image' => 'brand/hero/hero-test.jpg',
+            'home_hero_image_alt' => 'Cleaner finishing a Nottingham kitchen',
+        ]);
+        app(SiteSettingsService::class)->forget();
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('brand/hero/hero-test.jpg', false)
+            ->assertSee('Cleaner finishing a Nottingham kitchen', false)
+            ->assertDontSee('Upload a hero photo in Site settings', false);
+    }
+
     public function test_published_gallery_items_appear_on_homepage_with_nav_link(): void
     {
         GalleryItem::factory()->create([

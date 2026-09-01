@@ -3,6 +3,8 @@
     lang="en-GB"
     data-analytics-enabled="{{ config('analytics.enabled') ? '1' : '0' }}"
     data-analytics-driver="{{ config('analytics.driver') ?? '' }}"
+    data-plausible-domain="{{ config('analytics.plausible.domain') ?? '' }}"
+    data-plausible-src="{{ config('analytics.plausible.script_url') ?? '' }}"
 >
 <head>
     <meta charset="utf-8">
@@ -30,10 +32,12 @@
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
     </noscript>
 
+    @livewireScriptConfig
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
 </head>
-<body class="flex min-h-screen flex-col">
-    <x-public.header />
+<body class="ng-quote-page flex min-h-screen flex-col">
+    <x-public.header :show-gallery-nav="$showGalleryNav ?? false" />
 
     <x-public.breadcrumbs :items="$seo->breadcrumbs" />
 
@@ -41,6 +45,8 @@
         {{ $slot }}
     </main>
 
-    <x-public.footer />
+    <x-public.footer :show-gallery-nav="$showGalleryNav ?? false" />
+
+    <x-public.cookie-consent offset-class="bottom-28 lg:bottom-6" />
 </body>
 </html>

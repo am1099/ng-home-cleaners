@@ -28,9 +28,10 @@ Set in production `.env` (never commit secrets):
 - `APP_URL=https://…` (HTTPS)
 - PostgreSQL credentials
 - `QUEUE_CONNECTION=database` (or Redis when available)
+- `CACHE_STORE=redis` in production when Redis is attached (Laravel Cloud cache / Redis). Database cache works but adds extra PostgreSQL load for settings and pricing.
 - Resend mail: `MAIL_MAILER=resend` and `RESEND_API_KEY` (verified domain in Resend matching `MAIL_FROM_ADDRESS`)
 - `SESSION_SECURE_COOKIE=true` (or leave unset — defaults to secure when `APP_ENV=production`)
-- Optional: `ANALYTICS_ENABLED` / `ANALYTICS_DRIVER` only if a tracker is configured
+- Optional analytics: `ANALYTICS_ENABLED=true`, `ANALYTICS_DRIVER=plausible`, and `PLAUSIBLE_DOMAIN=your-domain`. The Plausible script loads only after cookie consent.
 
 ## Object storage (Laravel Cloud)
 
@@ -45,9 +46,10 @@ Laravel Cloud containers are ephemeral — do **not** rely on `storage/app/publi
 AWS_URL=https://your-bucket-public-url
 ```
 
-5. CRM uploads use the configured `media` disk (`config/filesystems.php`), which resolves to `s3` when `FILESYSTEM_DISK=s3`.
-6. Keep Livewire temporary uploads on `local` (`LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK=local`) — they only need to survive the upload request; permanent files go to S3.
-7. `php artisan storage:link` is only needed for local/public disk development, not for Cloud S3.
+5. CRM uploads use the configured `media` disk (`config/filesystems.php`), which resolves to `s3` when `AWS_BUCKET` is set or `FILESYSTEM_DISK=s3`. **Do not set `MEDIA_DISK=public` on Cloud** — uploads would land on the ephemeral container and disappear; the bucket stays empty and images 404.
+6. After attaching a bucket or changing storage env vars, run **`php artisan config:clear`** (or redeploy) so config cache picks up the new values.
+7. Keep Livewire temporary uploads on `local` (`LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK=local`) — they only need to survive the upload request; permanent files go to S3.
+8. `php artisan storage:link` is only needed for local/public disk development, not for Cloud S3.
 
 Local development stays on the `public` disk (`FILESYSTEM_DISK=local`). Run `php artisan storage:link` once locally.
 
@@ -61,7 +63,9 @@ Monitor `GET /up` — returns 200 when the application is healthy.
 php artisan queue:work --tries=3
 ```
 
-Quote acknowledgement and internal lead mail are queued; failures are logged and reported without undoing the saved lead.
+Quote acknowledgement, internal lead mail, 24-hour follow-up, and post-booking review requests are queued. Run the scheduler (`php artisan schedule:work` or cron `schedule:run`) so stale `new` leads receive a follow-up after 24 hours.
+
+After deploy, run `php artisan migrate --force` so Cloud picks up `testimonials.published_at`, `quote_requests.property_photo_paths`, and the follow-up / review-request timestamps.
 
 ## Admin users
 

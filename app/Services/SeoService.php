@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\Faq;
 use App\Models\LegalPage;
 use App\Models\Service;
 use App\Models\ServiceArea;
 use App\Models\SiteSetting;
 use App\Support\Media;
 use App\Support\Seo\SeoPage;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 final class SeoService
@@ -189,6 +191,67 @@ final class SeoService
         );
     }
 
+    public function forReviews(): SeoPage
+    {
+        $site = $this->site();
+
+        return new SeoPage(
+            title: 'Customer reviews · '.$site->business_name,
+            description: $this->description(
+                null,
+                'Read published customer reviews of '.$site->business_name.' across Nottingham NG1 to NG16.',
+            ),
+            canonical: $this->absoluteRoute('reviews'),
+            ogImage: $this->defaultOgImage($site),
+            breadcrumbs: [
+                ['name' => 'Home', 'url' => $this->absoluteRoute('home')],
+                ['name' => 'Reviews', 'url' => $this->absoluteRoute('reviews')],
+            ],
+        );
+    }
+
+    public function forMoveInOut(): SeoPage
+    {
+        $site = $this->site();
+
+        return new SeoPage(
+            title: 'Move-in and move-out cleaning · '.$site->business_name,
+            description: $this->description(
+                null,
+                'End of tenancy and move-in cleaning across Nottingham. Fixed prices agreed in writing before we start.',
+            ),
+            canonical: $this->absoluteRoute('move-in-out'),
+            ogImage: $this->defaultOgImage($site),
+            breadcrumbs: [
+                ['name' => 'Home', 'url' => $this->absoluteRoute('home')],
+                ['name' => 'Move-in and move-out', 'url' => $this->absoluteRoute('move-in-out')],
+            ],
+        );
+    }
+
+    public function forServiceInArea(Service $service, ServiceArea $area): SeoPage
+    {
+        $site = $this->site();
+
+        return new SeoPage(
+            title: $service->name.' in '.$area->name.' · '.$site->business_name,
+            description: $this->description(
+                null,
+                $service->name.' across '.$area->name.' ('.$area->postcode_label.'). Fixed prices agreed in writing before we start.',
+            ),
+            canonical: $this->absoluteRoute('areas.service', [$area, $service]),
+            ogImage: $this->absoluteStorageUrl($service->og_image)
+                ?? $this->absoluteStorageUrl($area->hero_image)
+                ?? $this->defaultOgImage($site),
+            breadcrumbs: [
+                ['name' => 'Home', 'url' => $this->absoluteRoute('home')],
+                ['name' => 'Areas', 'url' => $this->absoluteRoute('areas')],
+                ['name' => $area->name, 'url' => $this->absoluteRoute('areas.show', $area)],
+                ['name' => $service->name, 'url' => $this->absoluteRoute('areas.service', [$area, $service])],
+            ],
+        );
+    }
+
     public function forLegal(LegalPage $page): SeoPage
     {
         $site = $this->site();
@@ -275,6 +338,36 @@ final class SeoService
     }
 
     /**
+     * @param  Collection<int, Faq>|iterable<int, Faq>  $faqs
+     * @return array<string, mixed>|null
+     */
+    public function faqPageJsonLd(iterable $faqs): ?array
+    {
+        $entities = collect($faqs)
+            ->filter(fn ($faq) => filled($faq->question) && filled($faq->answer))
+            ->map(fn ($faq): array => [
+                '@type' => 'Question',
+                'name' => $faq->question,
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => trim(preg_replace('/\s+/', ' ', strip_tags($faq->answer)) ?? ''),
+                ],
+            ])
+            ->values()
+            ->all();
+
+        if ($entities === []) {
+            return null;
+        }
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'FAQPage',
+            'mainEntity' => $entities,
+        ];
+    }
+
+    /**
      * @param  list<array{name: string, url: string}>  $crumbs
      * @return array<string, mixed>|null
      */
@@ -301,15 +394,34 @@ final class SeoService
      */
     public function sitemapEntries(): array
     {
+        return Cache::remember('seo.sitemap', now()->addHour(), fn (): array => $this->buildSitemapEntries());
+    }
+
+    public static function forgetSitemap(): void
+    {
+        Cache::forget('seo.sitemap');
+    }
+
+    /**
+     * @return list<array{loc: string, lastmod: ?string, changefreq: string, priority: string}>
+     */
+    private function buildSitemapEntries(): array
+    {
         $entries = [
             $this->sitemapEntry($this->absoluteRoute('home'), 'weekly', '1.0'),
+            $this->sitemapEntry($this->absoluteRoute('quote'), 'weekly', '0.9'),
             $this->sitemapEntry($this->absoluteRoute('services'), 'weekly', '0.9'),
             $this->sitemapEntry($this->absoluteRoute('areas'), 'weekly', '0.9'),
+            $this->sitemapEntry($this->absoluteRoute('reviews'), 'weekly', '0.8'),
+            $this->sitemapEntry($this->absoluteRoute('move-in-out'), 'monthly', '0.8'),
             $this->sitemapEntry($this->absoluteRoute('about'), 'monthly', '0.7'),
             $this->sitemapEntry($this->absoluteRoute('contact'), 'monthly', '0.7'),
         ];
 
-        foreach (Service::query()->active()->orderBy('sort_order')->get() as $service) {
+        $services = Service::query()->active()->orderBy('sort_order')->get();
+        $areas = ServiceArea::query()->active()->orderBy('sort_order')->get();
+
+        foreach ($services as $service) {
             $entries[] = $this->sitemapEntry(
                 $this->absoluteRoute('services.show', $service),
                 'weekly',
@@ -318,13 +430,26 @@ final class SeoService
             );
         }
 
-        foreach (ServiceArea::query()->active()->orderBy('sort_order')->get() as $area) {
+        foreach ($areas as $area) {
             $entries[] = $this->sitemapEntry(
                 $this->absoluteRoute('areas.show', $area),
                 'weekly',
                 '0.8',
                 $area->updated_at?->toAtomString(),
             );
+
+            foreach ($services as $service) {
+                $entries[] = $this->sitemapEntry(
+                    $this->absoluteRoute('areas.service', [$area, $service]),
+                    'weekly',
+                    '0.7',
+                    max($area->updated_at?->timestamp ?? 0, $service->updated_at?->timestamp ?? 0)
+                        ? ($area->updated_at?->greaterThan($service->updated_at ?? $area->updated_at)
+                            ? $area->updated_at?->toAtomString()
+                            : $service->updated_at?->toAtomString())
+                        : null,
+                );
+            }
         }
 
         foreach (LegalPage::query()->published()->orderBy('slug')->get() as $page) {

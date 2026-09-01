@@ -12,7 +12,20 @@ final class Media
      */
     public static function diskName(): string
     {
-        return (string) config('filesystems.media', 'public');
+        $configured = (string) config('filesystems.media', 'public');
+
+        if ($configured !== 'public') {
+            return $configured;
+        }
+
+        $defaultDisk = (string) config('filesystems.default', 'local');
+        $bucket = config('filesystems.disks.s3.bucket');
+
+        if (filled($bucket) || $defaultDisk === 's3') {
+            return 's3';
+        }
+
+        return 'public';
     }
 
     public static function disk(): Filesystem

@@ -11,6 +11,8 @@ use App\Enums\QuoteRequestSource;
 use App\Enums\QuoteRequestStatus;
 use App\Models\Addon;
 use App\Pricing\Money;
+use App\Support\Media;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -112,6 +114,22 @@ class QuoteRequestInfolist
                             ->join(', ');
                     })->columnSpanFull(),
                     TextEntry::make('condition_notes')->placeholder('—')->columnSpanFull(),
+                ]),
+
+            Section::make('Property photos')
+                ->visible(fn ($record): bool => ! empty($record->property_photo_paths))
+                ->schema([
+                    ImageEntry::make('property_photo_paths')
+                        ->label('Uploaded photos')
+                        ->state(fn ($record): array => collect($record->property_photo_paths ?? [])
+                            ->map(fn (string $path): ?string => Media::url($path))
+                            ->filter()
+                            ->values()
+                            ->all())
+                        ->columnSpanFull(),
+                    TextEntry::make('photo_count')
+                        ->label('Count')
+                        ->state(fn ($record): string => (string) count($record->property_photo_paths ?? [])),
                 ]),
 
             Section::make('Extras')

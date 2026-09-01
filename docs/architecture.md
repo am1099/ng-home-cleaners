@@ -73,7 +73,7 @@ View composer shares `$settings` to all public layouts, components, and pages.
 
 | Group | Resources / pages |
 |-------|-------------------|
-| Website | Services (inclusions, exclusions, FAQs, add-ons), Add-ons, Service Areas, Gallery, Reviews |
+| Website | Services (inclusions, exclusions, FAQs, add-ons), Add-ons, Service Areas, Gallery, Reviews, FAQs, Legal pages |
 | Pricing | Pricing (starting prices, bedrooms, rooms, conditions, frequency, advanced) |
 | CRM | Dashboard, Leads (quote requests), Bookings, Calendar, Payments, Customers |
 | Settings | Site settings |
@@ -87,8 +87,11 @@ All admin policies extend `AdminPolicy` (authenticated staff access).
 | `/` | `HomeController` | Services, gallery, areas, testimonials, FAQs, site settings |
 | `/services` | `ServiceController@index` | Active services |
 | `/services/{slug}` | `ServiceController@show` | Service + inclusions, exclusions, add-ons, FAQs |
-| `/areas` | `AreaController@index` | Active service areas |
+| `/areas` | `AreaController@index` | Active service areas + coverage checker |
 | `/areas/{slug}` | `AreaController@show` | Area content, linked services, FAQs |
+| `/areas/{area}/{service}` | `AreaController@service` | Service × area landing pages |
+| `/reviews` | `ReviewsController` | Published, non-demo testimonials |
+| `/move-in-move-out` | `MoveInOutController` | Move-in / move-out landing using the pricing engine |
 | `/about` | `AboutController` | Site settings (story, promises) |
 | `/contact` | `ContactController` | Site settings (phone, email, WhatsApp, hours) |
 | `/get-a-quote` | `EstimateWizard` (Livewire) | Multi-step estimator; submits to lead pipeline |

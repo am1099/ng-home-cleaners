@@ -10,8 +10,13 @@ use App\Models\QuoteRequest;
 use App\Models\Service;
 use App\Models\SiteSetting;
 use App\Pricing\PricingEngine;
+use App\Support\Media;
 use App\Support\UkContactNormalizer;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class QuoteRequestService
 {
@@ -86,6 +91,47 @@ class QuoteRequestService
                 'submitted_at' => now(),
             ]);
         });
+    }
+
+    /**
+     * @param  list<UploadedFile|TemporaryUploadedFile|null>  $files
+     */
+    public function storePropertyPhotos(QuoteRequest $quoteRequest, array $files): void
+    {
+        $paths = [];
+        $disk = Media::diskName();
+
+        foreach ($files as $file) {
+            if (! $file instanceof UploadedFile && ! $file instanceof TemporaryUploadedFile) {
+                continue;
+            }
+
+            $extension = strtolower($file->getClientOriginalExtension() ?: 'jpg');
+            $filename = Str::uuid()->toString().'.'.$extension;
+            $stored = $file->storeAs('quote-requests/'.$quoteRequest->reference, $filename, [
+                'disk' => $disk,
+            ]);
+
+            if (! is_string($stored) || $stored === '') {
+                report(new \RuntimeException("Quote photo upload failed on disk [{$disk}]."));
+
+                continue;
+            }
+
+            $paths[] = $stored;
+        }
+
+        if ($paths === []) {
+            return;
+        }
+
+        if (! Schema::hasColumn('quote_requests', 'property_photo_paths')) {
+            report(new \RuntimeException('quote_requests.property_photo_paths column is missing. Run php artisan migrate --force on this environment.'));
+
+            return;
+        }
+
+        $quoteRequest->update(['property_photo_paths' => $paths]);
     }
 
     /**
@@ -278,11 +324,16 @@ class QuoteRequestService
     {
         $serviceName = $quoteRequest->service?->name ?? 'cleaning enquiry';
 
+        $photoNote = ! empty($quoteRequest->property_photo_paths)
+            ? ' Photos uploaded with the form are already saved against this request.'
+            : '';
+
         return sprintf(
-            "Hi, I've just submitted a cleaning estimate request (Ref: %s) for a %s. My guide estimate was %s. Please could you confirm availability?",
+            "Hi, I've just submitted a cleaning estimate request (Ref: %s) for a %s. My guide estimate was %s. Please could you confirm availability? Please also send a short walkthrough video of the property on WhatsApp (kitchen, bathrooms, main rooms) so we can give you an accurate fixed quote.%s",
             $quoteRequest->reference,
             strtolower($serviceName),
             $quoteRequest->guide_estimate_headline ?? 'to be confirmed',
+            $photoNote,
         );
     }
 

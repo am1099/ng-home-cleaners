@@ -2,12 +2,15 @@
     'label' => 'Get a free estimate',
     'size' => 'md',
     'variant' => 'primary',
+    'location' => 'cta',
+    'href' => null,
 ])
 
 <x-public.button
-    :href="route('quote')"
+    :href="$href ?: route('quote')"
     :variant="$variant"
     :size="$size"
+    onclick="window.ngTrack && window.ngTrack('quote_started', { location: @js($location) })"
     {{ $attributes }}
 >
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0" aria-hidden="true">

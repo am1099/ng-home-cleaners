@@ -159,6 +159,11 @@ class SiteSettings extends Page
                                             ->label('Hero image')
                                             ->helperText('Shown in the large circular frame on the right of the homepage hero. Use a bright, tidy interior photo.')
                                             ->columnSpanFull(),
+                                        TextInput::make('home_hero_image_alt')
+                                            ->label('Hero image alternative text')
+                                            ->helperText('Describe the photo for screen readers. Leave blank only if the image is purely decorative.')
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
                                     ]),
                                 Section::make('Visibility')
                                     ->columns(2)
@@ -199,7 +204,7 @@ class SiteSettings extends Page
                     Actions::make([
                         Action::make('save')
                             ->label('Save settings')
-                            ->icon(\Filament\Support\Icons\Heroicon::OutlinedCheck)
+                            ->icon(Heroicon::OutlinedCheck)
                             ->submit('save')
                             ->keyBindings(['mod+s']),
                     ]),

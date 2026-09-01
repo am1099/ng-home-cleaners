@@ -93,6 +93,11 @@ class Service extends Model
         return $this->hasMany(Testimonial::class);
     }
 
+    public function recentWorks(): HasMany
+    {
+        return $this->hasMany(RecentWork::class);
+    }
+
     public function serviceAreas(): BelongsToMany
     {
         return $this->belongsToMany(ServiceArea::class, 'service_area_service');

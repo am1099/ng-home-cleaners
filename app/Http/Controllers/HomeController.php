@@ -19,6 +19,7 @@ class HomeController extends Controller
     {
         $site = $settings->get();
         $pageSeo = $seo->forHome();
+        $faqs = Faq::query()->published()->get();
 
         return view('home', [
             'settings' => $site,
@@ -26,13 +27,14 @@ class HomeController extends Controller
             'jsonLd' => array_values(array_filter([
                 $seo->organizationJsonLd(),
                 $seo->breadcrumbJsonLd($pageSeo->breadcrumbs),
+                $seo->faqPageJsonLd($faqs),
             ])),
             'services' => Service::query()->active()->orderBy('sort_order')->get(),
             'recentWorks' => RecentWork::query()->published()->orderBy('sort_order')->limit(6)->get(),
             'galleryItems' => GalleryItem::query()->published()->orderBy('sort_order')->limit(12)->get(),
             'areas' => ServiceArea::query()->active()->orderBy('sort_order')->get(),
             'testimonials' => $this->publishedTestimonials(),
-            'faqs' => Faq::query()->published()->get(),
+            'faqs' => $faqs,
         ]);
     }
 
@@ -41,11 +43,14 @@ class HomeController extends Controller
      */
     private function publishedTestimonials()
     {
-        $query = Testimonial::query()->published()->orderBy('sort_order');
-
-        if (app()->isProduction()) {
-            $query->where('is_demo', false);
-        }
+        $query = Testimonial::query()
+            ->when(
+                app()->isProduction(),
+                fn ($builder) => $builder->publishedForProduction(),
+                fn ($builder) => $builder->published(),
+            )
+            ->with(['service:id,name,slug,is_active'])
+            ->orderBy('sort_order');
 
         return $query->limit(3)->get();
     }

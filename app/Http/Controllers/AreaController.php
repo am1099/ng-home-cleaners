@@ -50,4 +50,19 @@ class AreaController extends Controller
             ])),
         ]);
     }
+
+    public function service(ServiceArea $area, Service $service, SeoService $seo): View
+    {
+        $pageSeo = $seo->forServiceInArea($service, $area);
+
+        return view('pages.areas.service', [
+            'area' => $area,
+            'service' => $service,
+            'seo' => $pageSeo,
+            'jsonLd' => array_values(array_filter([
+                $seo->organizationJsonLd(),
+                $seo->breadcrumbJsonLd($pageSeo->breadcrumbs),
+            ])),
+        ]);
+    }
 }

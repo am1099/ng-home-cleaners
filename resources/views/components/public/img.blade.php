@@ -5,7 +5,8 @@
     'height' => 600,
     'lazy' => true,
     'priority' => false,
-    'sizes' => null,
+    'sizes' => '(max-width: 768px) 100vw, 800px',
+    'srcset' => null,
     'class' => '',
 ])
 
@@ -21,6 +22,7 @@
     height="{{ $height }}"
     loading="{{ $loading }}"
     @if ($fetchpriority) fetchpriority="{{ $fetchpriority }}" @endif
+    @if ($srcset) srcset="{{ $srcset }}" @endif
     @if ($sizes) sizes="{{ $sizes }}" @endif
     decoding="{{ $priority ? 'sync' : 'async' }}"
     {{ $attributes->class([$class]) }}

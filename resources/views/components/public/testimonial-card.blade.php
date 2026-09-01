@@ -18,7 +18,7 @@
     <footer class="mt-5 border-t border-border pt-4">
         <p class="font-semibold text-ink">{{ $testimonial->customer_name }}</p>
         <p class="text-sm text-ink-muted">
-            @if ($testimonial->service)
+            @if ($testimonial->service?->is_active)
                 {{ $testimonial->service->name }}
             @endif
             @if ($testimonial->location)

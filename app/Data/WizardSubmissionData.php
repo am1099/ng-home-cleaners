@@ -77,8 +77,8 @@ final readonly class WizardSubmissionData
             addressLine1: trim($wizard->addressLine1),
             addressLine2: filled($wizard->addressLine2) ? trim($wizard->addressLine2) : null,
             city: trim($wizard->city),
-            parkingNotes: trim($wizard->parkingNotes),
-            accessNotes: trim($wizard->accessNotes),
+            parkingNotes: $wizard->resolvedParkingNotes(),
+            accessNotes: $wizard->resolvedAccessNotes(),
         );
     }
 

@@ -67,7 +67,7 @@
                     None selected.
                 @else
                     <ul class="space-y-1">
-                        @foreach ($this->availableAddons->whereIn('id', $addonIds) as $addon)
+                        @foreach ($this->availableAddons->whereIn('id', array_map('intval', $addonIds)) as $addon)
                             <li class="flex justify-between gap-3">
                                 <span>{{ $addon->label }}</span>
                                 <span class="shrink-0 font-semibold text-brand-800">{{ $this->addonDisplayLabel($addon) }}</span>

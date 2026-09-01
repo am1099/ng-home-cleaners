@@ -2,7 +2,7 @@
 
 Production Laravel application for NG Home Cleaners — a customer-facing cleaning website and lightweight internal CRM.
 
-**Current status:** Homepage Recent Work (before/after) + compact coverage panel; single-page estimate form at `/get-a-quote` with live guide pricing. Gallery Filament CRUD remains for single images.
+**Current status:** Public site (services, areas, reviews, move-in/move-out, one-page estimate with optional property photos), Filament CRM (leads, bookings, FAQs, legal pages, media), sitemap/SEO, and Plausible analytics after cookie consent. Walkthrough videos stay on WhatsApp — they are never uploaded to the app.
 
 ## Stack
 

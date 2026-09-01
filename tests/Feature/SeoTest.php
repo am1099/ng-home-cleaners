@@ -102,6 +102,9 @@ class SeoTest extends TestCase
         $response->assertOk();
         $response->assertHeader('Content-Type', 'application/xml; charset=UTF-8');
         $response->assertSee('<loc>'.e(route('home', absolute: true)).'</loc>', false);
+        $response->assertSee('<loc>'.e(route('quote', absolute: true)).'</loc>', false);
+        $response->assertSee('<loc>'.e(route('reviews', absolute: true)).'</loc>', false);
+        $response->assertSee('<loc>'.e(route('move-in-out', absolute: true)).'</loc>', false);
         $response->assertSee('<loc>'.e(route('services', absolute: true)).'</loc>', false);
         $response->assertSee('<loc>'.e(route('areas', absolute: true)).'</loc>', false);
         $response->assertSee('<loc>'.e(route('about', absolute: true)).'</loc>', false);

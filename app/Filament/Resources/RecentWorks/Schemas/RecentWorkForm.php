@@ -4,6 +4,7 @@ namespace App\Filament\Resources\RecentWorks\Schemas;
 
 use App\Filament\Support\SecureImageUpload;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -46,6 +47,11 @@ class RecentWorkForm
                         ->rows(2)
                         ->maxLength(255)
                         ->columnSpanFull(),
+                    Select::make('service_id')
+                        ->relationship('service', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->helperText('Optional. When set, this pair also appears on that service page.'),
                     TextInput::make('sort_order')
                         ->numeric()
                         ->default(0)

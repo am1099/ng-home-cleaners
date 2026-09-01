@@ -79,6 +79,8 @@ class HardeningTest extends TestCase
         $this->assertSame('quote_started', Analytics::QUOTE_STARTED);
         $this->assertSame('quote_step_completed', Analytics::QUOTE_STEP_COMPLETED);
         $this->assertSame('quote_completed', Analytics::QUOTE_COMPLETED);
+        $this->assertSame('quote_photos_added', Analytics::QUOTE_PHOTOS_ADDED);
+        $this->assertSame('quote_whatsapp_clicked', Analytics::QUOTE_WHATSAPP_CLICKED);
         $this->assertSame('whatsapp_quote', Analytics::WHATSAPP_QUOTE);
         $this->assertSame('whatsapp_clicked', Analytics::WHATSAPP_CLICKED);
         $this->assertSame('phone_clicked', Analytics::PHONE_CLICKED);

@@ -4,10 +4,12 @@ namespace App\Livewire;
 
 use App\Actions\DispatchQuoteRequestNotifications;
 use App\Data\WizardSubmissionData;
+use App\Enums\AccessOption;
 use App\Enums\ArrivalWindow;
 use App\Enums\CleaningFrequency;
 use App\Enums\ConditionFlag;
 use App\Enums\ExtraRoomType;
+use App\Enums\ParkingOption;
 use App\Enums\PropertyStatus;
 use App\Enums\PropertyType;
 use App\Enums\QuoteRequestSource;
@@ -26,6 +28,7 @@ use App\Rules\UkPhoneNumber;
 use App\Services\QuoteRequestService;
 use App\Support\Analytics\Analytics;
 use App\Support\UkContactNormalizer;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\Rule;
@@ -34,11 +37,18 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Livewire\WithFileUploads;
 
 #[Layout('layouts.quote')]
 #[Title('Get a free estimate')]
 class EstimateWizard extends Component
 {
+    use WithFileUploads;
+
+    /** @var list<TemporaryUploadedFile|null> */
+    public array $propertyPhotos = [];
+
     public ?int $serviceId = null;
 
     public ?string $frequency = 'fortnightly';
@@ -94,7 +104,13 @@ class EstimateWizard extends Component
 
     public string $parkingNotes = '';
 
+    public string $parkingOther = '';
+
     public string $accessNotes = '';
+
+    public string $accessOther = '';
+
+    public bool $extrasOpen = true;
 
     public bool $submitting = false;
 
@@ -204,7 +220,14 @@ class EstimateWizard extends Component
 
     public function updatedAddonIds(): void
     {
+        $this->addonIds = array_values(array_map('intval', $this->addonIds));
+        $this->extrasOpen = true;
         $this->forgetEstimateCaches();
+    }
+
+    public function toggleExtras(): void
+    {
+        $this->extrasOpen = ! $this->extrasOpen;
     }
 
     #[Computed]
@@ -288,8 +311,8 @@ class EstimateWizard extends Component
             postcode: $this->postcode,
             preferredDate: $this->preferredDate,
             conditionNotes: $this->conditionNotes,
-            parkingNotes: $this->parkingNotes,
-            accessNotes: $this->accessNotes,
+            parkingNotes: $this->resolvedParkingNotes(),
+            accessNotes: $this->resolvedAccessNotes(),
             arrivalWindow: $this->arrivalWindow ? ArrivalWindow::tryFrom($this->arrivalWindow) : null,
         );
     }
@@ -340,10 +363,7 @@ class EstimateWizard extends Component
         try {
             $this->validateAllSections();
 
-            $quoteRequest = app(QuoteRequestService::class)->createFromWizard(
-                WizardSubmissionData::fromWizard($this),
-                QuoteRequestSource::Web,
-            );
+            $quoteRequest = $this->persistLead(QuoteRequestSource::Web);
 
             $this->savedReference = $quoteRequest->reference;
 
@@ -354,7 +374,7 @@ class EstimateWizard extends Component
                 'channel' => 'web',
             ]));
 
-            $this->redirect(route('quote.confirmation', $quoteRequest->reference), navigate: true);
+            $this->redirect(route('quote.confirmation', $quoteRequest->reference));
         } catch (ValidationException $exception) {
             $this->dispatch('estimate-validation-failed');
 
@@ -399,11 +419,7 @@ class EstimateWizard extends Component
 
             $this->validateAllSections();
 
-            $quoteRequest = app(QuoteRequestService::class)->createFromWizard(
-                WizardSubmissionData::fromWizard($this),
-                QuoteRequestSource::Whatsapp,
-                whatsappInitiated: true,
-            );
+            $quoteRequest = $this->persistLead(QuoteRequestSource::Whatsapp, whatsappInitiated: true);
 
             $this->savedReference = $quoteRequest->reference;
 
@@ -412,6 +428,9 @@ class EstimateWizard extends Component
             $this->js(Analytics::scriptCall(Analytics::QUOTE_COMPLETED, [
                 'reference' => $quoteRequest->reference,
                 'channel' => 'whatsapp',
+            ]));
+            $this->js(Analytics::scriptCall(Analytics::QUOTE_WHATSAPP_CLICKED, [
+                'reference' => $quoteRequest->reference,
             ]));
             $this->js(Analytics::scriptCall(Analytics::WHATSAPP_QUOTE, [
                 'reference' => $quoteRequest->reference,
@@ -431,6 +450,40 @@ class EstimateWizard extends Component
         } finally {
             $this->submitting = false;
         }
+    }
+
+    protected function persistLead(QuoteRequestSource $source, bool $whatsappInitiated = false): QuoteRequest
+    {
+        $quoteRequest = app(QuoteRequestService::class)->createFromWizard(
+            WizardSubmissionData::fromWizard($this),
+            $source,
+            $whatsappInitiated,
+        );
+
+        $photos = $this->resolvedPropertyPhotos();
+
+        if ($photos !== []) {
+            app(QuoteRequestService::class)->storePropertyPhotos($quoteRequest, $photos);
+            $quoteRequest->refresh();
+
+            $this->js(Analytics::scriptCall(Analytics::QUOTE_PHOTOS_ADDED, [
+                'reference' => $quoteRequest->reference,
+                'count' => count($quoteRequest->property_photo_paths ?? []),
+            ]));
+        }
+
+        return $quoteRequest;
+    }
+
+    /**
+     * @return list<TemporaryUploadedFile|UploadedFile>
+     */
+    protected function resolvedPropertyPhotos(): array
+    {
+        return array_values(array_filter(
+            $this->propertyPhotos,
+            fn ($file) => $file instanceof TemporaryUploadedFile || $file instanceof UploadedFile,
+        ));
     }
 
     protected function isHoneypotTriggered(): bool
@@ -553,8 +606,12 @@ class EstimateWizard extends Component
                 'addressLine1' => ['required', 'string', 'max:255'],
                 'addressLine2' => ['nullable', 'string', 'max:255'],
                 'city' => ['required', 'string', 'max:100'],
-                'parkingNotes' => ['nullable', 'string', 'max:500'],
-                'accessNotes' => ['nullable', 'string', 'max:500'],
+                'parkingNotes' => ['nullable', 'string', 'max:500', Rule::in(['', ...ParkingOption::labels()])],
+                'parkingOther' => ['nullable', 'string', 'max:400'],
+                'accessNotes' => ['nullable', 'string', 'max:500', Rule::in(['', ...AccessOption::labels()])],
+                'accessOther' => ['nullable', 'string', 'max:400'],
+                'propertyPhotos' => ['nullable', 'array', 'max:8'],
+                'propertyPhotos.*' => ['image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
             ],
             default => [],
         };
@@ -572,11 +629,34 @@ class EstimateWizard extends Component
         $this->splitLevelFlat = false;
     }
 
+    public function resolvedParkingNotes(): string
+    {
+        return $this->composeOptionalNote($this->parkingNotes, $this->parkingOther);
+    }
+
+    public function resolvedAccessNotes(): string
+    {
+        return $this->composeOptionalNote($this->accessNotes, $this->accessOther);
+    }
+
+    protected function composeOptionalNote(string $option, string $other): string
+    {
+        $option = trim($option);
+        $other = trim($other);
+
+        if ($option === ParkingOption::Other->label() || $option === AccessOption::Other->label()) {
+            return $other !== '' ? 'Other: '.$other : $option;
+        }
+
+        return $option;
+    }
+
     protected function forgetEstimateCaches(): void
     {
         unset($this->services);
         unset($this->selectedService);
         unset($this->visibleSections);
+        unset($this->availableAddons);
         unset($this->estimateInput);
         unset($this->calculation);
     }

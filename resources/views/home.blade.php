@@ -10,7 +10,7 @@
                     <h1 class="ng-display ng-display-hero mt-0 max-w-xl text-brand-950">
                         {{ $settings->home_hero_title ?? 'There are better uses for a Saturday morning.' }}
                     </h1>
-                    <p class="ng-body-lg mt-[18px] max-w-lg text-neutral-700">
+                    <p class="ng-body-lg mt-[18px] max-w-lg text-ink-muted">
                         {{ $settings->home_hero_subtitle ?? 'Your home cleaned by a vetted, DBS-checked cleaner working to a written standard, with a fixed price agreed before we start.' }}
                     </p>
                     <div class="mt-8 flex flex-wrap items-center gap-3">
@@ -29,6 +29,7 @@
                             size="lg"
                             variant="outline"
                             class="rounded-full"
+                            location="home_hero"
                         />
                         <x-public.whatsapp-cta
                             label="WhatsApp"
@@ -54,7 +55,7 @@
                             @if ($settings->home_hero_image)
                                 <img
                                     src="{{ \App\Support\Media::url($settings->home_hero_image) }}"
-                                    alt=""
+                                    alt="{{ $settings->home_hero_image_alt ?: ($settings->home_hero_title ?: 'NG Home Cleaners') }}"
                                     class="size-full object-cover"
                                     width="640"
                                     height="640"
@@ -207,11 +208,4 @@
     {{-- Fill leftover main height (flex-1) with ink so mobile never shows a white strip above the footer --}}
     <div class="flex-1 bg-surface-ink" aria-hidden="true"></div>
 
-    {{-- Mobile sticky CTA --}}
-    <div class="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface-page/95 p-3 backdrop-blur-sm lg:hidden" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom));">
-        <div class="mx-auto flex max-w-lg gap-2">
-            <x-public.estimate-cta label="Get estimate" class="flex-1 justify-center" size="sm" />
-            <x-public.whatsapp-cta label="WhatsApp" class="shrink-0" size="sm" />
-        </div>
-    </div>
 @endsection

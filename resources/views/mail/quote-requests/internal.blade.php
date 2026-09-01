@@ -57,6 +57,12 @@
 - **Date:** {{ $quoteRequest->preferred_date->format('l j F Y') }}
 - **Arrival:** {{ \App\Enums\ArrivalWindow::tryFrom($quoteRequest->arrival_window)?->label() }}
 
+@if (! empty($quoteRequest->property_photo_paths))
+## Property photos
+
+{{ count($quoteRequest->property_photo_paths) }} photo{{ count($quoteRequest->property_photo_paths) === 1 ? '' : 's' }} saved with this request. Open the lead in admin to view them.
+@endif
+
 ## Guide estimate
 
 **{{ $quoteRequest->guide_estimate_headline }}**

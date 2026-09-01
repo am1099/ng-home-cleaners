@@ -5,7 +5,7 @@
         <x-public.container narrow>
             <p class="ng-eyebrow">Error 404</p>
             <h1 class="ng-display ng-display-hero mt-0">We cannot find that page.</h1>
-            <p class="ng-body-lg mt-[18px] text-neutral-700">
+            <p class="ng-body-lg mt-[18px] text-ink-muted">
                 The link may be out of date, or the page may have moved. Try one of the options below, or get a free estimate and we will help you from there.
             </p>
             <div class="mt-8 flex flex-wrap gap-3">

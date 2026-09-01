@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
     'home_hero_title',
     'home_hero_subtitle',
     'home_hero_image',
+    'home_hero_image_alt',
     'about_hero_title',
     'about_hero_subtitle',
     'about_story',

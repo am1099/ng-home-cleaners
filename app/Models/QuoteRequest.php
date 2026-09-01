@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'city',
     'parking_notes',
     'access_notes',
+    'property_photo_paths',
     'preferred_date',
     'arrival_window',
     'frequency',
@@ -59,6 +60,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'won_at',
     'lost_at',
     'submitted_at',
+    'follow_up_sent_at',
 ])]
 class QuoteRequest extends Model
 {
@@ -92,6 +94,8 @@ class QuoteRequest extends Model
             'won_at' => 'datetime',
             'lost_at' => 'datetime',
             'submitted_at' => 'datetime',
+            'follow_up_sent_at' => 'datetime',
+            'property_photo_paths' => 'array',
         ];
     }
 

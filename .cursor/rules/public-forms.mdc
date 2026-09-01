@@ -1,0 +1,14 @@
+---
+description: Public form controls must use the shared Flowbite-like field styles
+globs: "{resources/views/**/*.blade.php,resources/css/**/*.css,app/Livewire/**/*.php}"
+alwaysApply: false
+---
+
+# Public form controls
+
+Never drop a raw browser-default control onto a public page.
+
+- Text, email, tel, number, textarea, file, and **select** use the `ng-field` class (or `<x-public.form.input>` / `<x-public.form.select>` / `<x-public.form.textarea>`).
+- Dates use `<x-public.date-picker>`. Do **not** use `<input type="date">` (native calendar).
+- Selects must keep `ng-field` so the custom chevron applies. Do not leave an unstyled `<select>`.
+- Do not import or start a second Alpine instance in `resources/js/app.js`. Livewire owns Alpine; register plugins on `alpine:init` only.

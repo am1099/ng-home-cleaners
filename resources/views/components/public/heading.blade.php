@@ -4,7 +4,7 @@
     'subtitle' => null,
     'level' => 'h2',
     'align' => 'left',
-    'subtitleClass' => 'text-neutral-700',
+    'subtitleClass' => 'text-ink-muted',
 ])
 
 @php
