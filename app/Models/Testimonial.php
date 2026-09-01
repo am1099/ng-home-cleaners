@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'source',
     'source_url',
     'is_published',
+    'published_at',
     'is_demo',
     'sort_order',
 ])]
@@ -32,6 +33,7 @@ class Testimonial extends Model
         return [
             'rating' => 'integer',
             'is_published' => 'boolean',
+            'published_at' => 'datetime',
             'is_demo' => 'boolean',
             'sort_order' => 'integer',
         ];

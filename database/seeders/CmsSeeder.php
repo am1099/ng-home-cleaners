@@ -493,6 +493,7 @@ class CmsSeeder extends Seeder
                 'service_id' => $deep?->id,
                 'source' => 'Demo',
                 'is_published' => true,
+                'published_at' => now(),
                 'is_demo' => true,
                 'sort_order' => 1,
             ],

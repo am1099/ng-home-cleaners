@@ -192,7 +192,7 @@ class ManagePricing extends Page
                     Actions::make([
                         Action::make('save')
                             ->label('Save pricing')
-                            ->icon(\Filament\Support\Icons\Heroicon::OutlinedCheck)
+                            ->icon(Heroicon::OutlinedCheck)
                             ->submit('save'),
                     ]),
                 ]),

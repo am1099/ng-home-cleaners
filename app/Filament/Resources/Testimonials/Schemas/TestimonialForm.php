@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Testimonials\Schemas;
 
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -51,6 +52,10 @@ class TestimonialForm
                     Toggle::make('is_published')
                         ->label('Published')
                         ->inline(false),
+                    DateTimePicker::make('published_at')
+                        ->label('Published at')
+                        ->seconds(false)
+                        ->default(now()),
                     Toggle::make('is_demo')
                         ->label('Demo data (local only)')
                         ->helperText('Demo reviews must not appear on production.')
