@@ -4,6 +4,8 @@ namespace App\Providers\Filament;
 
 use App\Filament\Auth\Login;
 use App\Filament\Pages\Dashboard;
+use App\Services\SiteSettingsService;
+use App\Support\Media;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -31,6 +33,11 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('NG Home Cleaners')
             ->brandLogo(fn () => view('filament.brand-logo'))
             ->brandLogoHeight('2.75rem')
+            ->favicon(function (): ?string {
+                $path = app(SiteSettingsService::class)->get()->favicon_path;
+
+                return filled($path) ? Media::url($path) : null;
+            })
             ->colors([
                 'primary' => Color::hex('#208378'),
             ])

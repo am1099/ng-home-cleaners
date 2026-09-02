@@ -57,17 +57,43 @@ Local development stays on the `public` disk (`FILESYSTEM_DISK=local`). Run `php
 
 Monitor `GET /up` — returns 200 when the application is healthy.
 
-## Queue worker
+## Laravel Cloud processes
+
+You do **not** need a custom forever-running Artisan command for new-lead emails. Acknowledgement and internal lead emails are sent **immediately** during the HTTP request (`Mail::send`), so they succeed or fail in the same request.
+
+### Required for delayed mail (follow-ups / review requests)
+
+Pick one queue option in the Cloud environment:
+
+1. **Managed Queues** (preferred) — create a managed queue in the environment dashboard, **or**
+2. **Background process** on the App compute cluster:
 
 ```bash
 php artisan queue:work --tries=3
 ```
 
-New-lead acknowledgement and internal lead emails are **sent immediately** (not queued), so they do not need a worker. Keep a queue worker for 24-hour follow-up and post-booking review request jobs. On Laravel Cloud, attach a **background worker** / queue process for those delayed emails.
+Without a queue worker, 24-hour lead follow-ups and post-booking review emails will sit in the `jobs` table and never send.
 
-Run the scheduler (`php artisan schedule:work` or cron `schedule:run`) so stale `new` leads receive a follow-up after 24 hours.
+### Required for the scheduler
 
-After deploy, run `php artisan migrate --force` so Cloud picks up `testimonials.published_at`, `quote_requests.property_photo_paths`, and the follow-up / review-request timestamps.
+In the environment **App** (or Worker) compute cluster, enable the **Scheduler** toggle and redeploy. Cloud then runs `php artisan schedule:run` for you.
+
+That drives `SendQuoteFollowUpJob` (hourly in `routes/console.php`).
+
+### Not required as custom commands
+
+- Do **not** add `php artisan schedule:work` as a background process on Cloud (use the Scheduler toggle instead).
+- Do **not** expect a queue worker to fix Resend sandbox errors — those fail during send, not because a worker is missing.
+
+### Resend sandbox reminder
+
+Until a domain is verified at resend.com/domains:
+
+- `MAIL_FROM_ADDRESS=onboarding@resend.dev`
+- Site settings **Lead notification emails** must be only your Resend account email
+- Customer/lead email must also be that same address for test sends
+
+After deploy, run `php artisan migrate --force` so Cloud picks up schema changes (`email_templates`, `property_photo_paths`, follow-up timestamps, etc.).
 
 ## Admin users
 

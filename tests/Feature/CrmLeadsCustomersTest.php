@@ -6,6 +6,7 @@ use App\Enums\CleaningFrequency;
 use App\Enums\PropertyType;
 use App\Enums\QuoteRequestSource;
 use App\Enums\QuoteRequestStatus;
+use App\Filament\Resources\QuoteRequests\Pages\EditQuoteRequest;
 use App\Livewire\EstimateWizard;
 use App\Models\Customer;
 use App\Models\QuoteRequest;
@@ -92,6 +93,51 @@ class CrmLeadsCustomersTest extends TestCase
         $this->assertNotNull($lead->quote_sent_at);
         $this->assertNotNull($lead->contacted_at);
         $this->assertSame('Quoted after walkthrough video.', $lead->internal_notes);
+    }
+
+    public function test_admin_can_edit_customer_and_property_fields_on_lead(): void
+    {
+        $lead = $this->createWebLead();
+        $service = Service::query()->where('slug', 'deep-clean')->firstOrFail();
+
+        Livewire::actingAs($this->admin)
+            ->test(EditQuoteRequest::class, [
+                'record' => $lead->getKey(),
+            ])
+            ->fillForm([
+                'first_name' => 'Sam',
+                'last_name' => 'WhatsApp',
+                'phone' => '07700900123',
+                'email' => 'sam.whatsapp@example.com',
+                'postcode' => 'NG7 1AA',
+                'address_line1' => '22 Derby Road',
+                'city' => 'Nottingham',
+                'service_id' => $service->id,
+                'bedrooms' => 4,
+                'bathrooms' => 2,
+                'condition_notes' => 'Customer clarified via WhatsApp: pets upstairs only.',
+                'parking_notes' => 'Permit bay outside.',
+                'access_notes' => 'Key in lockbox.',
+                'internal_notes' => 'Updated after WhatsApp thread.',
+            ])
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $lead->refresh();
+
+        $this->assertSame('Sam', $lead->first_name);
+        $this->assertSame('WhatsApp', $lead->last_name);
+        $this->assertSame('07700900123', $lead->phone);
+        $this->assertSame('sam.whatsapp@example.com', $lead->email);
+        $this->assertSame('NG7 1AA', $lead->postcode);
+        $this->assertSame('22 Derby Road', $lead->address_line1);
+        $this->assertSame($service->id, $lead->service_id);
+        $this->assertSame(4, $lead->bedrooms);
+        $this->assertSame(2, $lead->bathrooms);
+        $this->assertSame('Customer clarified via WhatsApp: pets upstairs only.', $lead->condition_notes);
+        $this->assertSame('Permit bay outside.', $lead->parking_notes);
+        $this->assertSame('Key in lockbox.', $lead->access_notes);
+        $this->assertSame('Updated after WhatsApp thread.', $lead->internal_notes);
     }
 
     public function test_admin_can_create_phone_manual_lead(): void

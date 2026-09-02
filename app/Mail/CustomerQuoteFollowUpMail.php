@@ -2,8 +2,11 @@
 
 namespace App\Mail;
 
+use App\Enums\EmailTemplateKey;
+use App\Models\EmailTemplate;
 use App\Models\QuoteRequest;
 use App\Models\SiteSetting;
+use App\Services\EmailTemplateService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -21,18 +24,35 @@ class CustomerQuoteFollowUpMail extends Mailable implements ShouldQueue
 
     public function envelope(): Envelope
     {
+        $template = EmailTemplate::for(EmailTemplateKey::CustomerQuoteFollowUp);
+
         return new Envelope(
-            subject: 'We are preparing your quote ('.$this->quoteRequest->reference.')',
+            subject: $template->renderSubject($this->variables()),
         );
     }
 
     public function content(): Content
     {
+        $settings = SiteSetting::instance();
+        $template = EmailTemplate::for(EmailTemplateKey::CustomerQuoteFollowUp);
+        $variables = $this->variables($settings);
+
         return new Content(
             markdown: 'mail.quote-requests.customer-follow-up',
             with: [
-                'settings' => SiteSetting::instance(),
+                'settings' => $settings,
+                'heading' => $template->renderHeading($variables),
+                'bodyHtml' => $template->renderBodyHtml($variables),
             ],
         );
+    }
+
+    /**
+     * @return array<string, string|null>
+     */
+    private function variables(?SiteSetting $settings = null): array
+    {
+        return app(EmailTemplateService::class)
+            ->variablesForQuoteRequest($this->quoteRequest, $settings);
     }
 }

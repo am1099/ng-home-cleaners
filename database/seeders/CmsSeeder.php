@@ -21,6 +21,7 @@ use App\Models\ServiceArea;
 use App\Models\ServiceExclusion;
 use App\Models\SiteSetting;
 use App\Models\Testimonial;
+use App\Services\EmailTemplateService;
 use App\Support\Media;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
@@ -31,6 +32,7 @@ class CmsSeeder extends Seeder
     {
         SiteSetting::instance();
         PricingSetting::instance();
+        app(EmailTemplateService::class)->ensureDefaults();
 
         $this->seedSiteContent();
         $this->seedServices();

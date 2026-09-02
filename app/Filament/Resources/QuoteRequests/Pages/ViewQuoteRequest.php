@@ -37,11 +37,23 @@ class ViewQuoteRequest extends ViewRecord
                         ->modalHeading('Resend new lead emails')
                         ->modalDescription('Sends the internal team notification again. If the lead has an email address, the customer acknowledgement is sent again too.')
                         ->action(function (): void {
-                            app(DispatchQuoteRequestNotifications::class)->handle($this->getRecord()->fresh());
+                            $result = app(DispatchQuoteRequestNotifications::class)->handle($this->getRecord()->fresh());
+
+                            if ($result['failed'] === []) {
+                                Notification::make()
+                                    ->title('Lead emails sent')
+                                    ->success()
+                                    ->send();
+
+                                return;
+                            }
+
+                            $failedAddresses = collect($result['failed'])->pluck('to')->join(', ');
 
                             Notification::make()
-                                ->title('Lead emails sent')
-                                ->success()
+                                ->title($result['sent'] === [] ? 'Lead emails failed' : 'Some lead emails failed')
+                                ->body('Could not send to: '.$failedAddresses.'. With Resend testing (onboarding@resend.dev), you can only send to the Gmail on your Resend account.')
+                                ->danger()
                                 ->send();
                         }),
                     Action::make('sendFinalQuoteEmail')

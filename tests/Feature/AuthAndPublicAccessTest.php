@@ -3,10 +3,14 @@
 namespace Tests\Feature;
 
 use App\Models\Service;
+use App\Models\SiteSetting;
 use App\Models\User;
+use App\Services\SiteSettingsService;
+use App\Support\Media;
 use Database\Seeders\AdminUserSeeder;
 use Database\Seeders\CmsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AuthAndPublicAccessTest extends TestCase
@@ -65,5 +69,19 @@ class AuthAndPublicAccessTest extends TestCase
         $this->actingAs($user)
             ->get('/admin')
             ->assertOk();
+    }
+
+    public function test_admin_pages_use_site_favicon(): void
+    {
+        Storage::fake(Media::diskName());
+        Storage::disk(Media::diskName())->put('brand/favicon.png', 'fake-favicon');
+
+        SiteSetting::instance()->update(['favicon_path' => 'brand/favicon.png']);
+        app(SiteSettingsService::class)->forget();
+
+        $this->get('/admin/login')
+            ->assertOk()
+            ->assertSee('rel="icon"', false)
+            ->assertSee('brand/favicon.png', false);
     }
 }

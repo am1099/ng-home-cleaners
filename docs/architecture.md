@@ -55,6 +55,7 @@ testimonials                Reviews with publishing, ordering, is_demo flag
 site_settings               Singleton business/contact/trust/SEO + homepage/about content
 legal_pages                 Privacy, terms, cookies (CMS-managed)
 faqs                        Global homepage FAQs
+email_templates             Fixed system email copy (subject/heading/body) editable in CRM
 ```
 
 ### Public visibility scopes
@@ -76,7 +77,7 @@ View composer shares `$settings` to all public layouts, components, and pages.
 | Website | Services (inclusions, exclusions, FAQs, add-ons), Add-ons, Service Areas, Gallery, Reviews, FAQs, Legal pages |
 | Pricing | Pricing (starting prices, bedrooms, rooms, conditions, frequency, advanced) |
 | CRM | Dashboard, Leads (quote requests), Bookings, Calendar, Payments, Customers |
-| Settings | Site settings |
+| Settings | Site settings, Email templates (edit-only) |
 
 All admin policies extend `AdminPolicy` (authenticated staff access).
 

@@ -1,25 +1,20 @@
 @component('mail::message')
-# New estimate request {{ $quoteRequest->reference }}
+# {{ $heading }}
 
-**Source:** {{ $quoteRequest->source->label() }}
+{!! $bodyHtml !!}
 
-## Customer
+## Visit preference
 
-- **Name:** {{ $quoteRequest->fullName() }}
-- **Phone:** {{ $quoteRequest->phone }}
-- **Email:** {{ $quoteRequest->email }}
-- **Address:** {{ $quoteRequest->address_line1 }}, {{ $quoteRequest->postcode }}
+- **Date:** {{ $quoteRequest->preferred_date?->format('l j F Y') ?? '—' }}
+- **Arrival:** {{ \App\Enums\ArrivalWindow::tryFrom((string) $quoteRequest->arrival_window)?->label() ?? '—' }}
 
-## Service
-
-- **Service:** {{ $quoteRequest->service?->name }}
 @if ($quoteRequest->frequency)
 - **Frequency:** {{ \App\Enums\CleaningFrequency::tryFrom($quoteRequest->frequency)?->label() }}
 @endif
 
 ## Property
 
-- **Type:** {{ \App\Enums\PropertyType::tryFrom($quoteRequest->property_type)?->label() }}
+- **Type:** {{ \App\Enums\PropertyType::tryFrom((string) $quoteRequest->property_type)?->label() ?? '—' }}
 - **Bedrooms:** {{ $quoteRequest->bedrooms === 0 ? 'Studio' : $quoteRequest->bedrooms }}
 - **Floors:** {{ $quoteRequest->floors }}
 
@@ -44,33 +39,13 @@
 - **Notes:** {{ $quoteRequest->condition_notes }}
 @endif
 
-@if (! empty($quoteRequest->pricing_snapshot['line_items']))
-## Extras & adjustments
-
-@foreach ($quoteRequest->pricing_snapshot['line_items'] as $item)
-- {{ $item['label'] ?? 'Item' }}
-@endforeach
-@endif
-
-## Visit preference
-
-- **Date:** {{ $quoteRequest->preferred_date->format('l j F Y') }}
-- **Arrival:** {{ \App\Enums\ArrivalWindow::tryFrom($quoteRequest->arrival_window)?->label() }}
-
 @if (! empty($quoteRequest->property_photo_paths))
 ## Property photos
 
 {{ count($quoteRequest->property_photo_paths) }} photo{{ count($quoteRequest->property_photo_paths) === 1 ? '' : 's' }} saved with this request. Open the lead in admin to view them.
 @endif
 
-## Guide estimate
-
-**{{ $quoteRequest->guide_estimate_headline }}**
-
 @component('mail::button', ['url' => route('filament.admin.resources.quote-requests.view', ['record' => $quoteRequest])])
 View lead in admin
 @endcomponent
-
-Thanks,<br>
-{{ config('app.name') }}
 @endcomponent
