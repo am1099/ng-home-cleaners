@@ -47,6 +47,19 @@ final class SecureImageUpload
             });
     }
 
+    /**
+     * Multi-image gallery upload with a compact thumbnail grid (4 per row on desktop).
+     */
+    public static function bulkGallery(string $name, string $directory, int $maxWidth = 1600): FileUpload
+    {
+        return self::make($name, $directory, $maxWidth)
+            ->panelLayout('grid')
+            ->itemPanelAspectRatio(1)
+            ->imagePreviewHeight('120')
+            ->removeUploadedFileButtonPosition('center bottom')
+            ->extraAttributes(['class' => 'ng-gallery-bulk-upload']);
+    }
+
     private static function downscaleStoredImage(string $disk, string $path, int $maxWidth): void
     {
         if (! function_exists('imagecreatefromstring') || $maxWidth < 1) {

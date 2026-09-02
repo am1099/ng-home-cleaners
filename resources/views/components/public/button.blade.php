@@ -9,6 +9,7 @@
     $base = 'inline-flex cursor-pointer items-center justify-center gap-2 rounded-[var(--radius-pill)] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50';
 
     $sizes = [
+        'xs' => 'min-h-10 px-2.5 text-xs gap-1',
         'sm' => 'min-h-10 px-4 text-sm',
         'md' => 'min-h-11 px-5 text-sm',
         'lg' => 'min-h-12 px-6 text-base',

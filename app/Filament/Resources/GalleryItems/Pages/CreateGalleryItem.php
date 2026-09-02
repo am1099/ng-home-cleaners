@@ -24,7 +24,7 @@ class CreateGalleryItem extends CreateRecord
             Section::make('Upload photos')
                 ->description('Drop several images at once. Captions, alt text, and links can be filled in from the gallery list afterwards.')
                 ->schema([
-                    SecureImageUpload::make('images', 'gallery', 1600)
+                    SecureImageUpload::bulkGallery('images', 'gallery', 1600)
                         ->label('Images')
                         ->multiple()
                         ->required()

@@ -3,6 +3,7 @@ import './analytics';
 import { initMobileNav } from './mobile-nav';
 import { initImageLightbox } from './lightbox';
 import { ngDatePicker } from './date-picker';
+import { ngGalleryCarousel } from './gallery-carousel';
 import { Alpine, Livewire } from '../../vendor/livewire/livewire/dist/livewire.esm';
 
 /**
@@ -12,6 +13,7 @@ import { Alpine, Livewire } from '../../vendor/livewire/livewire/dist/livewire.e
  * and kills wire:model / wire:click.
  */
 Alpine.data('ngDatePicker', ngDatePicker);
+Alpine.data('ngGalleryCarousel', ngGalleryCarousel);
 Alpine.data('ngStickyEstimateBar', () => ({
     hide: false,
     init() {

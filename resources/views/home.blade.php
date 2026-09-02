@@ -148,12 +148,12 @@
                 <x-public.heading
                     eyebrow="Gallery"
                     title="A look at the finish"
-                    subtitle="Tap any photo to view it full size."
+                    subtitle="Swipe through recent jobs, or tap any photo to view it full size."
                     align="center"
                     class="mx-auto"
                 />
                 <div class="mt-10">
-                    <x-public.gallery-grid :items="$galleryItems" />
+                    <x-public.gallery-carousel :items="$galleryItems" />
                 </div>
             </x-public.container>
         </x-public.section>

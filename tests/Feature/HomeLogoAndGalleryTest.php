@@ -67,6 +67,7 @@ class HomeLogoAndGalleryTest extends TestCase
 
         $response->assertOk()
             ->assertSee('id="gallery"', false)
+            ->assertSee('ng-gallery-carousel', false)
             ->assertSee('Sparkling kitchen sink', false)
             ->assertSee('#gallery', false)
             ->assertSee('Gallery', false);
@@ -90,6 +91,7 @@ class HomeLogoAndGalleryTest extends TestCase
 
         $this->actingAs($admin)
             ->get('/admin/gallery-items/create')
-            ->assertOk();
+            ->assertOk()
+            ->assertSee('ng-gallery-bulk-upload', false);
     }
 }
