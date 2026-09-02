@@ -45,8 +45,8 @@ class QuoteRequestAdminEmailTest extends TestCase
 
         app(DispatchQuoteRequestNotifications::class)->handle($lead);
 
-        Mail::assertQueued(InternalQuoteRequestMail::class);
-        Mail::assertQueued(CustomerQuoteAcknowledgementMail::class);
+        Mail::assertSent(InternalQuoteRequestMail::class);
+        Mail::assertSent(CustomerQuoteAcknowledgementMail::class);
     }
 
     public function test_resend_lead_emails_skips_customer_message_without_email(): void
@@ -57,8 +57,8 @@ class QuoteRequestAdminEmailTest extends TestCase
 
         app(DispatchQuoteRequestNotifications::class)->handle($lead);
 
-        Mail::assertQueued(InternalQuoteRequestMail::class);
-        Mail::assertNotQueued(CustomerQuoteAcknowledgementMail::class);
+        Mail::assertSent(InternalQuoteRequestMail::class);
+        Mail::assertNotSent(CustomerQuoteAcknowledgementMail::class);
     }
 
     public function test_send_customer_final_quote_queues_email_and_marks_quote_sent(): void
@@ -69,7 +69,7 @@ class QuoteRequestAdminEmailTest extends TestCase
 
         app(SendCustomerFinalQuote::class)->handle($lead);
 
-        Mail::assertQueued(CustomerFinalQuoteMail::class, function (CustomerFinalQuoteMail $mail) use ($lead): bool {
+        Mail::assertSent(CustomerFinalQuoteMail::class, function (CustomerFinalQuoteMail $mail) use ($lead): bool {
             $html = $mail->render();
 
             return $mail->quoteRequest->reference === $lead->reference
@@ -97,7 +97,7 @@ class QuoteRequestAdminEmailTest extends TestCase
             ->call('save')
             ->assertHasNoErrors();
 
-        Mail::assertQueued(CustomerFinalQuoteMail::class);
+        Mail::assertSent(CustomerFinalQuoteMail::class);
 
         $lead->refresh();
 

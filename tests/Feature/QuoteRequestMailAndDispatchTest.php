@@ -61,7 +61,7 @@ class QuoteRequestMailAndDispatchTest extends TestCase
 
         $lead = QuoteRequest::query()->firstOrFail();
 
-        Mail::assertQueued(InternalQuoteRequestMail::class, function (InternalQuoteRequestMail $mail) use ($lead): bool {
+        Mail::assertSent(InternalQuoteRequestMail::class, function (InternalQuoteRequestMail $mail) use ($lead): bool {
             $html = $mail->render();
 
             return $mail->quoteRequest->is($lead)
@@ -71,7 +71,7 @@ class QuoteRequestMailAndDispatchTest extends TestCase
                 && str_contains($html, 'NG1 1AA');
         });
 
-        Mail::assertQueued(CustomerQuoteAcknowledgementMail::class, function (CustomerQuoteAcknowledgementMail $mail) use ($lead): bool {
+        Mail::assertSent(CustomerQuoteAcknowledgementMail::class, function (CustomerQuoteAcknowledgementMail $mail) use ($lead): bool {
             $html = $mail->render();
 
             return $mail->quoteRequest->is($lead)
@@ -157,6 +157,6 @@ class QuoteRequestMailAndDispatchTest extends TestCase
             ->set('city', 'Nottingham')
             ->call('submit');
 
-        Mail::assertQueued(InternalQuoteRequestMail::class, 2);
+        Mail::assertSent(InternalQuoteRequestMail::class, 2);
     }
 }

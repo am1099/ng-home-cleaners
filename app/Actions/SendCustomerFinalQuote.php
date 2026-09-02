@@ -27,7 +27,7 @@ class SendCustomerFinalQuote
         }
 
         try {
-            Mail::to($quoteRequest->email)->queue(new CustomerFinalQuoteMail($quoteRequest));
+            Mail::to($quoteRequest->email)->send(new CustomerFinalQuoteMail($quoteRequest));
 
             if ($markQuoteSent && ! in_array($quoteRequest->status, [
                 QuoteRequestStatus::QuoteSent,
@@ -42,12 +42,14 @@ class SendCustomerFinalQuote
             Log::error('Final quote email dispatch failed.', [
                 'reference' => $quoteRequest->reference,
                 'message' => $exception->getMessage(),
+                'mailer' => config('mail.default'),
+                'from' => config('mail.from.address'),
             ]);
 
             report($exception);
 
             throw ValidationException::withMessages([
-                'email' => 'We could not queue the quote email just now. Please try again.',
+                'email' => 'We could not send the quote email just now. Please try again.',
             ]);
         }
     }

@@ -102,11 +102,11 @@ class QuoteRequestSubmissionTest extends TestCase
         $this->assertSame($expected->displayHeadline, $quoteRequest->guide_estimate_headline);
         $this->assertSame($expected->snapshot, $quoteRequest->pricing_snapshot);
 
-        Mail::assertQueued(InternalQuoteRequestMail::class, function (InternalQuoteRequestMail $mail) use ($quoteRequest): bool {
+        Mail::assertSent(InternalQuoteRequestMail::class, function (InternalQuoteRequestMail $mail) use ($quoteRequest): bool {
             return $mail->quoteRequest->is($quoteRequest);
         });
 
-        Mail::assertQueued(CustomerQuoteAcknowledgementMail::class, function (CustomerQuoteAcknowledgementMail $mail) use ($quoteRequest): bool {
+        Mail::assertSent(CustomerQuoteAcknowledgementMail::class, function (CustomerQuoteAcknowledgementMail $mail) use ($quoteRequest): bool {
             return $mail->quoteRequest->is($quoteRequest);
         });
 
@@ -148,8 +148,8 @@ class QuoteRequestSubmissionTest extends TestCase
         $this->assertStringContainsString(rawurlencode($quoteRequest->reference), $whatsappUrl);
         $this->assertStringContainsString('text=', $whatsappUrl);
 
-        Mail::assertQueued(InternalQuoteRequestMail::class);
-        Mail::assertQueued(CustomerQuoteAcknowledgementMail::class);
+        Mail::assertSent(InternalQuoteRequestMail::class);
+        Mail::assertSent(CustomerQuoteAcknowledgementMail::class);
         Notification::assertSentTo($this->admin, NewQuoteRequestNotification::class);
     }
 
@@ -175,13 +175,13 @@ class QuoteRequestSubmissionTest extends TestCase
 
         $component->call('submit')->assertRedirect(route('quote.confirmation', 'NG-1001'));
 
-        Mail::assertQueued(InternalQuoteRequestMail::class, 1);
+        Mail::assertSent(InternalQuoteRequestMail::class, 1);
         Notification::assertSentTo($this->admin, NewQuoteRequestNotification::class, 1);
 
         $component->call('submit')->assertRedirect(route('quote.confirmation', 'NG-1001'));
 
         $this->assertDatabaseCount('quote_requests', 1);
-        Mail::assertQueued(InternalQuoteRequestMail::class, 1);
+        Mail::assertSent(InternalQuoteRequestMail::class, 1);
         Notification::assertSentTo($this->admin, NewQuoteRequestNotification::class, 1);
     }
 
@@ -209,7 +209,7 @@ class QuoteRequestSubmissionTest extends TestCase
         $component->call('submitViaWhatsApp')->assertDispatched('open-whatsapp');
 
         $this->assertDatabaseCount('quote_requests', 1);
-        Mail::assertQueued(InternalQuoteRequestMail::class, 1);
+        Mail::assertSent(InternalQuoteRequestMail::class, 1);
     }
 
     public function test_confirmation_page_displays_saved_request(): void

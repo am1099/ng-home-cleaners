@@ -50,7 +50,7 @@ class EditQuoteRequest extends EditRecord
         }
 
         Notification::make()
-            ->title('Final quote email queued')
+            ->title('Final quote email sent')
             ->body('The customer has been emailed their confirmed quote.')
             ->success()
             ->send();

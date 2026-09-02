@@ -22,19 +22,25 @@ class DispatchQuoteRequestNotifications
             );
 
             $settings = SiteSetting::instance();
-            $recipients = array_filter($settings->lead_notification_emails ?? [$settings->email]);
+            $recipients = array_values(array_filter($settings->lead_notification_emails ?? [$settings->email]));
+
+            if ($recipients === []) {
+                $recipients = array_filter([(string) $settings->email]);
+            }
 
             foreach ($recipients as $recipient) {
-                Mail::to($recipient)->queue(new InternalQuoteRequestMail($quoteRequest));
+                Mail::to($recipient)->send(new InternalQuoteRequestMail($quoteRequest));
             }
 
             if (filled($quoteRequest->email)) {
-                Mail::to($quoteRequest->email)->queue(new CustomerQuoteAcknowledgementMail($quoteRequest));
+                Mail::to($quoteRequest->email)->send(new CustomerQuoteAcknowledgementMail($quoteRequest));
             }
         } catch (Throwable $exception) {
             Log::error('Quote notification dispatch failed.', [
                 'reference' => $quoteRequest->reference,
                 'message' => $exception->getMessage(),
+                'mailer' => config('mail.default'),
+                'from' => config('mail.from.address'),
             ]);
             report($exception);
         }

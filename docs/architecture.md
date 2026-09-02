@@ -209,7 +209,7 @@ Public references use `NG-{n}` from `QuoteReferenceGenerator` (not database IDs)
 7. Queued customer acknowledgement (`CustomerQuoteAcknowledgementMail`)
 8. Redirect to `/get-a-quote/confirmation/{reference}`
 
-Mail is queued **after** the database transaction commits — mail failure does not roll back the saved lead.
+Mail is sent **after** the database transaction commits — mail failure does not roll back the saved lead. New-lead customer and internal emails are sent immediately via Resend.
 
 ### WhatsApp flow
 

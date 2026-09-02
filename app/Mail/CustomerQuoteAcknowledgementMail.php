@@ -4,17 +4,12 @@ namespace App\Mail;
 
 use App\Models\QuoteRequest;
 use App\Models\SiteSetting;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Queue\SerializesModels;
 
-class CustomerQuoteAcknowledgementMail extends Mailable implements ShouldQueue
+class CustomerQuoteAcknowledgementMail extends Mailable
 {
-    use Queueable, SerializesModels;
-
     public function __construct(
         public QuoteRequest $quoteRequest,
     ) {}

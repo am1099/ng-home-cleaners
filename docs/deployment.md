@@ -29,7 +29,7 @@ Set in production `.env` (never commit secrets):
 - PostgreSQL credentials
 - `QUEUE_CONNECTION=database` (or Redis when available)
 - `CACHE_STORE=redis` in production when Redis is attached (Laravel Cloud cache / Redis). Database cache works but adds extra PostgreSQL load for settings and pricing.
-- Resend mail: `MAIL_MAILER=resend` and `RESEND_API_KEY` (verified domain in Resend matching `MAIL_FROM_ADDRESS`)
+- Resend mail: `MAIL_MAILER=resend`, `RESEND_API_KEY`, and `MAIL_FROM_ADDRESS` on a **verified Resend domain** (e.g. `hello@nghomecleaners.co.uk`). `hello@example.com` will be rejected.
 - `SESSION_SECURE_COOKIE=true` (or leave unset — defaults to secure when `APP_ENV=production`)
 - Optional analytics: `ANALYTICS_ENABLED=true`, `ANALYTICS_DRIVER=plausible`, and `PLAUSIBLE_DOMAIN=your-domain`. The Plausible script loads only after cookie consent.
 
@@ -63,7 +63,9 @@ Monitor `GET /up` — returns 200 when the application is healthy.
 php artisan queue:work --tries=3
 ```
 
-Quote acknowledgement, internal lead mail, 24-hour follow-up, and post-booking review requests are queued. Run the scheduler (`php artisan schedule:work` or cron `schedule:run`) so stale `new` leads receive a follow-up after 24 hours.
+New-lead acknowledgement and internal lead emails are **sent immediately** (not queued), so they do not need a worker. Keep a queue worker for 24-hour follow-up and post-booking review request jobs. On Laravel Cloud, attach a **background worker** / queue process for those delayed emails.
+
+Run the scheduler (`php artisan schedule:work` or cron `schedule:run`) so stale `new` leads receive a follow-up after 24 hours.
 
 After deploy, run `php artisan migrate --force` so Cloud picks up `testimonials.published_at`, `quote_requests.property_photo_paths`, and the follow-up / review-request timestamps.
 

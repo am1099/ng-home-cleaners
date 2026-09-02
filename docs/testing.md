@@ -34,7 +34,7 @@ Tests use SQLite in-memory (`phpunit.xml`). Seeders (`CmsSeeder`, `CrmDemoSeeder
 | **PRICING** | `PricingEngineTest`, `SeededAddonPricingTest`, `MoneyTest`, `PriceRangeTest` | Starting prices, bedrooms, every room modifier path, every condition flag, frequency discounts, furnishing %, add-ons, £5 rounding, regular minimum floor, bungalow=house start, no dead `percentage_adjustment` line items, admin price edit affects new quotes only, UI/DB add-on consistency |
 | **ESTIMATOR** | `EstimateWizardTest`, `HardeningTest` | Single-page sections; dynamic description; one-off; flat=1 floor; split-level >1; free-text notes; past date / phone / email / postcode; required fields on submit; deep needs status; regular needs frequency; honeypot; state preserved; rate limit |
 | **LEADS** | `QuoteRequestSubmissionTest`, `CrmLeadsCustomersTest` | Web + WhatsApp; duplicate-click protection; immutable snapshot; source tracking; admin status + final quote; confirmation page |
-| **EMAILS** | `QuoteRequestMailAndDispatchTest`, submission tests | Internal + customer mails queued with reference/body; configured recipients; lead survives dispatch failure |
+| **EMAILS** | `QuoteRequestMailAndDispatchTest`, submission tests | Internal + customer mails sent with reference/body; configured recipients; lead survives dispatch failure |
 | **CUSTOMERS** | `CustomerMatcherTest`, `CrmLeadsCustomersTest` | Email match; phone match when email compatible; conflicting email+phone no merge; customer history |
 | **BOOKINGS** | `BookingsPaymentsRevenueTest` | Won conversion; non-won blocked; double convert blocked; clash warning; cancel; calendar hides cancelled |
 | **PAYMENTS** | `BookingsPaymentsRevenueTest` | Deposit/balance/outstanding; refunds vs revenue; overpayment |
