@@ -46,7 +46,7 @@ Laravel Cloud containers are ephemeral — do **not** rely on `storage/app/publi
 AWS_URL=https://your-bucket-public-url
 ```
 
-5. CRM uploads use the configured `media` disk (`config/filesystems.php`), which resolves to `s3` when `AWS_BUCKET` is set or `FILESYSTEM_DISK=s3`. **Do not set `MEDIA_DISK=public` on Cloud** — uploads would land on the ephemeral container and disappear; the bucket stays empty and images 404.
+5. CRM uploads use `App\Support\Media::diskName()`, which resolves to Laravel Cloud’s **default object storage disk** when one is attached (not necessarily the literal `s3` key in `config/filesystems.php`). **Do not set `MEDIA_DISK=public` on Cloud** — uploads would land on the ephemeral container and disappear; the bucket stays empty and images 404.
 6. After attaching a bucket or changing storage env vars, run **`php artisan config:clear`** (or redeploy) so config cache picks up the new values.
 7. Keep Livewire temporary uploads on `local` (`LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK=local`) — they only need to survive the upload request; permanent files go to S3.
 8. `php artisan storage:link` is only needed for local/public disk development, not for Cloud S3.

@@ -8,21 +8,38 @@ use Illuminate\Support\Facades\Storage;
 final class Media
 {
     /**
-     * Disk used for public CRM / marketing media (local "public" or Cloud S3).
+     * Disk used for public CRM / marketing media (local "public" or Cloud object storage).
+     *
+     * On Laravel Cloud the default filesystem disk is injected at runtime (often with a
+     * bucket-specific name via LARAVEL_CLOUD_DISK_CONFIG). Prefer that over the static
+     * "s3" entry in config/filesystems.php.
      */
     public static function diskName(): string
     {
-        $configured = (string) config('filesystems.media', 'public');
+        $configured = config('filesystems.media');
 
-        if ($configured !== 'public') {
+        if (is_string($configured) && filled($configured) && $configured !== 'public') {
             return $configured;
         }
 
         $defaultDisk = (string) config('filesystems.default', 'local');
-        $bucket = config('filesystems.disks.s3.bucket');
 
-        if (filled($bucket) || $defaultDisk === 's3') {
+        if (self::diskDriver($defaultDisk) === 's3') {
+            return $defaultDisk;
+        }
+
+        if (filled(config('filesystems.disks.s3.bucket')) && self::diskDriver('s3') === 's3') {
             return 's3';
+        }
+
+        foreach (array_keys(config('filesystems.disks', [])) as $disk) {
+            if (in_array($disk, ['local', 'public'], true)) {
+                continue;
+            }
+
+            if (self::diskDriver($disk) === 's3' && filled(config("filesystems.disks.{$disk}.bucket"))) {
+                return $disk;
+            }
         }
 
         return 'public';
@@ -40,5 +57,12 @@ final class Media
         }
 
         return self::disk()->url($path);
+    }
+
+    private static function diskDriver(string $disk): ?string
+    {
+        $driver = config("filesystems.disks.{$disk}.driver");
+
+        return is_string($driver) ? $driver : null;
     }
 }

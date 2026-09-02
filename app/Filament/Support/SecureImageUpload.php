@@ -7,6 +7,7 @@ use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use League\Flysystem\UnableToCheckFileExistence;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 final class SecureImageUpload
@@ -54,11 +55,19 @@ final class SecureImageUpload
 
         $storage = Storage::disk($disk);
 
-        if (! $storage->exists($path)) {
+        try {
+            if (! $storage->exists($path)) {
+                return;
+            }
+        } catch (UnableToCheckFileExistence) {
             return;
         }
 
-        $binary = $storage->get($path);
+        try {
+            $binary = $storage->get($path);
+        } catch (UnableToCheckFileExistence) {
+            return;
+        }
 
         if (! is_string($binary) || $binary === '') {
             return;

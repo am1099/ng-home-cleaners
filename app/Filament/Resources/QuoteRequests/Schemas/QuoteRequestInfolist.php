@@ -11,6 +11,7 @@ use App\Enums\QuoteRequestSource;
 use App\Enums\QuoteRequestStatus;
 use App\Models\Addon;
 use App\Pricing\Money;
+use App\Support\ArrayState;
 use App\Support\Media;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -93,7 +94,7 @@ class QuoteRequestInfolist
                     TextEntry::make('kitchens')->placeholder('—'),
                     TextEntry::make('reception_rooms')->label('Reception rooms')->placeholder('—'),
                     TextEntry::make('extra_rooms')->formatStateUsing(
-                        fn (?array $state) => empty($state) ? '—' : collect($state)->join(', '),
+                        fn (mixed $state) => empty(ArrayState::normalize($state)) ? '—' : collect(ArrayState::normalize($state))->join(', '),
                     )->columnSpanFull(),
                 ]),
 
@@ -103,13 +104,15 @@ class QuoteRequestInfolist
                     TextEntry::make('property_status')->formatStateUsing(
                         fn (?string $state) => $state ? (PropertyStatus::tryFrom($state)?->label() ?? $state) : '—',
                     ),
-                    TextEntry::make('condition_flags')->formatStateUsing(function (?array $state): string {
-                        if (empty($state)) {
+                    TextEntry::make('condition_flags')->formatStateUsing(function (mixed $state): string {
+                        $flags = ArrayState::normalize($state);
+
+                        if ($flags === []) {
                             return '—';
                         }
 
-                        return collect($state)
-                            ->map(fn ($flag) => ConditionFlag::tryFrom($flag)?->label())
+                        return collect($flags)
+                            ->map(fn ($flag) => ConditionFlag::tryFrom((string) $flag)?->label())
                             ->filter()
                             ->join(', ');
                     })->columnSpanFull(),
@@ -136,13 +139,15 @@ class QuoteRequestInfolist
                 ->schema([
                     TextEntry::make('addon_ids')
                         ->label('Selected add-ons')
-                        ->formatStateUsing(function (?array $state): string {
-                            if (empty($state)) {
+                        ->formatStateUsing(function (mixed $state): string {
+                            $ids = ArrayState::normalize($state);
+
+                            if ($ids === []) {
                                 return 'None';
                             }
 
                             return Addon::query()
-                                ->whereIn('id', $state)
+                                ->whereIn('id', $ids)
                                 ->orderBy('sort_order')
                                 ->pluck('label')
                                 ->join(', ') ?: 'None';
