@@ -24,7 +24,7 @@
     <x-public.container>
         <div class="grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 lg:py-16">
             <div class="sm:col-span-2 lg:col-span-1">
-                <x-public.logo variant="inverse" />
+                <x-public.logo variant="inverse" context="footer" />
                 <p class="mt-4 max-w-xs text-sm leading-relaxed text-ink-inverse-muted">
                     {{ $settings->service_area_summary }}
                 </p>

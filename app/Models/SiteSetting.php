@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
     'how_it_works_steps',
     'why_choose_items',
     'logo_path',
+    'footer_logo_path',
     'favicon_path',
     'phone',
     'email',

@@ -28,7 +28,9 @@ class DispatchQuoteRequestNotifications
                 Mail::to($recipient)->queue(new InternalQuoteRequestMail($quoteRequest));
             }
 
-            Mail::to($quoteRequest->email)->queue(new CustomerQuoteAcknowledgementMail($quoteRequest));
+            if (filled($quoteRequest->email)) {
+                Mail::to($quoteRequest->email)->queue(new CustomerQuoteAcknowledgementMail($quoteRequest));
+            }
         } catch (Throwable $exception) {
             Log::error('Quote notification dispatch failed.', [
                 'reference' => $quoteRequest->reference,

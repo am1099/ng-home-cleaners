@@ -97,7 +97,12 @@ class SiteSettings extends Page
                                     ->schema([
                                         TextInput::make('business_name')->required()->columnSpan(2),
                                         Textarea::make('business_address')->rows(2)->columnSpan(1),
-                                        SecureImageUpload::make('logo_path', 'brand', 800)->label('Logo'),
+                                        SecureImageUpload::make('logo_path', 'brand', 800)
+                                            ->label('Header logo')
+                                            ->helperText('Shown in the site header and admin login.'),
+                                        SecureImageUpload::make('footer_logo_path', 'brand/footer', 800)
+                                            ->label('Footer logo')
+                                            ->helperText('Optional white or light lockup for the dark footer. Falls back to the header logo when empty.'),
                                         SecureImageUpload::make('favicon_path', 'brand', 256)->label('Favicon'),
                                         Textarea::make('service_area_summary')->rows(2)->columnSpan(1),
                                     ]),

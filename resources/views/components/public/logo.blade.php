@@ -1,11 +1,15 @@
 @props([
     'variant' => 'ink',
     'showText' => true,
+    'context' => 'header',
 ])
 
 @php
     $isInverse = $variant === 'inverse';
-    $logoPath = $settings->logo_path ?? null;
+    $logoPath = match ($context) {
+        'footer' => $settings->footer_logo_path ?: ($settings->logo_path ?? null),
+        default => $settings->logo_path ?? null,
+    };
     $logoUrl = filled($logoPath) ? \App\Support\Media::url($logoPath) : null;
 @endphp
 
