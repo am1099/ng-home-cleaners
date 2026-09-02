@@ -39,14 +39,14 @@ Laravel Cloud containers are ephemeral — do **not** rely on `storage/app/publi
 
 1. Install is already done: `league/flysystem-aws-s3-v3` is in `composer.json`.
 2. In Laravel Cloud, create an **Object Storage** bucket and attach it to the environment.
-3. Cloud injects `FILESYSTEM_DISK=s3` plus `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `AWS_BUCKET`, and `AWS_ENDPOINT`.
-4. For public image URLs (logos, gallery, service photos), copy the bucket’s public base URL from the bucket settings page into a custom env var:
+3. Cloud injects `FILESYSTEM_DISK=private` (or similar), `LARAVEL_CLOUD_DISK_CONFIG` (bucket credentials), and related values. **Do not copy `AWS_BUCKET`, `AWS_ENDPOINT`, or `AWS_ACCESS_KEY_ID` into custom env vars** — that makes the app target the static `s3` disk in `config/filesystems.php`, which has no credentials on Cloud. Uploads then fail silently and the bucket stays empty.
+4. The only storage-related custom env var you usually need is the public URL for images:
 
 ```env
-AWS_URL=https://your-bucket-public-url
+AWS_URL=https://your-bucket-public-url.laravel.cloud
 ```
 
-5. CRM uploads use `App\Support\Media::diskName()`, which resolves to Laravel Cloud’s **default object storage disk** when one is attached (not necessarily the literal `s3` key in `config/filesystems.php`). **Do not set `MEDIA_DISK=public` on Cloud** — uploads would land on the ephemeral container and disappear; the bucket stays empty and images 404.
+5. CRM uploads use `App\Support\Media::diskName()`, which resolves to Cloud’s injected default object storage disk (commonly named `private`). **Do not set `MEDIA_DISK=public` on Cloud** — uploads would land on the ephemeral container and disappear.
 6. After attaching a bucket or changing storage env vars, run **`php artisan config:clear`** (or redeploy) so config cache picks up the new values.
 7. Keep Livewire temporary uploads on `local` (`LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK=local`) — they only need to survive the upload request; permanent files go to S3.
 8. `php artisan storage:link` is only needed for local/public disk development, not for Cloud S3.

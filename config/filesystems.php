@@ -23,17 +23,13 @@ return [
     | Public media disk
     |--------------------------------------------------------------------------
     |
-    | CRM uploads (logos, gallery, service imagery) use this disk. Locally it
-    | defaults to "public". On Laravel Cloud, when FILESYSTEM_DISK=s3 is set,
-    | media automatically uses the s3 disk unless MEDIA_DISK overrides it.
+    | CRM uploads (logos, gallery, service imagery) use this disk. Leave unset —
+    | App\Support\Media::diskName() resolves to the Cloud default object storage
+    | disk in production, or "public" locally. Set MEDIA_DISK only to override.
     |
     */
 
-    'media' => env('MEDIA_DISK') ?: (
-        filled(env('AWS_BUCKET')) || env('FILESYSTEM_DISK', 'local') === 's3'
-            ? 's3'
-            : 'public'
-    ),
+    'media' => env('MEDIA_DISK'),
 
     /*
     |--------------------------------------------------------------------------

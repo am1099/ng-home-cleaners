@@ -15,6 +15,7 @@ use App\Observers\SiteSettingObserver;
 use App\Pricing\AddonPriceFormatter;
 use App\Pricing\PricingEngine;
 use App\Services\SiteSettingsService;
+use App\Support\CloudStorage;
 use App\Support\GalleryNav;
 use App\Support\Media;
 use Filament\Actions\CreateAction;
@@ -33,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        CloudStorage::configureDisks($this->app);
+
         $this->app->singleton(SiteSettingsService::class);
     }
 
@@ -85,17 +88,24 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        $bucket = config('filesystems.disks.s3.bucket');
         $mediaDisk = Media::diskName();
-        $mediaDriver = config("filesystems.disks.{$mediaDisk}.driver");
 
-        if (filled($bucket) && $mediaDriver !== 's3') {
-            logger()->warning('CRM media is not using an object storage disk but AWS_BUCKET is set. Uploads will not persist on Laravel Cloud — remove MEDIA_DISK=public or leave MEDIA_DISK unset.');
+        if (! Media::diskIsUsable($mediaDisk)) {
+            logger()->warning('CRM media disk is not usable for uploads.', [
+                'disk' => $mediaDisk,
+            ]);
         }
 
-        if ($mediaDriver === 's3' && blank(config("filesystems.disks.{$mediaDisk}.url"))) {
-            logger()->warning('Media disk is s3 but AWS_URL is empty. Public image URLs may 404 — set AWS_URL to the bucket public URL in Laravel Cloud.');
+        if (Media::diskIsUsable($mediaDisk) && self::diskDriver($mediaDisk) === 's3' && blank(config("filesystems.disks.{$mediaDisk}.url"))) {
+            logger()->warning('Media disk is s3 but has no public URL. Set AWS_URL to the bucket public URL in Laravel Cloud.');
         }
+    }
+
+    private static function diskDriver(string $disk): ?string
+    {
+        $driver = config("filesystems.disks.{$disk}.driver");
+
+        return is_string($driver) ? $driver : null;
     }
 
     /**

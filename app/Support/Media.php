@@ -10,34 +10,25 @@ final class Media
     /**
      * Disk used for public CRM / marketing media (local "public" or Cloud object storage).
      *
-     * On Laravel Cloud the default filesystem disk is injected at runtime (often with a
-     * bucket-specific name via LARAVEL_CLOUD_DISK_CONFIG). Prefer that over the static
-     * "s3" entry in config/filesystems.php.
+     * On Laravel Cloud the bucket credentials live on the injected default disk (often
+     * named "private" via LARAVEL_CLOUD_DISK_CONFIG), not the static "s3" config entry.
      */
     public static function diskName(): string
     {
         $configured = config('filesystems.media');
 
-        if (is_string($configured) && filled($configured) && $configured !== 'public') {
+        if (is_string($configured) && filled($configured) && self::diskIsUsable($configured)) {
             return $configured;
         }
 
         $defaultDisk = (string) config('filesystems.default', 'local');
 
-        if (self::diskDriver($defaultDisk) === 's3') {
+        if (self::diskIsUsable($defaultDisk)) {
             return $defaultDisk;
         }
 
-        if (filled(config('filesystems.disks.s3.bucket')) && self::diskDriver('s3') === 's3') {
-            return 's3';
-        }
-
         foreach (array_keys(config('filesystems.disks', [])) as $disk) {
-            if (in_array($disk, ['local', 'public'], true)) {
-                continue;
-            }
-
-            if (self::diskDriver($disk) === 's3' && filled(config("filesystems.disks.{$disk}.bucket"))) {
+            if (self::diskDriver($disk) === 's3' && self::diskIsUsable($disk)) {
                 return $disk;
             }
         }
@@ -57,6 +48,27 @@ final class Media
         }
 
         return self::disk()->url($path);
+    }
+
+    public static function diskIsUsable(string $disk): bool
+    {
+        $driver = self::diskDriver($disk);
+
+        if ($driver === null) {
+            return false;
+        }
+
+        if ($driver === 'local') {
+            return $disk === 'public';
+        }
+
+        if ($driver !== 's3') {
+            return false;
+        }
+
+        return filled(config("filesystems.disks.{$disk}.key"))
+            && filled(config("filesystems.disks.{$disk}.secret"))
+            && filled(config("filesystems.disks.{$disk}.bucket"));
     }
 
     private static function diskDriver(string $disk): ?string
