@@ -84,4 +84,19 @@ class AuthAndPublicAccessTest extends TestCase
             ->assertSee('rel="icon"', false)
             ->assertSee('brand/favicon.png', false);
     }
+
+    public function test_admin_record_tables_support_card_layout_toggle(): void
+    {
+        $this->seed(AdminUserSeeder::class);
+
+        $user = User::query()->where('email', 'admin@nghomecleaners.co.uk')->firstOrFail();
+
+        $this->actingAs($user)
+            ->get('/admin/quote-requests')
+            ->assertOk()
+            ->assertSee('fi-ta-table-stacked-on-mobile', false)
+            ->assertSee('ng-table-layout-toggle', false)
+            ->assertSee('Card view', false)
+            ->assertSee('Table view', false);
+    }
 }

@@ -26,7 +26,11 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TimePicker;
+use Filament\Support\Facades\FilamentView;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+use Filament\Tables\View\TablesRenderHook;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -46,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configureAdminDateFields();
         $this->configureAdminSelectFields();
         $this->configureAdminActionIcons();
+        $this->configureAdminRecordTables();
 
         SiteSetting::observe(SiteSettingObserver::class);
         GalleryItem::observe(GalleryItemObserver::class);
@@ -76,6 +81,22 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->warnWhenCloudMediaMisconfigured();
+    }
+
+    /**
+     * Record tables stack into labelled cards on mobile by default, with a
+     * Cards / Table toolbar toggle (preference stored in localStorage).
+     */
+    private function configureAdminRecordTables(): void
+    {
+        Table::configureUsing(function (Table $table): void {
+            $table->stackedOnMobile();
+        });
+
+        FilamentView::registerRenderHook(
+            TablesRenderHook::TOOLBAR_END,
+            fn (): string => Blade::render('@include("filament.hooks.table-layout-toggle")'),
+        );
     }
 
     private function warnWhenCloudMediaMisconfigured(): void

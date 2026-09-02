@@ -56,3 +56,145 @@
         width: calc(25% - 0.75rem);
     }
 }
+
+/*
+ |--------------------------------------------------------------------------
+ | Record tables: card layout on mobile + optional forced Cards / Table view
+ |--------------------------------------------------------------------------
+ */
+
+@media (max-width: 639px) {
+    .fi-ta-table.fi-ta-table-stacked-on-mobile > tbody > tr:not(.fi-ta-group-header-row):not(.fi-ta-summary-row) {
+        margin-bottom: 0.75rem;
+        border-radius: 0.75rem;
+        border: 1px solid rgb(229 231 235);
+        background-color: rgb(255 255 255);
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+
+    .dark .fi-ta-table.fi-ta-table-stacked-on-mobile > tbody > tr:not(.fi-ta-group-header-row):not(.fi-ta-summary-row) {
+        border-color: rgb(255 255 255 / 0.1);
+        background-color: rgb(17 24 39);
+    }
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards {
+    display: block !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards > thead {
+    display: block !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards > thead:not(:has(.fi-ta-table-stacked-header-row)) {
+    display: none !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards > thead > tr:not(.fi-ta-table-stacked-header-row) {
+    display: none !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards > thead > tr > .fi-ta-header-cell,
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards > thead > tr > .fi-ta-selection-cell {
+    display: none !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards > tbody {
+    display: block !important;
+    white-space: normal !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards > tbody > tr {
+    position: relative !important;
+    display: block !important;
+    margin-bottom: 0.75rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgb(229 231 235);
+    background-color: rgb(255 255 255);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.dark .fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards > tbody > tr {
+    border-color: rgb(255 255 255 / 0.1);
+    background-color: rgb(17 24 39);
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards > tbody > tr > .fi-ta-selection-cell {
+    position: absolute !important;
+    inset-inline-end: 1.25rem !important;
+    top: 0 !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards > tbody > tr > .fi-ta-cell:not(.fi-ta-selection-cell) {
+    display: block !important;
+    padding-inline: 1rem !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards .fi-ta-table-stacked-header-row {
+    display: block !important;
+    width: 100% !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards .fi-ta-cell-label {
+    display: block !important;
+    padding-top: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+    color: rgb(107 114 128);
+}
+
+.dark .fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards .fi-ta-cell-label {
+    color: rgb(156 163 175);
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-cards .fi-ta-cell-content {
+    display: block !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-table {
+    display: table !important;
+    table-layout: auto !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-table > thead {
+    display: table-header-group !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-table > thead > tr:not(.fi-ta-table-stacked-header-row) {
+    display: table-row !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-table > thead > tr > .fi-ta-header-cell,
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-table > thead > tr > .fi-ta-selection-cell {
+    display: table-cell !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-table > tbody {
+    display: table-row-group !important;
+    white-space: nowrap !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-table > tbody > tr {
+    position: static !important;
+    display: table-row !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-table > tbody > tr > .fi-ta-selection-cell,
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-table > tbody > tr > .fi-ta-cell:not(.fi-ta-selection-cell) {
+    position: static !important;
+    display: table-cell !important;
+}
+
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-table .fi-ta-table-stacked-header-row,
+.fi-ta-table.fi-ta-table-stacked-on-mobile.ng-force-table .fi-ta-cell-label {
+    display: none !important;
+}
