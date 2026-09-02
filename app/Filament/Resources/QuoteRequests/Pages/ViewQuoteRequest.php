@@ -12,6 +12,7 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Validation\ValidationException;
 
@@ -31,6 +32,7 @@ class ViewQuoteRequest extends ViewRecord
                     Action::make('resendLeadEmails')
                         ->label('Resend lead emails')
                         ->icon(Heroicon::OutlinedEnvelope)
+                        ->color('info')
                         ->requiresConfirmation()
                         ->modalHeading('Resend new lead emails')
                         ->modalDescription('Sends the internal team notification again. If the lead has an email address, the customer acknowledgement is sent again too.')
@@ -45,6 +47,7 @@ class ViewQuoteRequest extends ViewRecord
                     Action::make('sendFinalQuoteEmail')
                         ->label('Send final quote email')
                         ->icon(Heroicon::OutlinedPaperAirplane)
+                        ->color('primary')
                         ->visible(fn (): bool => $this->getRecord()->final_quote_amount_pence !== null
                             && filled($this->getRecord()->email))
                         ->requiresConfirmation()
@@ -77,6 +80,7 @@ class ViewQuoteRequest extends ViewRecord
                     Action::make('markContacted')
                         ->label('Mark contacted')
                         ->icon(Heroicon::OutlinedPhone)
+                        ->color('warning')
                         ->visible(fn (): bool => $this->getRecord()->status === QuoteRequestStatus::New)
                         ->requiresConfirmation()
                         ->action(function (): void {
@@ -86,6 +90,7 @@ class ViewQuoteRequest extends ViewRecord
                     Action::make('markQuoteSent')
                         ->label('Mark quote sent')
                         ->icon(Heroicon::OutlinedCheckCircle)
+                        ->color('primary')
                         ->visible(fn (): bool => in_array($this->getRecord()->status, [QuoteRequestStatus::New, QuoteRequestStatus::Contacted], true))
                         ->requiresConfirmation()
                         ->action(function (): void {
@@ -95,6 +100,7 @@ class ViewQuoteRequest extends ViewRecord
                     Action::make('markWon')
                         ->label('Mark won')
                         ->icon(Heroicon::OutlinedTrophy)
+                        ->color('success')
                         ->visible(fn (): bool => $this->getRecord()->status !== QuoteRequestStatus::Won)
                         ->requiresConfirmation()
                         ->action(function (): void {
@@ -119,6 +125,7 @@ class ViewQuoteRequest extends ViewRecord
                 Action::make('convertToBooking')
                     ->label('Convert to booking')
                     ->icon(Heroicon::OutlinedCalendarDays)
+                    ->color('success')
                     ->visible(fn (): bool => $this->getRecord()->status === QuoteRequestStatus::Won
                         && ! $this->getRecord()->bookings()->exists())
                     ->url(fn (): string => BookingResource::getUrl('create', [
@@ -127,6 +134,7 @@ class ViewQuoteRequest extends ViewRecord
                 Action::make('viewBooking')
                     ->label('View booking')
                     ->icon(Heroicon::OutlinedEye)
+                    ->color('gray')
                     ->visible(fn (): bool => $this->getRecord()->bookings()->exists())
                     ->url(fn (): string => BookingResource::getUrl('view', [
                         'record' => $this->getRecord()->bookings()->latest('id')->first(),
@@ -137,7 +145,10 @@ class ViewQuoteRequest extends ViewRecord
                 ->button()
                 ->color('gray')
                 ->dropdownPlacement('bottom-end')
-                ->dropdownAutoPlacement(),
+                ->dropdownFlip(false)
+                ->dropdownTeleport()
+                ->dropdownOffset(12)
+                ->dropdownWidth(Width::ExtraSmall),
         ];
     }
 }
