@@ -82,6 +82,8 @@ class GrowthPagesTest extends TestCase
 
         $this->assertFalse($result['covered']);
         $this->assertSame('NG17', $result['district']);
+        $this->assertStringContainsString('estimate form', $result['message']);
+        $this->assertStringContainsString('contact us', strtolower($result['message']));
     }
 
     public function test_homepage_includes_faq_schema(): void

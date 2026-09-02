@@ -68,6 +68,7 @@ class HomeLogoAndGalleryTest extends TestCase
         $response->assertOk()
             ->assertSee('id="gallery"', false)
             ->assertSee('ng-gallery-carousel', false)
+            ->assertSee('data-lightbox-group="home-gallery"', false)
             ->assertSee('Sparkling kitchen sink', false)
             ->assertSee('#gallery', false)
             ->assertSee('Gallery', false);

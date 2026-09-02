@@ -67,6 +67,6 @@ class HomeRecentWorkTest extends TestCase
             ->assertOk()
             ->assertSee('Coverage', false)
             ->assertSee('Areas we cover', false)
-            ->assertSee('Check your postcode', false);
+            ->assertSee('Do you cover my postcode?', false);
     }
 }

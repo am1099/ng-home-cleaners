@@ -40,7 +40,7 @@ class CoverageService
             'covered' => false,
             'district' => $district,
             'area' => null,
-            'message' => $district.' sits outside NG1 to NG16. Send the full postcode anyway and we will say if we can make it work.',
+            'message' => $district.' sits outside NG1 to NG16. Still send the postcode through the estimate form, or contact us directly — if we can make it work, we will say so.',
         ];
     }
 

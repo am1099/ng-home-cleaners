@@ -45,9 +45,9 @@
             <div class="mt-12">
                 <h2 class="ng-display text-2xl">What is not included</h2>
                 @if ($service->exclusions->isNotEmpty())
-                    <x-public.exclusion-list :exclusions="$service->exclusions" class="mt-5" />
+                    <x-public.exclusion-list :exclusions="$service->exclusions" class="mt-8" />
                 @else
-                    <p class="mt-5 text-sm text-ink-muted">We will confirm anything outside the standard checklist before we start.</p>
+                    <p class="mt-8 text-sm text-ink-muted">We will confirm anything outside the standard checklist before we start.</p>
                 @endif
             </div>
         </x-public.container>

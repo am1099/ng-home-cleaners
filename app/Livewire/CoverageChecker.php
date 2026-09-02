@@ -7,6 +7,8 @@ use Livewire\Component;
 
 class CoverageChecker extends Component
 {
+    public string $variant = 'card';
+
     public string $postcode = '';
 
     public ?bool $covered = null;
