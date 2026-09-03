@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\QuoteRequests\Pages\ListQuoteRequests;
 use App\Models\Service;
 use App\Models\SiteSetting;
 use App\Models\User;
@@ -11,6 +12,7 @@ use Database\Seeders\AdminUserSeeder;
 use Database\Seeders\CmsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class AuthAndPublicAccessTest extends TestCase
@@ -94,9 +96,22 @@ class AuthAndPublicAccessTest extends TestCase
         $this->actingAs($user)
             ->get('/admin/quote-requests')
             ->assertOk()
-            ->assertSee('fi-ta-table-stacked-on-mobile', false)
             ->assertSee('ng-table-layout-toggle', false)
             ->assertSee('Card view', false)
             ->assertSee('Table view', false);
+
+        $component = Livewire::actingAs($user)
+            ->test(ListQuoteRequests::class)
+            ->call('setTableLayoutView', 'grid')
+            ->assertSet('tableLayoutView', 'grid');
+
+        $this->assertNotNull(
+            $component->instance()->getTable()->getContentGrid(),
+            'Card layout should enable Filament contentGrid.',
+        );
+        $this->assertTrue(
+            $component->instance()->getTable()->hasColumnsLayout(),
+            'Card layout should use stacked column layout components.',
+        );
     }
 }

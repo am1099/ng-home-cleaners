@@ -153,14 +153,15 @@
                             </div>
 
                             <div>
-                                <label class="{{ $labelClass }}" for="bedrooms">Bedrooms</label>
-                                <x-public.form.select id="bedrooms" wire:model.live="bedrooms">
-                                    <option value="0">Studio</option>
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        <option value="{{ $i }}">{{ $i }}{{ $i === 5 ? '+' : '' }}</option>
-                                    @endfor
-                                </x-public.form.select>
-                                @error('bedrooms') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
+                                <x-public.form.quantity
+                                    id="bedrooms"
+                                    label="Bedrooms"
+                                    field="bedrooms"
+                                    :value="$bedrooms"
+                                    :min="0"
+                                    :max="5"
+                                    :display="$bedrooms === 0 ? 'Studio' : ($bedrooms >= 5 ? '5+' : (string) $bedrooms)"
+                                />
                             </div>
                         </div>
 
@@ -181,14 +182,15 @@
                         @endif
 
                         @if ($propertyType !== \App\Enums\PropertyType::Flat->value || $splitLevelFlat)
-                        <div class="mt-5 max-w-xs">
-                            <label class="{{ $labelClass }}" for="floors">Number of floors</label>
-                            <x-public.form.select id="floors" wire:model.live="floors">
-                                @for ($i = 1; $i <= 5; $i++)
-                                    <option value="{{ $i }}">{{ $i }}</option>
-                                @endfor
-                            </x-public.form.select>
-                            @error('floors') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
+                        <div class="mt-5">
+                            <x-public.form.quantity
+                                id="floors"
+                                label="Number of floors"
+                                field="floors"
+                                :value="$floors"
+                                :min="1"
+                                :max="5"
+                            />
                         </div>
                         @endif
                     </section>
@@ -203,26 +205,38 @@
                         <p class="mt-2 text-sm text-ink-muted">The first bathroom, kitchen and reception room are included in your starting price.</p>
 
                         <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                            <div>
-                                <label class="{{ $labelClass }}" for="bathrooms">Bathrooms</label>
-                                <input id="bathrooms" type="number" min="1" max="6" wire:model.live.debounce.300ms="bathrooms" class="{{ $inputClass }}">
-                                @error('bathrooms') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-                            </div>
-                            <div>
-                                <label class="{{ $labelClass }}" for="wcs">Separate WCs</label>
-                                <input id="wcs" type="number" min="0" max="4" wire:model.live.debounce.300ms="wcs" class="{{ $inputClass }}">
-                                @error('wcs') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-                            </div>
-                            <div>
-                                <label class="{{ $labelClass }}" for="kitchens">Kitchens</label>
-                                <input id="kitchens" type="number" min="1" max="3" wire:model.live.debounce.300ms="kitchens" class="{{ $inputClass }}">
-                                @error('kitchens') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-                            </div>
-                            <div>
-                                <label class="{{ $labelClass }}" for="receptionRooms">Reception rooms</label>
-                                <input id="receptionRooms" type="number" min="0" max="6" wire:model.live.debounce.300ms="receptionRooms" class="{{ $inputClass }}">
-                                @error('receptionRooms') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-                            </div>
+                            <x-public.form.quantity
+                                id="bathrooms"
+                                label="Bathrooms"
+                                field="bathrooms"
+                                :value="$bathrooms"
+                                :min="1"
+                                :max="6"
+                            />
+                            <x-public.form.quantity
+                                id="wcs"
+                                label="Separate WCs"
+                                field="wcs"
+                                :value="$wcs"
+                                :min="0"
+                                :max="4"
+                            />
+                            <x-public.form.quantity
+                                id="kitchens"
+                                label="Kitchens"
+                                field="kitchens"
+                                :value="$kitchens"
+                                :min="1"
+                                :max="3"
+                            />
+                            <x-public.form.quantity
+                                id="receptionRooms"
+                                label="Reception rooms"
+                                field="receptionRooms"
+                                :value="$receptionRooms"
+                                :min="0"
+                                :max="6"
+                            />
                         </div>
 
                         <div class="mt-5">

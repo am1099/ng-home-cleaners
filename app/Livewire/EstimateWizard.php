@@ -173,6 +173,26 @@ class EstimateWizard extends Component
         $this->forgetEstimateCaches();
     }
 
+    public function adjustQuantity(string $field, int $delta): void
+    {
+        $limits = [
+            'bedrooms' => [0, 5],
+            'floors' => [1, 5],
+            'bathrooms' => [1, 6],
+            'wcs' => [0, 4],
+            'kitchens' => [1, 3],
+            'receptionRooms' => [0, 6],
+        ];
+
+        if (! isset($limits[$field])) {
+            return;
+        }
+
+        [$min, $max] = $limits[$field];
+        $this->{$field} = max($min, min($max, (int) $this->{$field} + $delta));
+        $this->forgetEstimateCaches();
+    }
+
     public function updatedBedrooms(): void
     {
         $this->forgetEstimateCaches();

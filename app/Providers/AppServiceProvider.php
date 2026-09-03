@@ -28,11 +28,10 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TimePicker;
 use Filament\Support\Facades\FilamentView;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
 use Filament\Tables\View\TablesRenderHook;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -84,18 +83,25 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Record tables stack into labelled cards on mobile by default, with a
-     * Cards / Table toolbar toggle (preference stored in localStorage).
+     * Record list pages that use HasToggleableRecordLayout get a Cards / Table
+     * toolbar toggle. Card schemas are defined per resource table.
      */
     private function configureAdminRecordTables(): void
     {
-        Table::configureUsing(function (Table $table): void {
-            $table->stackedOnMobile();
-        });
-
         FilamentView::registerRenderHook(
             TablesRenderHook::TOOLBAR_END,
-            fn (): string => Blade::render('@include("filament.hooks.table-layout-toggle")'),
+            function (): string {
+                $livewire = Livewire::current();
+
+                if (! $livewire || ! method_exists($livewire, 'isGridLayout')) {
+                    return '';
+                }
+
+                return view('filament.hooks.table-layout-toggle', [
+                    'isGrid' => $livewire->isGridLayout(),
+                    'isList' => $livewire->isListLayout(),
+                ])->render();
+            },
         );
     }
 

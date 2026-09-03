@@ -91,6 +91,34 @@ class EstimateWizardTest extends TestCase
             ->assertSet('floors', 1);
     }
 
+    public function test_quantity_steppers_increment_and_respect_limits(): void
+    {
+        Livewire::test(EstimateWizard::class)
+            ->set('bedrooms', 2)
+            ->call('adjustQuantity', 'bedrooms', 1)
+            ->assertSet('bedrooms', 3)
+            ->call('adjustQuantity', 'bedrooms', -1)
+            ->assertSet('bedrooms', 2)
+            ->set('bathrooms', 6)
+            ->call('adjustQuantity', 'bathrooms', 1)
+            ->assertSet('bathrooms', 6)
+            ->set('wcs', 0)
+            ->call('adjustQuantity', 'wcs', -1)
+            ->assertSet('wcs', 0)
+            ->set('receptionRooms', 1)
+            ->call('adjustQuantity', 'receptionRooms', 1)
+            ->assertSet('receptionRooms', 2);
+    }
+
+    public function test_quote_page_shows_quantity_steppers(): void
+    {
+        $this->get(route('quote'))
+            ->assertOk()
+            ->assertSee('Decrease bedrooms', false)
+            ->assertSee('Increase bathrooms', false)
+            ->assertSee('Increase reception rooms', false);
+    }
+
     public function test_split_level_flat_allows_multiple_floors(): void
     {
         Livewire::test(EstimateWizard::class)

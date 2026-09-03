@@ -1,5 +1,4 @@
 @php
-    $inputClass = 'mt-1 block w-full rounded-[var(--radius-md)] border border-border bg-surface-card px-3 py-2.5 text-sm text-ink shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200';
     $labelClass = 'text-sm font-semibold text-ink';
 @endphp
 
@@ -7,26 +6,38 @@
 <p class="mt-2 text-sm text-ink-muted">The first bathroom, kitchen and reception room are included in your starting price.</p>
 
 <div class="mt-6 grid gap-5 sm:grid-cols-2">
-    <div>
-        <label class="{{ $labelClass }}" for="bathrooms">Bathrooms</label>
-        <input id="bathrooms" type="number" min="1" max="6" wire:model.live.debounce.300ms="bathrooms" wire:island="estimate-summary" class="{{ $inputClass }}">
-        @error('bathrooms') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-    </div>
-    <div>
-        <label class="{{ $labelClass }}" for="wcs">Separate toilets (WC)</label>
-        <input id="wcs" type="number" min="0" max="4" wire:model.live.debounce.300ms="wcs" wire:island="estimate-summary" class="{{ $inputClass }}">
-        @error('wcs') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-    </div>
-    <div>
-        <label class="{{ $labelClass }}" for="kitchens">Kitchens</label>
-        <input id="kitchens" type="number" min="1" max="3" wire:model.live.debounce.300ms="kitchens" wire:island="estimate-summary" class="{{ $inputClass }}">
-        @error('kitchens') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-    </div>
-    <div>
-        <label class="{{ $labelClass }}" for="receptionRooms">Reception / living rooms</label>
-        <input id="receptionRooms" type="number" min="0" max="6" wire:model.live.debounce.300ms="receptionRooms" wire:island="estimate-summary" class="{{ $inputClass }}">
-        @error('receptionRooms') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-    </div>
+    <x-public.form.quantity
+        id="bathrooms"
+        label="Bathrooms"
+        field="bathrooms"
+        :value="$bathrooms"
+        :min="1"
+        :max="6"
+    />
+    <x-public.form.quantity
+        id="wcs"
+        label="Separate toilets (WC)"
+        field="wcs"
+        :value="$wcs"
+        :min="0"
+        :max="4"
+    />
+    <x-public.form.quantity
+        id="kitchens"
+        label="Kitchens"
+        field="kitchens"
+        :value="$kitchens"
+        :min="1"
+        :max="3"
+    />
+    <x-public.form.quantity
+        id="receptionRooms"
+        label="Reception / living rooms"
+        field="receptionRooms"
+        :value="$receptionRooms"
+        :min="0"
+        :max="6"
+    />
 </div>
 
 <div class="mt-6">
