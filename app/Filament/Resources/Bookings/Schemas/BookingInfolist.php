@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Bookings\Schemas;
 use App\Enums\ArrivalWindow;
 use App\Enums\BookingStatus;
 use App\Filament\Resources\Customers\CustomerResource;
+use App\Filament\Resources\Invoices\InvoiceResource;
 use App\Filament\Resources\QuoteRequests\QuoteRequestResource;
 use App\Models\Booking;
 use App\Pricing\Money;
@@ -74,6 +75,55 @@ class BookingInfolist
                         ->visible(fn (Booking $record): bool => $record->isOverpaid())
                         ->color('danger')
                         ->columnSpanFull(),
+                ]),
+
+            Section::make('Invoice')
+                ->columns(3)
+                ->schema([
+                    TextEntry::make('active_invoice_number')
+                        ->label('Invoice')
+                        ->state(function (Booking $record): string {
+                            $invoice = $record->loadMissing('invoices')->activeInvoice();
+
+                            return $invoice?->displayNumber() ?? 'None yet';
+                        })
+                        ->url(function (Booking $record): ?string {
+                            $invoice = $record->activeInvoice();
+
+                            if (! $invoice) {
+                                return null;
+                            }
+
+                            return $invoice->isDraft()
+                                ? InvoiceResource::getUrl('edit', ['record' => $invoice])
+                                : InvoiceResource::getUrl('view', ['record' => $invoice]);
+                        }),
+                    TextEntry::make('active_invoice_status')
+                        ->label('Status')
+                        ->badge()
+                        ->state(function (Booking $record): string {
+                            $invoice = $record->activeInvoice();
+
+                            if (! $invoice) {
+                                return 'Not created';
+                            }
+
+                            return $invoice->isOverdue()
+                                ? 'Overdue'
+                                : $invoice->status->label();
+                        })
+                        ->color(function (Booking $record): string {
+                            $invoice = $record->activeInvoice();
+
+                            if (! $invoice) {
+                                return 'gray';
+                            }
+
+                            return $invoice->isOverdue() ? 'danger' : $invoice->status->color();
+                        }),
+                    TextEntry::make('active_invoice_total')
+                        ->label('Invoice total')
+                        ->state(fn (Booking $record): string => $record->activeInvoice()?->totalDisplay() ?? '—'),
                 ]),
         ]);
     }

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable([
     'reference',
@@ -81,6 +82,32 @@ class Booking extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class)->latest('paid_date');
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class)->latest();
+    }
+
+    public function latestInvoice(): HasOne
+    {
+        return $this->hasOne(Invoice::class)->latestOfMany();
+    }
+
+    public function activeInvoice(): ?Invoice
+    {
+        $invoices = $this->relationLoaded('invoices')
+            ? $this->invoices
+            : $this->invoices()->get();
+
+        return $invoices->first(fn (Invoice $invoice): bool => ! $invoice->isVoid());
+    }
+
+    public function canCreateInvoice(): bool
+    {
+        return $this->status !== BookingStatus::Cancelled
+            && $this->customer_id !== null
+            && $this->activeInvoice() === null;
     }
 
     public function recordStatusTimestamp(BookingStatus $status): void

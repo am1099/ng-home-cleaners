@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentType;
 use App\Pricing\Money;
+use App\Services\InvoiceBalanceService;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,6 +35,17 @@ class Payment extends Model
                 );
             }
         });
+
+        $syncInvoices = function (Payment $payment): void {
+            if (! filled($payment->booking_id)) {
+                return;
+            }
+
+            app(InvoiceBalanceService::class)->syncForBookingId((int) $payment->booking_id);
+        };
+
+        static::saved($syncInvoices);
+        static::deleted($syncInvoices);
     }
 
     protected function casts(): array

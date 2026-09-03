@@ -47,11 +47,14 @@ AWS_URL=https://your-bucket-public-url.laravel.cloud
 ```
 
 5. CRM uploads use `App\Support\Media::diskName()`, which resolves to Cloud’s injected default object storage disk (commonly named `private`). **Do not set `MEDIA_DISK=public` on Cloud** — uploads would land on the ephemeral container and disappear.
-6. After attaching a bucket or changing storage env vars, run **`php artisan config:clear`** (or redeploy) so config cache picks up the new values.
-7. Keep Livewire temporary uploads on `local` (`LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK=local`) — they only need to survive the upload request; permanent files go to S3.
-8. `php artisan storage:link` is only needed for local/public disk development, not for Cloud S3.
+6. **Invoice PDFs** use `App\Support\InvoiceStorage` and must stay private (path `invoices/{YEAR}/{NUMBER}.pdf`). Leave `INVOICE_DISK` unset so Cloud’s object storage is used; never put issued invoices on the public web disk. Downloads are authenticated CRM actions only.
+7. After attaching a bucket or changing storage env vars, run **`php artisan config:clear`** (or redeploy) so config cache picks up the new values.
+8. Keep Livewire temporary uploads on `local` (`LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK=local`) — they only need to survive the upload request; permanent files go to S3.
+9. `php artisan storage:link` is only needed for local/public disk development, not for Cloud S3.
 
 Local development stays on the `public` disk (`FILESYSTEM_DISK=local`). Run `php artisan storage:link` once locally.
+
+PDF generation uses Spatie Laravel PDF with **DomPDF** (`LARAVEL_PDF_DRIVER=dompdf`). No Chromium/Browsershot required.
 
 ## Health check
 
@@ -72,7 +75,7 @@ Pick one queue option in the Cloud environment:
 php artisan queue:work --tries=3
 ```
 
-Without a queue worker, 24-hour lead follow-ups and post-booking review emails will sit in the `jobs` table and never send.
+Without a queue worker, 24-hour lead follow-ups, post-booking review emails, and **invoice send emails** will sit in the `jobs` table and never send.
 
 ### Required for the scheduler
 

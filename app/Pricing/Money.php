@@ -54,6 +54,11 @@ final class Money
         return '£'.number_format($pence / 100, 0);
     }
 
+    public static function formatPenceExact(int $pence): string
+    {
+        return '£'.number_format($pence / 100, 2);
+    }
+
     public static function formatPenceRange(int $minPence, int $maxPence): string
     {
         if ($minPence === $maxPence) {

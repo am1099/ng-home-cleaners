@@ -103,3 +103,60 @@
 .dark .fi-ta-content.fi-ta-content-grid .fi-ta-actions {
     border-top-color: rgb(255 255 255 / 0.08);
 }
+
+/*
+ |--------------------------------------------------------------------------
+ | Invoices CRM — keep labels on one line
+ |--------------------------------------------------------------------------
+ */
+
+.fi-resource-invoices .fi-in-entry-label,
+.fi-resource-invoices .fi-ta-header-cell-label,
+.fi-resource-invoices .fi-section-header-heading,
+.fi-resource-invoices .fi-header-heading {
+    white-space: nowrap;
+}
+
+.fi-resource-invoices .fi-dropdown-list-item-label {
+    white-space: nowrap;
+}
+
+/*
+ |--------------------------------------------------------------------------
+ | View website (CRM topbar)
+ |--------------------------------------------------------------------------
+ */
+
+.ng-crm-site-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-inline-end: 0.5rem;
+    border-radius: 9999px;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #fff;
+    text-decoration: none;
+    white-space: nowrap;
+    background-image: linear-gradient(135deg, #2eb3a4 0%, #208378 55%, #1a6b62 100%);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.18);
+    transition: filter 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+
+.ng-crm-site-link:hover {
+    filter: brightness(1.06);
+    box-shadow: 0 4px 14px -4px rgb(32 131 120 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.2);
+}
+
+.ng-crm-site-link:focus-visible {
+    outline: 2px solid #208378;
+    outline-offset: 2px;
+}
+
+.ng-crm-site-link__icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+}

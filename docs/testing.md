@@ -14,6 +14,7 @@ php artisan test --filter=EstimateWizard
 php artisan test --filter=QuoteRequest
 php artisan test --filter=CustomerMatcher
 php artisan test --filter=BookingsPayments
+php artisan test --filter=Invoices
 php artisan test --filter=Dashboard
 php artisan test --filter=Seo
 php artisan test --filter=Hardening
@@ -38,6 +39,7 @@ Tests use SQLite in-memory (`phpunit.xml`). Seeders (`CmsSeeder`, `CrmDemoSeeder
 | **CUSTOMERS** | `CustomerMatcherTest`, `CrmLeadsCustomersTest` | Email match; phone match when email compatible; conflicting email+phone no merge; customer history |
 | **BOOKINGS** | `BookingsPaymentsRevenueTest` | Won conversion; non-won blocked; double convert blocked; clash warning; cancel; calendar hides cancelled |
 | **PAYMENTS** | `BookingsPaymentsRevenueTest` | Deposit/balance/outstanding; refunds vs revenue; overpayment |
+| **INVOICES** | `InvoicesTest` | Draft from booking; numbering; PDF private storage/immutability; VAT/discount maths; payment→Paid; send/resend; void; auth |
 | **DASHBOARD** | `DashboardMetricsTest`, `CrmDemoDashboardVerificationTest` | Critical stats vs DB; demo seed consistency |
 | **SEO** | `SeoTest` | Titles/canonicals; JSON-LD without invented ratings; sitemap excludes inactive + admin + confirmation; robots; 404; trailing slash |
 | **Recent work** | `HomeRecentWorkTest`, `ServicesVisibilityTest` | Toggle + published gate; seeded demo placeholders |
@@ -96,6 +98,9 @@ Recent Work placeholders are labelled “Demo placeholder — replace with real 
 - [ ] Refund reduces paid and dashboard revenue
 - [ ] Clash warning for same-day overlapping windows (cancelled ignored)
 - [ ] Dashboard: new leads, awaiting quotes, upcoming, completed, revenue, outstanding, conversion %, most-requested
+- [ ] Create invoice from booking → Draft → Issue → Download PDF → Send (queued) → balance payment → Paid
+- [ ] After issue, changing booking/customer/settings does not alter invoice snapshot or PDF
+- [ ] Void retains number/PDF; draft delete does not consume a number
 
 ### SEO checks
 

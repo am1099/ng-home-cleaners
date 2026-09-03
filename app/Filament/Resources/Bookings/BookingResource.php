@@ -6,6 +6,7 @@ use App\Filament\Resources\Bookings\Pages\CreateBooking;
 use App\Filament\Resources\Bookings\Pages\EditBooking;
 use App\Filament\Resources\Bookings\Pages\ListBookings;
 use App\Filament\Resources\Bookings\Pages\ViewBooking;
+use App\Filament\Resources\Bookings\RelationManagers\InvoicesRelationManager;
 use App\Filament\Resources\Bookings\RelationManagers\PaymentsRelationManager;
 use App\Filament\Resources\Bookings\Schemas\BookingForm;
 use App\Filament\Resources\Bookings\Schemas\BookingInfolist;
@@ -53,6 +54,7 @@ class BookingResource extends Resource
     public static function getRelations(): array
     {
         return [
+            InvoicesRelationManager::class,
             PaymentsRelationManager::class,
         ];
     }

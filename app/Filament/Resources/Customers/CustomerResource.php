@@ -7,6 +7,7 @@ use App\Filament\Resources\Customers\Pages\EditCustomer;
 use App\Filament\Resources\Customers\Pages\ListCustomers;
 use App\Filament\Resources\Customers\Pages\ViewCustomer;
 use App\Filament\Resources\Customers\RelationManagers\BookingsRelationManager;
+use App\Filament\Resources\Customers\RelationManagers\InvoicesRelationManager;
 use App\Filament\Resources\Customers\RelationManagers\QuoteRequestsRelationManager;
 use App\Filament\Resources\Customers\Schemas\CustomerForm;
 use App\Filament\Resources\Customers\Schemas\CustomerInfolist;
@@ -28,7 +29,7 @@ class CustomerResource extends Resource
 
     protected static string|\UnitEnum|null $navigationGroup = 'CRM';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 6;
 
     protected static ?string $navigationLabel = 'Customers';
 
@@ -59,6 +60,7 @@ class CustomerResource extends Resource
         return [
             QuoteRequestsRelationManager::class,
             BookingsRelationManager::class,
+            InvoicesRelationManager::class,
         ];
     }
 

@@ -2,21 +2,29 @@
 
 namespace App\Filament\Resources\Bookings\Tables;
 
+use App\Actions\CreateInvoiceFromBooking;
 use App\Enums\ArrivalWindow;
 use App\Enums\BookingStatus;
 use App\Filament\Resources\Bookings\BookingResource;
+use App\Filament\Resources\Invoices\InvoiceResource;
 use App\Filament\Support\ResponsiveRecordTable;
 use App\Filament\Support\StandardRecordActions;
 use App\Models\Booking;
 use App\Pricing\Money;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Notifications\Notification;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
+use InvalidArgumentException;
 
 class BookingsTable
 {
@@ -37,7 +45,53 @@ class BookingsTable
                     ->label('Service')
                     ->relationship('service', 'name'),
             ])
-            ->recordActions(StandardRecordActions::make())
+            ->recordActions([
+                ActionGroup::make([
+                    Action::make('createInvoice')
+                        ->label('Create invoice')
+                        ->icon(Heroicon::OutlinedDocumentText)
+                        ->visible(fn (Booking $record): bool => $record->loadMissing('invoices')->canCreateInvoice())
+                        ->action(function (Booking $record): void {
+                            try {
+                                $invoice = app(CreateInvoiceFromBooking::class)->handle($record, Auth::user());
+                            } catch (InvalidArgumentException $exception) {
+                                Notification::make()
+                                    ->title('Could not create invoice')
+                                    ->body($exception->getMessage())
+                                    ->danger()
+                                    ->send();
+
+                                return;
+                            }
+
+                            Notification::make()
+                                ->title('Draft invoice created')
+                                ->success()
+                                ->send();
+
+                            redirect(InvoiceResource::getUrl('edit', ['record' => $invoice]));
+                        }),
+                    Action::make('continueInvoice')
+                        ->label('Continue invoice')
+                        ->icon(Heroicon::OutlinedPencilSquare)
+                        ->visible(fn (Booking $record): bool => $record->loadMissing('invoices')->activeInvoice()?->isDraft() ?? false)
+                        ->url(fn (Booking $record): string => InvoiceResource::getUrl('edit', [
+                            'record' => $record->activeInvoice(),
+                        ])),
+                    Action::make('viewInvoice')
+                        ->label('View invoice')
+                        ->icon(Heroicon::OutlinedEye)
+                        ->visible(function (Booking $record): bool {
+                            $active = $record->loadMissing('invoices')->activeInvoice();
+
+                            return $active !== null && ! $active->isDraft();
+                        })
+                        ->url(fn (Booking $record): string => InvoiceResource::getUrl('view', [
+                            'record' => $record->activeInvoice(),
+                        ])),
+                ]),
+                ...StandardRecordActions::make(),
+            ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

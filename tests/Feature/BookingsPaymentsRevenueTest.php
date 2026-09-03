@@ -58,7 +58,7 @@ class BookingsPaymentsRevenueTest extends TestCase
         $this->actingAs($this->admin)
             ->get(route('filament.admin.resources.quote-requests.view', ['record' => $lead]))
             ->assertOk()
-            ->assertSee('Convert to Booking', false);
+            ->assertSee('Convert to booking', false);
 
         $booking = app(BookingConversionService::class)->createFromLead($lead);
 
@@ -78,7 +78,7 @@ class BookingsPaymentsRevenueTest extends TestCase
             ->get(route('filament.admin.resources.quote-requests.view', ['record' => $lead]))
             ->assertOk()
             ->assertSee('View booking', false)
-            ->assertDontSee('Convert to Booking', false);
+            ->assertDontSee('Convert to booking', false);
     }
 
     public function test_deposit_and_balance_payments_update_outstanding_and_revenue(): void
@@ -294,7 +294,7 @@ class BookingsPaymentsRevenueTest extends TestCase
         $this->actingAs($this->admin)
             ->get(route('filament.admin.resources.quote-requests.view', ['record' => $lead]))
             ->assertOk()
-            ->assertDontSee('Convert to Booking', false);
+            ->assertDontSee('Convert to booking', false);
     }
 
     /**

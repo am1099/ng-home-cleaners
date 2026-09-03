@@ -9,6 +9,7 @@ enum EmailTemplateKey: string
     case CustomerFinalQuote = 'customer_final_quote';
     case CustomerQuoteFollowUp = 'customer_quote_follow_up';
     case CustomerReviewRequest = 'customer_review_request';
+    case CustomerInvoice = 'customer_invoice';
 
     public function label(): string
     {
@@ -18,6 +19,7 @@ enum EmailTemplateKey: string
             self::CustomerFinalQuote => 'Customer final quote',
             self::CustomerQuoteFollowUp => 'Customer 24-hour follow-up',
             self::CustomerReviewRequest => 'Customer review request',
+            self::CustomerInvoice => 'Customer invoice',
         };
     }
 
@@ -29,6 +31,7 @@ enum EmailTemplateKey: string
             self::CustomerFinalQuote => 'Sent when a final quoted amount is saved or sent from CRM.',
             self::CustomerQuoteFollowUp => 'Queued follow-up for leads still in “New” after about 24 hours.',
             self::CustomerReviewRequest => 'Queued after a booking is marked completed, asking for a Google review.',
+            self::CustomerInvoice => 'Sent when an issued invoice PDF is emailed to the customer from CRM.',
         };
     }
 
@@ -58,6 +61,11 @@ enum EmailTemplateKey: string
             self::CustomerReviewRequest => [
                 'first_name', 'full_name', 'booking_reference', 'business_name',
                 'google_review_url', 'business_phone',
+            ],
+            self::CustomerInvoice => [
+                'first_name', 'full_name', 'invoice_number', 'booking_reference',
+                'service_name', 'total', 'amount_due', 'due_date', 'issue_date',
+                'business_name', 'business_phone', 'email',
             ],
         };
     }

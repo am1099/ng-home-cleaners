@@ -16,10 +16,10 @@
 @endphp
 
 <div {{ $attributes->class(['ng-quantity-field']) }}>
-    <label class="text-sm font-semibold text-ink" for="{{ $id }}">{{ $label }}</label>
+    <label class="block text-sm font-semibold text-ink" for="{{ $id }}">{{ $label }}</label>
 
     <div
-        class="mt-2 inline-flex w-full max-w-[13.5rem] items-stretch overflow-hidden rounded-[var(--radius-md)] border border-border bg-surface-card shadow-sm"
+        class="mt-2 flex w-full items-stretch overflow-hidden rounded-[var(--radius-md)] border border-border bg-surface-card shadow-sm"
         role="group"
         aria-labelledby="{{ $id }}-label"
     >

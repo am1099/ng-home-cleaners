@@ -41,6 +41,15 @@ use Illuminate\Database\Eloquent\Model;
     'default_seo_title',
     'default_seo_description',
     'default_og_image',
+    'vat_registered',
+    'vat_number',
+    'default_vat_rate_percent',
+    'invoice_due_days',
+    'invoice_payment_terms',
+    'invoice_payment_instructions',
+    'invoice_default_notes',
+    'company_legal_name',
+    'company_registration_number',
 ])]
 class SiteSetting extends Model
 {
@@ -57,6 +66,9 @@ class SiteSetting extends Model
             'show_dbs_statement' => 'boolean',
             'show_insurance_statement' => 'boolean',
             'show_recent_work' => 'boolean',
+            'vat_registered' => 'boolean',
+            'default_vat_rate_percent' => 'decimal:2',
+            'invoice_due_days' => 'integer',
         ];
     }
 

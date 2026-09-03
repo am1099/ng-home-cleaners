@@ -35,6 +35,11 @@ class Customer extends Model
         return $this->hasManyThrough(Payment::class, Booking::class);
     }
 
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class)->latest();
+    }
+
     public function fullName(): string
     {
         return trim($this->first_name.' '.$this->last_name);

@@ -193,6 +193,59 @@ class SiteSettings extends Page
                                         TextInput::make('social_links.instagram')->label('Instagram URL')->url(),
                                     ]),
                             ]),
+                        Tab::make('Invoices')
+                            ->schema([
+                                Section::make('VAT')
+                                    ->columns(3)
+                                    ->schema([
+                                        Toggle::make('vat_registered')
+                                            ->label('VAT registered')
+                                            ->live()
+                                            ->inline(false),
+                                        TextInput::make('vat_number')
+                                            ->label('VAT number')
+                                            ->maxLength(255)
+                                            ->visible(fn ($get): bool => (bool) $get('vat_registered')),
+                                        TextInput::make('default_vat_rate_percent')
+                                            ->label('Default VAT rate (%)')
+                                            ->numeric()
+                                            ->minValue(0)
+                                            ->maxValue(100)
+                                            ->step(0.01)
+                                            ->visible(fn ($get): bool => (bool) $get('vat_registered')),
+                                    ]),
+                                Section::make('Payment terms')
+                                    ->columns(2)
+                                    ->schema([
+                                        TextInput::make('invoice_due_days')
+                                            ->label('Default due days')
+                                            ->numeric()
+                                            ->minValue(0)
+                                            ->required()
+                                            ->helperText('0 = due on receipt'),
+                                        Textarea::make('invoice_payment_terms')
+                                            ->label('Default payment terms')
+                                            ->rows(2),
+                                        Textarea::make('invoice_payment_instructions')
+                                            ->label('Payment instructions')
+                                            ->rows(3)
+                                            ->columnSpanFull(),
+                                        Textarea::make('invoice_default_notes')
+                                            ->label('Default invoice notes')
+                                            ->rows(3)
+                                            ->columnSpanFull(),
+                                    ]),
+                                Section::make('Company details')
+                                    ->columns(2)
+                                    ->schema([
+                                        TextInput::make('company_legal_name')
+                                            ->label('Company legal name')
+                                            ->maxLength(255),
+                                        TextInput::make('company_registration_number')
+                                            ->label('Company registration number')
+                                            ->maxLength(255),
+                                    ]),
+                            ]),
                     ])
                     ->columnSpanFull(),
             ])

@@ -56,6 +56,7 @@ site_settings               Singleton business/contact/trust/SEO + homepage/abou
 legal_pages                 Privacy, terms, cookies (CMS-managed)
 faqs                        Global homepage FAQs
 email_templates             Fixed system email copy (subject/heading/body) editable in CRM
+invoices / invoice_items / invoice_deliveries / invoice_number_counters
 ```
 
 ### Public visibility scopes
@@ -76,7 +77,7 @@ View composer shares `$settings` to all public layouts, components, and pages.
 |-------|-------------------|
 | Website | Services (inclusions, exclusions, FAQs, add-ons), Add-ons, Service Areas, Gallery, Reviews, FAQs, Legal pages |
 | Pricing | Pricing (starting prices, bedrooms, rooms, conditions, frequency, advanced) |
-| CRM | Dashboard, Leads (quote requests), Bookings, Calendar, Payments, Customers |
+| CRM | Dashboard, Leads (quote requests), Bookings, Calendar, Invoices, Payments, Customers |
 | Settings | Site settings, Email templates (edit-only) |
 
 All admin policies extend `AdminPolicy` (authenticated staff access).
@@ -228,7 +229,7 @@ Duplicate-click prevention: `$submitting` flag + `$savedReference` on the Livewi
 
 | Group | Resource |
 |-------|----------|
-| CRM | Leads (`/admin/quote-requests`), Bookings (`/admin/bookings`), Calendar (`/admin/booking-calendar`), Payments (`/admin/payments`), Customers (`/admin/customers`) |
+| CRM | Leads (`/admin/quote-requests`), Bookings (`/admin/bookings`), Calendar (`/admin/booking-calendar`), Invoices (`/admin/invoices`), Payments (`/admin/payments`), Customers (`/admin/customers`) |
 
 ## CRM Leads & Customers (Phase 8)
 
@@ -283,7 +284,17 @@ Manual records: booking, signed `amount_pence`, type (Deposit / Balance / Full /
 
 ### Revenue
 
-`RevenueCalculator` sums payment `amount_pence` only. Quotes, guide estimates, and unpaid booking totals are never revenue.
+`RevenueCalculator` sums payment `amount_pence` only. Quotes, guide estimates, unpaid booking totals, and issued invoice totals are never revenue.
+
+## Invoices
+
+See `docs/invoices.md` for the full workflow.
+
+- Draft invoices are created from Bookings (one active non-void invoice per booking in v1).
+- Issue allocates `NG-{YEAR}-{####}` via `InvoiceNumberGenerator` (`lockForUpdate`) and stores a permanent private PDF (`spatie/laravel-pdf` + DomPDF).
+- Paid / outstanding derive from Booking payments via `InvoiceBalanceService`.
+- Email send is queued (`SendInvoiceMailJob`) with delivery history; attaches the saved PDF bytes.
+- Site settings → Invoices tab: VAT toggle (default off), due days, payment terms/instructions, company legal fields.
 
 ## Business dashboard (Phase 10)
 

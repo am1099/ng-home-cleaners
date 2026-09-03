@@ -6,6 +6,7 @@ use App\Enums\ArrivalWindow;
 use App\Enums\EmailTemplateKey;
 use App\Models\Booking;
 use App\Models\EmailTemplate;
+use App\Models\Invoice;
 use App\Models\QuoteRequest;
 use App\Models\SiteSetting;
 use Illuminate\Support\Str;
@@ -144,6 +145,32 @@ Thanks,
 {{business_name}}
 BODY,
             ],
+            EmailTemplateKey::CustomerInvoice => [
+                'name' => $key->label(),
+                'description' => $key->description(),
+                'subject' => 'Invoice {{invoice_number}} from {{business_name}}',
+                'heading' => 'Your invoice is attached',
+                'body' => <<<'BODY'
+Hello {{first_name}},
+
+Thank you for choosing {{business_name}}.
+
+Please find your invoice attached.
+
+**Invoice:** {{invoice_number}}
+
+**Total:** {{total}}
+
+**Amount due:** {{amount_due}}
+
+**Due date:** {{due_date}}
+
+If you have any questions, reply to this email or call us on {{business_phone}}.
+
+Thanks,
+{{business_name}}
+BODY,
+            ],
         };
     }
 
@@ -223,6 +250,30 @@ BODY,
             'business_name' => $settings->business_name ?? config('app.name'),
             'google_review_url' => $settings->google_business_url,
             'business_phone' => $settings->phoneDisplay(),
+        ];
+    }
+
+    /**
+     * @return array<string, string|null>
+     */
+    public function variablesForInvoice(Invoice $invoice, ?SiteSetting $settings = null): array
+    {
+        $settings ??= SiteSetting::instance();
+        $firstName = trim((string) Str::before((string) $invoice->customer_name, ' '));
+
+        return [
+            'first_name' => $firstName !== '' ? $firstName : 'there',
+            'full_name' => $invoice->customer_name,
+            'invoice_number' => $invoice->displayNumber(),
+            'booking_reference' => $invoice->booking_reference,
+            'service_name' => $invoice->service_name,
+            'total' => $invoice->totalDisplay(),
+            'amount_due' => $invoice->amountDueDisplay(),
+            'due_date' => $invoice->due_date?->format('j F Y'),
+            'issue_date' => $invoice->issue_date?->format('j F Y'),
+            'business_name' => $invoice->business_name ?: ($settings->business_name ?? config('app.name')),
+            'business_phone' => $invoice->business_phone ?: $settings->phoneDisplay(),
+            'email' => $invoice->customer_email,
         ];
     }
 }

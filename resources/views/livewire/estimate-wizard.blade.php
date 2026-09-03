@@ -131,38 +131,25 @@
                             <span class="text-xs font-semibold uppercase tracking-[0.14em] text-brand-600">Step 2</span>
                             <h2 class="ng-display text-xl sm:text-2xl">About the property</h2>
                         </div>
+                        <p class="mt-2 text-sm text-ink-muted">This helps us match the right starting price.</p>
 
-                        <div class="mt-5 grid gap-5 lg:grid-cols-2">
-                            <div>
-                                <p class="{{ $labelClass }}">Property type</p>
-                                <div class="mt-3 grid grid-cols-3 gap-2">
-                                    @foreach (\App\Enums\PropertyType::cases() as $type)
-                                        <label class="{{ $chipClass }}">
-                                            <input
-                                                type="radio"
-                                                name="propertyType"
-                                                wire:model.live="propertyType"
-                                                value="{{ $type->value }}"
-                                                class="sr-only"
-                                            >
-                                            {{ $type->label() }}
-                                        </label>
-                                    @endforeach
-                                </div>
-                                @error('propertyType') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
+                        <div class="mt-5">
+                            <p class="{{ $labelClass }}">Property type</p>
+                            <div class="mt-3 grid grid-cols-3 gap-2">
+                                @foreach (\App\Enums\PropertyType::cases() as $type)
+                                    <label class="{{ $chipClass }}">
+                                        <input
+                                            type="radio"
+                                            name="propertyType"
+                                            wire:model.live="propertyType"
+                                            value="{{ $type->value }}"
+                                            class="sr-only"
+                                        >
+                                        {{ $type->label() }}
+                                    </label>
+                                @endforeach
                             </div>
-
-                            <div>
-                                <x-public.form.quantity
-                                    id="bedrooms"
-                                    label="Bedrooms"
-                                    field="bedrooms"
-                                    :value="$bedrooms"
-                                    :min="0"
-                                    :max="5"
-                                    :display="$bedrooms === 0 ? 'Studio' : ($bedrooms >= 5 ? '5+' : (string) $bedrooms)"
-                                />
-                            </div>
+                            @error('propertyType') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
                         </div>
 
                         @if ($propertyType === \App\Enums\PropertyType::Flat->value)
@@ -181,8 +168,18 @@
                         </div>
                         @endif
 
-                        @if ($propertyType !== \App\Enums\PropertyType::Flat->value || $splitLevelFlat)
-                        <div class="mt-5">
+                        <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                            <x-public.form.quantity
+                                id="bedrooms"
+                                label="Bedrooms"
+                                field="bedrooms"
+                                :value="$bedrooms"
+                                :min="0"
+                                :max="5"
+                                :display="$bedrooms === 0 ? 'Studio' : ($bedrooms >= 5 ? '5+' : (string) $bedrooms)"
+                            />
+
+                            @if ($propertyType !== \App\Enums\PropertyType::Flat->value || $splitLevelFlat)
                             <x-public.form.quantity
                                 id="floors"
                                 label="Number of floors"
@@ -191,8 +188,8 @@
                                 :min="1"
                                 :max="5"
                             />
+                            @endif
                         </div>
-                        @endif
                     </section>
 
                     {{-- Step 3: Rooms (residential) --}}

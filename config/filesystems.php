@@ -33,6 +33,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Private invoice PDF disk
+    |--------------------------------------------------------------------------
+    |
+    | Issued invoice PDFs stay private. Leave unset — App\Support\InvoiceStorage
+    | resolves to the local private disk, or Cloud object storage in production.
+    | Never point this at a public disk.
+    |
+    */
+
+    'invoice' => env('INVOICE_DISK'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |

@@ -26,6 +26,8 @@ class AdminAccessTest extends TestCase
 
         $this->actingAs($user)
             ->get('/admin')
-            ->assertOk();
+            ->assertOk()
+            ->assertSee('View website', false)
+            ->assertSee(route('home'), false);
     }
 }
