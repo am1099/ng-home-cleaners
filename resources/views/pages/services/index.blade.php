@@ -3,7 +3,7 @@
 @section('content')
     <x-public.page-hero
         eyebrow="Services · {{ $settings->service_area_summary }}"
-        title="Pay for the clean your home needs."
+        title="Cleaning Services in Nottingham"
         subtitle="Four services, one checklist, and a fixed price agreed in writing before a cleaner sets foot in the property."
     />
 

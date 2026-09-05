@@ -61,6 +61,23 @@ class ServiceArea extends Model
         return $this->hasMany(GalleryItem::class);
     }
 
+    public function pageHeading(): string
+    {
+        $name = trim((string) $this->name);
+
+        if ($name !== '' && str_contains(mb_strtolower($name), 'clean')) {
+            return $name;
+        }
+
+        $label = $name !== '' ? $name : 'Nottingham';
+
+        if (filled($this->postcode_label) && ! str_contains($label, $this->postcode_label)) {
+            return 'Home Cleaning in '.$label.' ('.$this->postcode_label.')';
+        }
+
+        return 'Home Cleaning in '.$label;
+    }
+
     public function resolveRouteBinding($value, $field = null): self
     {
         return static::query()

@@ -23,7 +23,10 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: $site->default_seo_title ?: ($site->business_name.' · House cleaning in Nottingham'),
+            title: $this->brandedTitle(
+                $site->default_seo_title ?: 'Professional Home Cleaners Nottingham',
+                $site,
+            ),
             description: $this->description(
                 $site->default_seo_description,
                 'Vetted cleaners across Nottingham and surrounding areas. Fixed prices agreed in writing before we start.',
@@ -41,7 +44,7 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: 'Cleaning services · '.$site->business_name,
+            title: $this->brandedTitle('Cleaning Services in Nottingham', $site),
             description: $this->description(
                 null,
                 'Regular, deep, end of tenancy and commercial cleaning across Nottingham NG1 to NG16.',
@@ -60,7 +63,7 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: $service->seo_title ?: ($service->name.' · '.$site->business_name),
+            title: $service->seo_title ?: $this->brandedTitle($service->name, $site),
             description: $this->description(
                 $service->seo_description,
                 $service->short_description ?: ($site->default_seo_description),
@@ -83,7 +86,7 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: 'Areas we cover · '.$site->business_name,
+            title: $this->brandedTitle('Home Cleaning Areas in Nottingham', $site),
             description: $this->description(
                 null,
                 'House cleaning across Nottingham NG1 to NG16 and surrounding districts.',
@@ -102,7 +105,7 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: $area->seo_title ?: ($area->name.' cleaners · '.$site->business_name),
+            title: $area->seo_title ?: $this->brandedTitle($area->name.' cleaners', $site),
             description: $this->description(
                 $area->seo_description,
                 $area->short_intro ?: ($site->default_seo_description),
@@ -122,7 +125,7 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: 'About us · '.$site->business_name,
+            title: $this->brandedTitle('About us', $site),
             description: $this->description(
                 null,
                 'A small Nottingham cleaning team. Vetted, DBS-checked cleaners across NG1 to NG16.',
@@ -142,7 +145,7 @@ final class SeoService
         $hours = trim($site->hoursSummary());
 
         return new SeoPage(
-            title: 'Contact · '.$site->business_name,
+            title: $this->brandedTitle('Contact', $site),
             description: $this->description(
                 null,
                 'Call, email or message '.$site->business_name.($hours !== '' ? '. '.$hours : '.'),
@@ -161,7 +164,7 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: 'Get a free estimate · '.$site->business_name,
+            title: $this->brandedTitle('Get a free estimate', $site),
             description: $this->description(
                 null,
                 'Get a guide price for cleaning in Nottingham. Your fixed price follows in writing within one working day.',
@@ -180,12 +183,12 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: 'Estimate request received · '.$site->business_name,
+            title: $this->brandedTitle('Estimate request received', $site),
             description: $this->description(
                 null,
                 'Your cleaning estimate request has been received. We will confirm availability and send your fixed price in writing within one working day.',
             ),
-            canonical: url()->current(),
+            canonical: url('/get-a-quote/confirmation'),
             ogImage: $this->defaultOgImage($site),
             robots: 'noindex,nofollow',
         );
@@ -196,7 +199,7 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: 'Customer reviews · '.$site->business_name,
+            title: $this->brandedTitle('Customer reviews', $site),
             description: $this->description(
                 null,
                 'Read published customer reviews of '.$site->business_name.' across Nottingham NG1 to NG16.',
@@ -215,7 +218,7 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: 'Move-in and move-out cleaning · '.$site->business_name,
+            title: $this->brandedTitle('Move-in and move-out cleaning', $site),
             description: $this->description(
                 null,
                 'End of tenancy and move-in cleaning across Nottingham. Fixed prices agreed in writing before we start.',
@@ -234,7 +237,7 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: $service->name.' in '.$area->name.' · '.$site->business_name,
+            title: $this->brandedTitle($service->name.' in '.$area->name, $site),
             description: $this->description(
                 null,
                 $service->name.' across '.$area->name.' ('.$area->postcode_label.'). Fixed prices agreed in writing before we start.',
@@ -257,7 +260,7 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: ($page->seo_title ?: $page->title).' · '.$site->business_name,
+            title: $this->brandedTitle($page->seo_title ?: $page->title, $site),
             description: $this->description(
                 $page->seo_description,
                 Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags($page->content)) ?? ''), 155),
@@ -276,7 +279,7 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: 'Page not found · '.$site->business_name,
+            title: $this->brandedTitle('Page not found', $site),
             description: 'That page could not be found. Browse our cleaning services and areas across Nottingham, or get a free estimate.',
             canonical: url('/404'),
             ogImage: $this->defaultOgImage($site),
@@ -335,6 +338,23 @@ final class SeoService
         }
 
         return $data;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function websiteJsonLd(): array
+    {
+        $site = $this->site();
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            '@id' => $this->absoluteRoute('home').'#website',
+            'url' => $this->absoluteRoute('home'),
+            'name' => $site->business_name,
+            'publisher' => ['@id' => $this->absoluteRoute('home').'#organization'],
+        ];
     }
 
     /**
@@ -494,6 +514,18 @@ final class SeoService
         }
 
         return url($url);
+    }
+
+    private function brandedTitle(string $pageTitle, SiteSetting $site): string
+    {
+        $brand = trim((string) $site->business_name);
+        $pageTitle = trim($pageTitle);
+
+        if ($brand === '' || str_contains($pageTitle, $brand)) {
+            return $pageTitle;
+        }
+
+        return $pageTitle.' | '.$brand;
     }
 
     private function site(): SiteSetting

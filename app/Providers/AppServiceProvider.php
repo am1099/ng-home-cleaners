@@ -2,15 +2,20 @@
 
 namespace App\Providers;
 
+use App\Models\Faq;
 use App\Models\GalleryItem;
+use App\Models\LegalPage;
 use App\Models\PricingBedroomRule;
 use App\Models\PricingCondition;
 use App\Models\PricingExtraRoom;
 use App\Models\PricingSetting;
 use App\Models\PricingStartingPrice;
+use App\Models\Service;
+use App\Models\ServiceArea;
 use App\Models\SiteSetting;
 use App\Observers\GalleryItemObserver;
 use App\Observers\PricingCacheObserver;
+use App\Observers\SeoCacheObserver;
 use App\Observers\SiteSettingObserver;
 use App\Pricing\AddonPriceFormatter;
 use App\Pricing\PricingEngine;
@@ -29,6 +34,7 @@ use Filament\Forms\Components\TimePicker;
 use Filament\Support\Facades\FilamentView;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\View\TablesRenderHook;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -55,6 +61,16 @@ class AppServiceProvider extends ServiceProvider
         GalleryItem::observe(GalleryItemObserver::class);
 
         foreach ([
+            Service::class,
+            ServiceArea::class,
+            LegalPage::class,
+            Faq::class,
+            SiteSetting::class,
+        ] as $model) {
+            $model::observe(SeoCacheObserver::class);
+        }
+
+        foreach ([
             PricingSetting::class,
             PricingStartingPrice::class,
             PricingBedroomRule::class,
@@ -78,6 +94,10 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('showGalleryNav', GalleryNav::visible());
             }
         });
+
+        if ($this->app->environment('production') || str_starts_with((string) config('app.url'), 'https://')) {
+            URL::forceScheme('https');
+        }
 
         $this->warnWhenCloudMediaMisconfigured();
     }

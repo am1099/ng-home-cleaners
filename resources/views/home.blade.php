@@ -6,10 +6,13 @@
         <x-public.container>
             <div class="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
                 <div class="relative z-10">
-                    <p class="ng-eyebrow">Cleaning · {{ $settings->service_area_summary }}</p>
+                    <p class="ng-eyebrow">Home cleaning in Nottingham</p>
                     <h1 class="ng-display ng-display-hero mt-0 max-w-xl text-brand-950">
-                        {{ $settings->home_hero_title ?? 'There are better uses for a Saturday morning.' }}
+                        Professional Home Cleaners in Nottingham
                     </h1>
+                    <p class="mt-4 max-w-xl text-xl font-medium text-brand-900">
+                        {{ $settings->home_hero_title ?? 'There are better uses for a Saturday morning.' }}
+                    </p>
                     <p class="ng-body-lg mt-[18px] max-w-lg text-ink-muted">
                         {{ $settings->home_hero_subtitle ?? 'Your home cleaned by a vetted, DBS-checked cleaner working to a written standard, with a fixed price agreed before we start.' }}
                     </p>
@@ -55,7 +58,7 @@
                             @if ($settings->home_hero_image)
                                 <img
                                     src="{{ \App\Support\Media::url($settings->home_hero_image) }}"
-                                    alt="{{ $settings->home_hero_image_alt ?: ($settings->home_hero_title ?: 'NG Home Cleaners') }}"
+                                    alt="{{ $settings->home_hero_image_alt ?: 'NG Home Cleaners preparing for a home clean in Nottingham' }}"
                                     class="size-full object-cover"
                                     width="640"
                                     height="640"

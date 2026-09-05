@@ -86,8 +86,10 @@ class PublicWebsiteTest extends TestCase
             ->assertSee('What is not included', false)
             ->assertSee('<details', false)
             ->assertSee('01', false)
-            ->assertSee('md:grid-cols-2 md:items-start', false)
-            ->assertSee('md:hidden', false);
+            ->assertSee('ng-exclusion-list', false)
+            ->assertSee('break-inside-avoid', false)
+            ->assertSee('md:columns-2', false)
+            ->assertDontSee('md:hidden', false);
     }
 
     public function test_inner_pages_use_faint_text_hero_band(): void

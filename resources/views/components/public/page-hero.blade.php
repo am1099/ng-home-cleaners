@@ -18,6 +18,7 @@
             class="absolute inset-0 size-full object-cover"
             width="1600"
             height="900"
+            fetchpriority="high"
         >
         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/65 to-black/25" aria-hidden="true"></div>
 

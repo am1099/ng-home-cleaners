@@ -130,6 +130,25 @@ class Service extends Model
         return $this->slug === 'office-commercial';
     }
 
+    public function pageHeading(): string
+    {
+        $base = trim((string) ($this->card_title ?: $this->name));
+
+        if ($base !== '' && str_contains(mb_strtolower($base), 'nottingham')) {
+            return $base;
+        }
+
+        $expanded = match (mb_strtolower($base)) {
+            'regular clean' => 'Regular House Cleaning',
+            'deep clean' => 'Deep Cleaning',
+            'end of tenancy' => 'End of Tenancy Cleaning',
+            'office & commercial', 'office and commercial' => 'Office & Commercial Cleaning',
+            default => $base !== '' ? $base : 'Cleaning',
+        };
+
+        return $expanded.' in Nottingham';
+    }
+
     public function isRegularClean(): bool
     {
         return $this->slug === 'regular-clean';

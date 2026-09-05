@@ -40,9 +40,64 @@ class SeoTest extends TestCase
         $response->assertSee('name="twitter:title"', false);
         $response->assertSee('application/ld+json', false);
         $response->assertSee('"@type":["LocalBusiness","HomeAndConstructionBusiness"]', false);
+        $response->assertSee('"@type":"WebSite"', false);
         $response->assertDontSee('aggregateRating', false);
         $response->assertSee('<h1', false);
+        $response->assertSee('Professional Home Cleaners in Nottingham', false);
         $response->assertDontSee('—', false);
+        $this->assertStringContainsString(' | ', $seo->title);
+        $this->assertStringContainsString(parse_url((string) config('app.url'), PHP_URL_HOST) ?: 'localhost', $seo->canonical);
+    }
+
+    public function test_homepage_has_one_h1_about_nottingham_cleaners(): void
+    {
+        $html = $this->get('/')->assertOk()->getContent();
+
+        preg_match_all('/<h1\b[^>]*>(.*?)<\/h1>/si', $html, $matches);
+        $this->assertCount(1, $matches[0]);
+
+        $h1 = html_entity_decode(strip_tags($matches[1][0]), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $this->assertStringContainsString('Nottingham', $h1);
+        $this->assertTrue(
+            str_contains($h1, 'Cleaner') || str_contains($h1, 'Cleaning') || str_contains($h1, 'Cleaners'),
+            'Homepage H1 should mention Cleaner/Cleaning',
+        );
+        $this->assertStringContainsString('Professional Home Cleaners', $h1);
+        $this->assertStringNotContainsString('There are better uses for a Saturday morning', $h1);
+    }
+
+    public function test_homepage_json_ld_scripts_decode_and_include_website(): void
+    {
+        $html = $this->get('/')->assertOk()->getContent();
+
+        preg_match_all('/<script type="application\/ld\+json">(.*?)<\/script>/si', $html, $matches);
+        $this->assertNotEmpty($matches[1]);
+
+        $types = [];
+        foreach ($matches[1] as $raw) {
+            $decoded = json_decode(html_entity_decode(trim($raw), ENT_QUOTES | ENT_HTML5, 'UTF-8'), true);
+            $this->assertIsArray($decoded);
+            $this->assertArrayNotHasKey('aggregateRating', $decoded);
+            $types[] = $decoded['@type'] ?? null;
+        }
+
+        $flatTypes = collect($types)->flatten()->filter()->all();
+        $this->assertContains('WebSite', $flatTypes);
+        $this->assertTrue(
+            in_array('LocalBusiness', $flatTypes, true)
+                || collect($types)->contains(fn ($type) => is_array($type) && in_array('LocalBusiness', $type, true)),
+        );
+    }
+
+    public function test_branded_titles_use_pipe_separator(): void
+    {
+        $seo = app(SeoService::class);
+
+        $this->assertStringContainsString(' | ', $seo->forHome()->title);
+        $this->assertStringContainsString('Cleaning Services in Nottingham', $seo->forServicesIndex()->title);
+        $this->assertStringContainsString('Home Cleaning Areas in Nottingham', $seo->forAreasIndex()->title);
+        $this->assertStringContainsString(' | ', $seo->forAbout()->title);
+        $this->assertStringNotContainsString(' · ', $seo->forContact()->title);
     }
 
     public function test_every_active_service_has_crm_or_fallback_metadata(): void
@@ -57,6 +112,8 @@ class SeoTest extends TestCase
             $response->assertSee('<meta name="description" content="'.e($seo->description).'">', false);
             $response->assertSee('<link rel="canonical" href="'.e(route('services.show', $service, absolute: true)).'">', false);
             $response->assertSee('"@type":"BreadcrumbList"', false);
+            $response->assertSee(e($service->pageHeading()), false);
+            $this->assertStringContainsString('Nottingham', $service->pageHeading());
             $this->assertNotSame('', $seo->title);
             $this->assertNotSame('', $seo->description);
         }
@@ -71,11 +128,15 @@ class SeoTest extends TestCase
 
         $this->assertStringContainsString($area->name, $seo->title);
 
-        $this->get(route('areas.show', $area))
+        $response = $this->get(route('areas.show', $area))
             ->assertOk()
             ->assertSee('<title>'.e($seo->title).'</title>', false)
             ->assertSee('<meta name="description" content="'.e($seo->description).'">', false)
-            ->assertSee(route('services'), false);
+            ->assertSee(route('services'), false)
+            ->assertSee($area->pageHeading(), false);
+
+        $this->assertStringContainsString('Cleaning', $area->pageHeading());
+        $this->assertStringContainsString($area->name, $area->pageHeading());
     }
 
     public function test_about_and_contact_pages_have_metadata(): void
@@ -116,6 +177,9 @@ class SeoTest extends TestCase
         $response->assertSee('<loc>'.e(route('services.show', $service, absolute: true)).'</loc>', false);
         $response->assertSee('<loc>'.e(route('areas.show', $area, absolute: true)).'</loc>', false);
 
+        $appHost = parse_url((string) config('app.url'), PHP_URL_HOST) ?: 'localhost';
+        $response->assertSee($appHost, false);
+        $response->assertDontSee('laravel.cloud', false);
         $response->assertDontSee('/admin', false);
         $response->assertDontSee('/get-a-quote/confirmation', false);
         $response->assertDontSee('/login', false);
@@ -125,9 +189,11 @@ class SeoTest extends TestCase
     {
         $this->get('/robots.txt')
             ->assertOk()
+            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
             ->assertSee('Disallow: /admin', false)
+            ->assertSee('Disallow: /livewire', false)
             ->assertSee('Disallow: /get-a-quote/confirmation', false)
-            ->assertSee('Sitemap: '.url('/sitemap.xml'), false);
+            ->assertSee('Sitemap: '.route('sitemap', absolute: true), false);
     }
 
     public function test_quote_confirmation_is_noindex(): void
@@ -220,6 +286,32 @@ class SeoTest extends TestCase
             ->assertDontSee('/get-a-quote/confirmation', false);
     }
 
+    public function test_admin_login_has_noindex(): void
+    {
+        $this->get('/admin/login')
+            ->assertOk()
+            ->assertSee('name="robots" content="noindex, nofollow"', false);
+    }
+
+    public function test_homepage_faq_consolidates_payment_question(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('How and when do I pay?', false)
+            ->assertDontSee('>How do I pay?<', false);
+    }
+
+    public function test_services_and_areas_index_h1_copy(): void
+    {
+        $this->get(route('services'))
+            ->assertOk()
+            ->assertSee('Cleaning Services in Nottingham', false);
+
+        $this->get(route('areas'))
+            ->assertOk()
+            ->assertSee('Home Cleaning Across Nottingham', false);
+    }
+
     public function test_organization_json_ld_does_not_invent_business_facts(): void
     {
         $json = app(SeoService::class)->organizationJsonLd();
@@ -229,5 +321,20 @@ class SeoTest extends TestCase
         $this->assertArrayNotHasKey('aggregateRating', $json);
         $this->assertArrayNotHasKey('openingHours', $json);
         $this->assertArrayNotHasKey('openingHoursSpecification', $json);
+        $this->assertArrayNotHasKey('geo', $json);
+
+        $website = app(SeoService::class)->websiteJsonLd();
+        $this->assertSame('WebSite', $website['@type']);
+        $this->assertArrayHasKey('publisher', $website);
+    }
+
+    public function test_page_hero_fetchpriority_high_when_image_present(): void
+    {
+        $service = Service::query()->active()->firstOrFail();
+        $service->forceFill(['hero_image' => 'services/seo-hero-test.jpg'])->save();
+
+        $this->get(route('services.show', $service))
+            ->assertOk()
+            ->assertSee('fetchpriority="high"', false);
     }
 }

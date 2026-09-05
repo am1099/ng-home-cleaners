@@ -2,8 +2,8 @@
 
 @section('content')
     <x-public.page-hero
-        :eyebrow="$area->postcode_label"
-        :title="$area->name"
+        :eyebrow="$area->postcode_label ?: 'Service area'"
+        :title="$area->pageHeading()"
         :subtitle="$area->short_intro"
     >
         <div class="flex flex-wrap gap-3">

@@ -2,11 +2,11 @@
 
 @section('content')
     <x-public.page-hero
-        :eyebrow="$service->name"
-        :title="$service->card_title"
+        :eyebrow="$service->name ?: 'Cleaning service'"
+        :title="$service->pageHeading()"
         :subtitle="$service->short_description"
         :image="$service->heroImageUrl()"
-        :image-alt="$service->name"
+        :image-alt="$service->name.' by NG Home Cleaners in Nottingham'"
     >
         <div class="flex flex-wrap gap-3">
             <x-public.estimate-cta :label="$service->cta_label ?: 'Get a free estimate'" size="lg" />

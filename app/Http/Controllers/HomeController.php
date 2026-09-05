@@ -26,6 +26,7 @@ class HomeController extends Controller
             'seo' => $pageSeo,
             'jsonLd' => array_values(array_filter([
                 $seo->organizationJsonLd(),
+                $seo->websiteJsonLd(),
                 $seo->breadcrumbJsonLd($pageSeo->breadcrumbs),
                 $seo->faqPageJsonLd($faqs),
             ])),

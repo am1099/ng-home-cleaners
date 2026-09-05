@@ -77,7 +77,7 @@ class CmsSeeder extends Seeder
             'insurance_amount' => '£1m',
             'insurance_statement' => '£1m public liability insurance on every visit.',
             'guarantee_statement' => 'If anything is missed, tell us within 48 hours and we come back and finish it at our cost.',
-            'default_seo_title' => 'House cleaning in Nottingham · NG Home Cleaners',
+            'default_seo_title' => 'Professional Home Cleaners Nottingham',
             'default_seo_description' => 'Vetted, DBS-checked cleaners across Nottingham and surrounding areas. Fixed prices agreed in writing before we start.',
             'lead_notification_emails' => ['hello@nghomecleaners.co.uk'],
         ]);
@@ -95,7 +95,7 @@ class CmsSeeder extends Seeder
                 'full_description' => 'A regular upkeep clean for homes that already have a reasonable baseline standard.',
                 'icon' => ServiceIcon::House,
                 'cta_label' => 'Book my first clean',
-                'seo_title' => 'Regular house cleaning in Nottingham · NG Home Cleaners',
+                'seo_title' => 'Regular House Cleaning Nottingham | NG Home Cleaners',
                 'seo_description' => 'Weekly or fortnightly regular cleans across Nottingham. Dusting, hoovering, mopping and bathrooms, with a fixed price agreed before we start.',
                 'sort_order' => 1,
                 'inclusions' => [
@@ -113,7 +113,7 @@ class CmsSeeder extends Seeder
                 'estimate_description' => 'Kitchen and hob degreased, skirting boards, inside cabinets and limescale. Oven interior and internal windows are optional add-ons.',
                 'full_description' => 'A top-to-bottom reset before regular upkeep or before hosting.',
                 'icon' => ServiceIcon::Sparkles,
-                'seo_title' => 'Deep cleaning in Nottingham · NG Home Cleaners',
+                'seo_title' => 'Deep Cleaning Nottingham | NG Home Cleaners',
                 'seo_description' => 'Deep cleans for Nottingham homes that need a proper reset. Kitchen degreasing, skirting boards, cabinets and limescale included.',
                 'sort_order' => 2,
                 'inclusions' => [
@@ -132,7 +132,7 @@ class CmsSeeder extends Seeder
                 'estimate_description' => 'Cleaned to inventory standard so your agent has nothing to deduct for.',
                 'full_description' => 'Move-out cleaning for tenants and landlords across Nottingham.',
                 'icon' => ServiceIcon::Key,
-                'seo_title' => 'End of tenancy cleaning in Nottingham · NG Home Cleaners',
+                'seo_title' => 'End of Tenancy Cleaning Nottingham | NG Home Cleaners',
                 'seo_description' => 'End of tenancy cleans across Nottingham, cleaned to inventory standard so agents have less to deduct from your deposit.',
                 'sort_order' => 3,
                 'inclusions' => [
@@ -151,7 +151,7 @@ class CmsSeeder extends Seeder
                 'estimate_description' => 'Commercial premises are quoted after a short walk-round, usually within a few days.',
                 'full_description' => 'Small commercial premises cleaned around your opening hours.',
                 'icon' => ServiceIcon::Building,
-                'seo_title' => 'Office and commercial cleaning in Nottingham · NG Home Cleaners',
+                'seo_title' => 'Office and Commercial Cleaning Nottingham | NG Home Cleaners',
                 'seo_description' => 'Small commercial cleaning in Nottingham, evenings and weekends around your opening hours, priced after a short walk-round.',
                 'sort_order' => 4,
                 'inclusions' => [
@@ -367,7 +367,7 @@ class CmsSeeder extends Seeder
                     'slug' => $slug,
                     'short_intro' => $intro,
                     'content' => "We clean homes and small commercial premises across {$name} ({$code}). Travel inside NG1 to NG16 is included in your quote. If you are booking a regular clean, deep clean or end of tenancy job here, tell us the full postcode and we will confirm the slot.",
-                    'seo_title' => "{$name} cleaners ({$code}) · NG Home Cleaners",
+                    'seo_title' => "{$name} Home Cleaning ({$code}) | NG Home Cleaners",
                     'seo_description' => "Domestic cleaning in {$name}, Nottingham {$code}. {$intro}",
                     'is_active' => true,
                     'sort_order' => $sort + 1,
@@ -385,7 +385,7 @@ class CmsSeeder extends Seeder
             ],
             [
                 'How and when do I pay?',
-                'Two options, whichever you prefer: pay in full by card before the clean, or pay half to secure the slot and the balance on the day. No cash needed, no subscription, and the total is the fixed price you agreed in writing - we do not add to it afterwards.',
+                'Pay in full by card before the clean, or pay a 50% deposit to secure the slot and the balance on the day. Regular weekly and fortnightly customers skip the deposit and are invoiced per visit. No cash needed, no subscription, and the total is the fixed written price you agreed - we do not add to it afterwards.',
             ],
             [
                 'Why are you more than the cleaner down the road?',
@@ -402,10 +402,6 @@ class CmsSeeder extends Seeder
             [
                 'What if there is more work than expected?',
                 'We quote from the details and the walkthrough video you send. If the property turns out to need considerably more work than that showed, the cleaner stops and rings you with a number before carrying on. You will never find extra labour added to an invoice you have not agreed to.',
-            ],
-            [
-                'How do I pay?',
-                'A 50% deposit by card secures your slot and the balance is paid on the day of the clean. Regular weekly and fortnightly customers skip the deposit - you are invoiced per visit once we have cleaned. No subscription, no contract to get out of.',
             ],
             [
                 'Do you bring products and equipment?',
@@ -428,8 +424,6 @@ class CmsSeeder extends Seeder
             'When could you start?',
             'What if there is more work than expected?',
             'How do I pay?',
-            'Do you bring products and equipment?',
-            'What if the clean is not up to standard?',
             'Do I need to be in during the clean?',
             'Do you supply products and equipment?',
             'What if the clean is not up to scratch?',

@@ -3,7 +3,7 @@
 @section('content')
     <x-public.page-hero
         eyebrow="Areas we cover"
-        title="Nottingham only, and we intend to keep it that way."
+        title="Home Cleaning Across Nottingham"
         subtitle="We cover NG1 to NG16 and nowhere else. Staying local means we hold the slot we give you rather than running late from the other side of the county."
     />
 
