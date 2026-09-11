@@ -2,16 +2,22 @@
 
 namespace App\Filament\Resources\Services\RelationManagers;
 
+use App\Models\Service;
+use App\Models\ServiceExclusion;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
 
 class ExclusionsRelationManager extends RelationManager
 {
@@ -50,6 +56,72 @@ class ExclusionsRelationManager extends RelationManager
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
             ->toolbarActions([
+                Action::make('addFromLibrary')
+                    ->label('Add from library')
+                    ->icon('heroicon-o-queue-list')
+                    ->modalHeading('Add exclusions from library')
+                    ->modalDescription('Tick tasks already used on any service. Matching notes are copied; edit after if needed.')
+                    ->modalWidth(Width::Large)
+                    ->modalSubmitActionLabel('Add selected')
+                    ->visible(fn (): bool => $this->libraryOptions()->isNotEmpty())
+                    ->fillForm(fn (): array => ['tasks' => []])
+                    ->form([
+                        CheckboxList::make('tasks')
+                            ->label('Existing exclusion tasks')
+                            ->options(fn (): array => $this->libraryOptions()->all())
+                            ->descriptions(fn (): array => $this->libraryNotes()->all())
+                            ->searchable()
+                            ->bulkToggleable()
+                            ->columns(1)
+                            ->required()
+                            ->helperText('Already attached to this service are hidden.'),
+                    ])
+                    ->action(function (array $data): void {
+                        /** @var Service $service */
+                        $service = $this->getOwnerRecord();
+                        $selected = array_values(array_filter(
+                            array_map('strval', $data['tasks'] ?? []),
+                        ));
+
+                        if ($selected === []) {
+                            return;
+                        }
+
+                        $existing = $service->exclusions()
+                            ->pluck('task')
+                            ->map(fn (string $task): string => mb_strtolower(trim($task)))
+                            ->all();
+
+                        $notesByTask = $this->libraryNotesByTask();
+                        $sort = (int) ($service->exclusions()->max('sort_order') ?? 0);
+                        $added = 0;
+
+                        foreach ($selected as $task) {
+                            $task = trim($task);
+
+                            if ($task === '') {
+                                continue;
+                            }
+
+                            if (in_array(mb_strtolower($task), $existing, true)) {
+                                continue;
+                            }
+
+                            $sort++;
+                            $service->exclusions()->create([
+                                'task' => $task,
+                                'note' => $notesByTask[mb_strtolower($task)] ?? null,
+                                'sort_order' => $sort,
+                            ]);
+                            $existing[] = mb_strtolower($task);
+                            $added++;
+                        }
+
+                        Notification::make()
+                            ->title($added === 1 ? '1 exclusion added' : "{$added} exclusions added")
+                            ->success()
+                            ->send();
+                    }),
                 CreateAction::make()
                     ->label('Add exclusion')
                     ->modalHeading('Add exclusion')
@@ -67,5 +139,65 @@ class ExclusionsRelationManager extends RelationManager
                     ->modalWidth(Width::Medium),
                 DeleteAction::make(),
             ]);
+    }
+
+    /**
+     * @return Collection<string, string>
+     */
+    private function libraryOptions(): Collection
+    {
+        /** @var Service $service */
+        $service = $this->getOwnerRecord();
+
+        $alreadyOnService = $service->exclusions()
+            ->pluck('task')
+            ->map(fn (string $task): string => mb_strtolower(trim($task)))
+            ->all();
+
+        return ServiceExclusion::query()
+            ->orderBy('task')
+            ->get(['task', 'note'])
+            ->unique(fn (ServiceExclusion $exclusion): string => mb_strtolower(trim($exclusion->task)))
+            ->reject(fn (ServiceExclusion $exclusion): bool => in_array(
+                mb_strtolower(trim($exclusion->task)),
+                $alreadyOnService,
+                true,
+            ))
+            ->mapWithKeys(function (ServiceExclusion $exclusion): array {
+                $task = trim($exclusion->task);
+
+                return [$task => $task];
+            });
+    }
+
+    /**
+     * @return Collection<string, string>
+     */
+    private function libraryNotes(): Collection
+    {
+        return $this->libraryOptions()
+            ->mapWithKeys(function (string $task): array {
+                $note = $this->libraryNotesByTask()[mb_strtolower($task)] ?? null;
+
+                return [$task => filled($note) ? (string) $note : 'No note stored yet'];
+            });
+    }
+
+    /**
+     * @return array<string, string|null>
+     */
+    private function libraryNotesByTask(): array
+    {
+        $notes = [];
+
+        foreach (ServiceExclusion::query()->orderBy('id')->get(['task', 'note']) as $exclusion) {
+            $key = mb_strtolower(trim($exclusion->task));
+
+            if (! array_key_exists($key, $notes)) {
+                $notes[$key] = $exclusion->note;
+            }
+        }
+
+        return $notes;
     }
 }

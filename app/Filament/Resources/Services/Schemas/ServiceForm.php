@@ -139,14 +139,14 @@ class ServiceForm
                         Tab::make('Service details')
                             ->schema([
                                 Section::make('Inclusions')
-                                    ->description('Checklist items shown under “What is included” on this service’s public page.')
+                                    ->description('Checklist items shown under “What is included”. Use “Add from library” to tick items already saved on any service, or “Add inclusion” for new wording.')
                                     ->collapsed()
                                     ->schema(self::relationDrawer(
                                         InclusionsRelationManager::class,
                                         'Save the service first, then add inclusions here.',
                                     )),
                                 Section::make('Exclusions')
-                                    ->description('Tasks outside the standard checklist. Shown under “What is not included”.')
+                                    ->description('Tasks outside the standard checklist. Shown under “What is not included”. Reuse existing tasks with “Add from library”.')
                                     ->collapsed()
                                     ->schema(self::relationDrawer(
                                         ExclusionsRelationManager::class,

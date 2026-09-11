@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ServiceIcon;
 use App\Filament\Resources\Services\Pages\EditService;
+use App\Filament\Resources\Services\RelationManagers\ExclusionsRelationManager;
 use App\Filament\Resources\Services\RelationManagers\InclusionsRelationManager;
 use App\Models\Addon;
 use App\Models\Service;
@@ -89,5 +91,70 @@ class CmsDataModelTest extends TestCase
             ->get('/admin/services/create')
             ->assertOk()
             ->assertSee('Save the service first, then add inclusions here.', false);
+    }
+
+    public function test_inclusions_can_be_added_from_library_used_on_another_service(): void
+    {
+        $user = User::factory()->create();
+        $source = Service::factory()->create(['icon' => ServiceIcon::House]);
+        $target = Service::factory()->create(['icon' => ServiceIcon::Sparkles]);
+
+        $source->inclusions()->create([
+            'content' => 'Dust all surfaces',
+            'sort_order' => 1,
+        ]);
+        $source->inclusions()->create([
+            'content' => 'Mop hard floors',
+            'sort_order' => 2,
+        ]);
+
+        Livewire::actingAs($user)
+            ->test(InclusionsRelationManager::class, [
+                'ownerRecord' => $target,
+                'pageClass' => EditService::class,
+            ])
+            ->callTableAction('addFromLibrary', data: [
+                'items' => ['Dust all surfaces', 'Mop hard floors'],
+            ])
+            ->assertHasNoTableActionErrors();
+
+        $this->assertDatabaseHas('service_inclusions', [
+            'service_id' => $target->id,
+            'content' => 'Dust all surfaces',
+        ]);
+        $this->assertDatabaseHas('service_inclusions', [
+            'service_id' => $target->id,
+            'content' => 'Mop hard floors',
+        ]);
+        $this->assertSame(2, $target->inclusions()->count());
+    }
+
+    public function test_exclusions_can_be_added_from_library_with_notes_copied(): void
+    {
+        $user = User::factory()->create();
+        $source = Service::factory()->create(['icon' => ServiceIcon::Key]);
+        $target = Service::factory()->create(['icon' => ServiceIcon::Building]);
+
+        $source->exclusions()->create([
+            'task' => 'External windows',
+            'note' => 'Outside glass needs a window specialist.',
+            'sort_order' => 1,
+        ]);
+
+        Livewire::actingAs($user)
+            ->test(ExclusionsRelationManager::class, [
+                'ownerRecord' => $target,
+                'pageClass' => EditService::class,
+            ])
+            ->callTableAction('addFromLibrary', data: [
+                'tasks' => ['External windows'],
+            ])
+            ->assertHasNoTableActionErrors();
+
+        $this->assertDatabaseHas('service_exclusions', [
+            'service_id' => $target->id,
+            'task' => 'External windows',
+            'note' => 'Outside glass needs a window specialist.',
+        ]);
     }
 }
