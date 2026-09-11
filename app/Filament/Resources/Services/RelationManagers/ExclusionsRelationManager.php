@@ -61,7 +61,9 @@ class ExclusionsRelationManager extends RelationManager
                     ->icon('heroicon-o-queue-list')
                     ->modalHeading('Add exclusions from library')
                     ->modalDescription('Tick tasks already used on any service. Matching notes are copied; edit after if needed.')
-                    ->modalWidth(Width::Large)
+                    ->modalWidth(Width::FiveExtraLarge)
+                    ->stickyModalHeader()
+                    ->stickyModalFooter()
                     ->modalSubmitActionLabel('Add selected')
                     ->visible(fn (): bool => $this->libraryOptions()->isNotEmpty())
                     ->fillForm(fn (): array => ['tasks' => []])
@@ -72,9 +74,15 @@ class ExclusionsRelationManager extends RelationManager
                             ->descriptions(fn (): array => $this->libraryNotes()->all())
                             ->searchable()
                             ->bulkToggleable()
-                            ->columns(1)
+                            ->columns([
+                                'default' => 1,
+                                'md' => 2,
+                            ])
+                            ->extraAttributes([
+                                'class' => 'max-h-[min(28rem,55vh)] overflow-y-auto overscroll-contain pe-1',
+                            ])
                             ->required()
-                            ->helperText('Already attached to this service are hidden.'),
+                            ->helperText('Already attached to this service are hidden. Scroll the list on smaller laptop screens.'),
                     ])
                     ->action(function (array $data): void {
                         /** @var Service $service */
