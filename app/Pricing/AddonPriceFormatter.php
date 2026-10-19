@@ -15,11 +15,7 @@ final class AddonPriceFormatter
     {
         $contribution = $this->engine->calculateAddonContribution($addon, $context);
         $prefix = $addon->show_from_prefix ? 'from ' : '';
-
-        $amount = Money::formatPenceRange(
-            $contribution->minPence,
-            $contribution->maxPence,
-        );
+        $amount = Money::formatPence($contribution->minPence);
 
         if ($addon->pricing_unit->value === 'per_bathroom' && $context === null) {
             return $addon->label.' · '.$prefix.$amount.' per bathroom';

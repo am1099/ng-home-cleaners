@@ -149,6 +149,14 @@
         min-height: 6.5rem;
     }
 
+    .ng-booking-confirm-form .ng-field {
+        margin-top: 0;
+    }
+
+    .ng-booking-confirm-form textarea.ng-field {
+        padding: 0.75rem 0.875rem;
+    }
+
     select.ng-field {
         cursor: pointer;
         appearance: none;

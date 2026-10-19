@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Data\WizardSubmissionData;
+use App\Enums\ArrivalWindow;
+use App\Enums\CleaningFrequency;
 use App\Enums\QuoteRequestSource;
 use App\Enums\QuoteRequestStatus;
 use App\Models\Customer;
@@ -323,18 +325,61 @@ class QuoteRequestService
     public function whatsappMessage(QuoteRequest $quoteRequest): string
     {
         $serviceName = $quoteRequest->service?->name ?? 'cleaning enquiry';
+        $lines = [
+            "Hi, I've just requested a clean with NG Home Cleaners.",
+            'This request is already saved.',
+            'Reference: '.$quoteRequest->reference,
+            'Clean: '.$serviceName,
+        ];
 
-        $photoNote = ! empty($quoteRequest->property_photo_paths)
-            ? ' Photos uploaded with the form are already saved against this request.'
-            : '';
+        if (filled($quoteRequest->postcode)) {
+            $lines[] = 'Postcode: '.$quoteRequest->postcode;
+        }
 
-        return sprintf(
-            "Hi, I've just submitted a cleaning estimate request (Ref: %s) for a %s. My guide estimate was %s. Please could you confirm availability? Please also send a short walkthrough video of the property on WhatsApp (kitchen, bathrooms, main rooms) so we can give you an accurate fixed quote.%s",
-            $quoteRequest->reference,
-            strtolower($serviceName),
-            $quoteRequest->guide_estimate_headline ?? 'to be confirmed',
-            $photoNote,
-        );
+        $rooms = [];
+
+        if ($quoteRequest->bedrooms !== null) {
+            $rooms[] = $quoteRequest->bedrooms === 0
+                ? 'Studio'
+                : $quoteRequest->bedrooms.' bedroom'.($quoteRequest->bedrooms === 1 ? '' : 's');
+        }
+
+        if ($quoteRequest->bathrooms !== null) {
+            $rooms[] = $quoteRequest->bathrooms.' bathroom'.($quoteRequest->bathrooms === 1 ? '' : 's');
+        }
+
+        if ($rooms !== []) {
+            $lines[] = 'Property: '.implode(', ', $rooms);
+        }
+
+        if ($quoteRequest->preferred_date) {
+            $window = ArrivalWindow::tryFrom((string) $quoteRequest->arrival_window)?->label();
+            $visit = $quoteRequest->preferred_date->format('l j F Y');
+
+            if ($window) {
+                $visit .= ' ('.$window.')';
+            }
+
+            $lines[] = 'Preferred visit: '.$visit;
+        }
+
+        if (filled($quoteRequest->frequency)) {
+            $frequency = CleaningFrequency::tryFrom((string) $quoteRequest->frequency)?->label();
+
+            if ($frequency) {
+                $lines[] = 'Frequency: '.$frequency;
+            }
+        }
+
+        $lines[] = 'Guide price: '.($quoteRequest->guide_estimate_headline ?? 'to be confirmed');
+
+        if (! empty($quoteRequest->property_photo_paths)) {
+            $lines[] = 'Photos uploaded with the form are already saved against this request.';
+        }
+
+        $lines[] = 'Please could you confirm availability? A short walkthrough video of the kitchen, bathrooms and main rooms helps us lock the price.';
+
+        return implode("\n", $lines);
     }
 
     public function whatsappUrl(QuoteRequest $quoteRequest): string

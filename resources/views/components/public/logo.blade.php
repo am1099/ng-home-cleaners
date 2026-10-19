@@ -11,6 +11,11 @@
         default => $settings->logo_path ?? null,
     };
     $logoUrl = filled($logoPath) ? \App\Support\Media::url($logoPath) : null;
+    $imageClass = 'h-10 w-auto max-w-[10rem] object-contain';
+
+    if ($isInverse) {
+        $imageClass .= ' brightness-0 invert';
+    }
 @endphp
 
 <span {{ $attributes->class(['inline-flex items-center gap-3']) }}>
@@ -20,7 +25,7 @@
             alt="{{ $settings->business_name ?? config('ng.name') }}"
             width="160"
             height="40"
-            class="h-10 w-auto max-w-[10rem] object-contain"
+            class="{{ $imageClass }}"
             decoding="async"
         >
     @else

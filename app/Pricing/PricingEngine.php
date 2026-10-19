@@ -83,15 +83,17 @@ class PricingEngine
 
         $rounded = $range->round((int) $settings->rounding_step_pence);
 
-        $finalSingle = null;
         if ($input->service->isRegularClean()) {
             $finalSingle = max((int) $settings->regular_min_pence, $rounded->minPence);
-            $displayHeadline = 'From '.Money::formatPence($finalSingle).' a visit';
+            $displayHeadline = Money::formatPence($finalSingle).' a visit';
             $displayDetail = $this->frequencyDetail($input->frequency, $settings);
         } else {
-            $displayHeadline = Money::formatPenceRange($rounded->minPence, $rounded->maxPence);
-            $displayDetail = 'Guide estimate based on your selections.';
+            $finalSingle = $rounded->minPence;
+            $displayHeadline = Money::formatPence($finalSingle);
+            $displayDetail = 'Guide price based on your selections.';
         }
+
+        $fixed = PriceRange::single($finalSingle);
 
         $snapshot = [
             'engine' => 'simplified_v1',
@@ -111,7 +113,7 @@ class PricingEngine
             'addon_ids' => $input->addonIds,
             'starting_subtotal' => $baseSubtotal->toArray(),
             'pre_frequency_range' => $preFrequency->toArray(),
-            'final_range' => $rounded->toArray(),
+            'final_range' => $fixed->toArray(),
             'final_single_pence' => $finalSingle,
             'line_items' => array_map(fn (CalculationLineItem $item) => $item->toSnapshotArray(), $lineItems),
         ];
@@ -124,7 +126,7 @@ class PricingEngine
             calculatedSubtotal: $preFrequency,
             minimumAdjustment: null,
             rangeAdjustment: null,
-            finalRange: $rounded,
+            finalRange: $fixed,
             finalSinglePricePence: $finalSingle,
             displayHeadline: $displayHeadline,
             displayDetail: $displayDetail,

@@ -178,6 +178,22 @@ final class SeoService
         );
     }
 
+    public function forBookingConfirmation(): SeoPage
+    {
+        $site = $this->site();
+
+        return new SeoPage(
+            title: $this->brandedTitle('Confirm your booking', $site),
+            description: $this->description(
+                null,
+                'Send access and arrival details for a booking with '.$site->business_name.'.',
+            ),
+            canonical: $this->absoluteRoute('booking.confirm'),
+            ogImage: $this->defaultOgImage($site),
+            robots: 'noindex,nofollow',
+        );
+    }
+
     public function forQuoteConfirmation(): SeoPage
     {
         $site = $this->site();

@@ -73,8 +73,8 @@ class PricingEngineTest extends TestCase
             bedrooms: 0,
         ));
 
-        $this->assertSame($one->baseSubtotal->minPence, $studio->finalRange->minPence);
-        $this->assertSame($one->baseSubtotal->maxPence, $studio->finalRange->maxPence);
+        $this->assertSame($one->finalRange->minPence, $studio->finalRange->minPence);
+        $this->assertSame($studio->finalRange->minPence, $studio->finalRange->maxPence);
         $this->assertFalse(collect($one->lineItems)->contains(fn ($item) => $item->key === 'extra_bedrooms'));
     }
 
@@ -168,7 +168,9 @@ class PricingEngineTest extends TestCase
 
         $this->assertNotNull($weekly->finalSinglePricePence);
         $this->assertLessThan($oneOff->finalSinglePricePence, $weekly->finalSinglePricePence);
-        $this->assertStringContainsString('From £', $weekly->displayHeadline);
+        $this->assertStringContainsString('£', $weekly->displayHeadline);
+        $this->assertStringNotContainsString('–', $weekly->displayHeadline);
+        $this->assertStringContainsString('a visit', $weekly->displayHeadline);
         $this->assertTrue(collect($weekly->lineItems)->contains(fn ($item) => $item->key === 'frequency_discount'));
         $this->assertTrue(collect($fortnightly->lineItems)->contains(fn ($item) => $item->key === 'frequency_discount'));
         $this->assertFalse(collect($oneOff->lineItems)->contains(fn ($item) => $item->key === 'frequency_discount'));
@@ -317,7 +319,7 @@ class PricingEngineTest extends TestCase
         ));
 
         $this->assertSame(12000, $result->finalSinglePricePence);
-        $this->assertStringContainsString('From £120', $result->displayHeadline);
+        $this->assertStringContainsString('£120 a visit', $result->displayHeadline);
     }
 
     public function test_bungalow_starting_price_matches_house(): void

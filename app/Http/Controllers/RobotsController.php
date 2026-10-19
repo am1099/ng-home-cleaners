@@ -18,6 +18,8 @@ class RobotsController extends Controller
             'Disallow: /livewire/',
             'Disallow: /get-a-quote/confirmation',
             'Disallow: /get-a-quote/confirmation/',
+            'Disallow: /confirm',
+            'Disallow: /confirm/',
             '',
             'Sitemap: '.$seo->absoluteRoute('sitemap'),
             '',

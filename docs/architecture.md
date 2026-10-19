@@ -96,8 +96,9 @@ All admin policies extend `AdminPolicy` (authenticated staff access).
 | `/move-in-move-out` | `MoveInOutController` | Move-in / move-out landing using the pricing engine |
 | `/about` | `AboutController` | Site settings (story, promises) |
 | `/contact` | `ContactController` | Site settings (phone, email, WhatsApp, hours) |
-| `/get-a-quote` | `EstimateWizard` (Livewire) | Multi-step estimator; submits to lead pipeline |
+| `/get-a-quote` | `EstimateWizard` (Livewire) | Multi-step estimator; primary CTA books via WhatsApp, secondary emails the request |
 | `/get-a-quote/confirmation/{reference}` | `QuoteConfirmationController` | Post-submit confirmation (reference, estimate, next steps) |
+| `/confirm` | `BookingConfirmationForm` (Livewire) | Public booking confirmation (access, parking, equipment). `noindex`. Stored as `booking_confirmations` |
 | `/privacy`, `/terms`, `/cookies` | `LegalPageController` | `legal_pages` table |
 
 Inactive services/areas return 404 via route model binding scopes.
@@ -215,21 +216,29 @@ Mail is sent **after** the database transaction commits — mail failure does no
 
 ### WhatsApp flow
 
-Review step → **Continue on WhatsApp**:
+Review step → **Book via WhatsApp** (primary). **Email my estimate request** stays as a quieter secondary action.
 
 1. Same validation and server-side recalculation
 2. Save lead first (`source=whatsapp`, `whatsapp_initiated_at` set)
-3. CRM notification + queued emails
-4. Open pre-filled WhatsApp URL (reference included in message)
+3. CRM notification + internal and customer emails
+4. Open a pre-filled WhatsApp chat (reference, clean type, postcode, rooms, visit, guide price)
 5. UI states request was saved and WhatsApp was opened (does not claim message was sent)
 
+The email path still redirects to `/get-a-quote/confirmation/{reference}`.
+
 Duplicate-click prevention: `$submitting` flag + `$savedReference` on the Livewire component.
+
+Guide prices shown to customers use the **lower** end of the calculated range as a single figure.
+
+### Booking confirmation page
+
+`/confirm` collects arrival details (name, address, access, parking, hoover/mop, notes, valuables and payment checkboxes). Each submit creates a `booking_confirmations` row, notifies staff, and tries to match an existing customer by name plus postcode (and a single scheduled booking when there is exactly one).
 
 ### Filament admin (Phase 7–9)
 
 | Group | Resource |
 |-------|----------|
-| CRM | Leads (`/admin/quote-requests`), Bookings (`/admin/bookings`), Calendar (`/admin/booking-calendar`), Invoices (`/admin/invoices`), Payments (`/admin/payments`), Customers (`/admin/customers`) |
+| CRM | Leads (`/admin/quote-requests`), Bookings (`/admin/bookings`), Booking confirmations (`/admin/booking-confirmations`), Calendar (`/admin/booking-calendar`), Invoices (`/admin/invoices`), Payments (`/admin/payments`), Customers (`/admin/customers`) |
 
 ## CRM Leads & Customers (Phase 8)
 

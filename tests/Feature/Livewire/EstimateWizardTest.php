@@ -53,7 +53,7 @@ class EstimateWizardTest extends TestCase
             ->set('propertyType', PropertyType::Flat->value)
             ->set('bedrooms', 1)
             ->set('floors', 1)
-            ->assertSee('From £', false);
+            ->assertSee('a visit', false);
     }
 
     public function test_regular_one_off_house_shows_guide_price(): void
@@ -66,7 +66,7 @@ class EstimateWizardTest extends TestCase
             ->set('propertyType', PropertyType::House->value)
             ->set('bedrooms', 2)
             ->set('floors', 2)
-            ->assertSee('From £', false);
+            ->assertSee('a visit', false);
     }
 
     public function test_selecting_an_addon_updates_the_guide_estimate_card(): void
@@ -237,8 +237,8 @@ class EstimateWizardTest extends TestCase
             ->assertSee('About the property', false)
             ->assertSee('Rooms and layout', false)
             ->assertSee('When &amp; your details', false)
-            ->assertSee('Send my estimate request', false)
-            ->assertSee('Continue on WhatsApp', false)
+            ->assertSee('Book via WhatsApp', false)
+            ->assertSee('Email my estimate request', false)
             ->assertSee('Choose parking', false)
             ->assertSee('Choose access', false)
             ->assertSee('On-street (free)', false)

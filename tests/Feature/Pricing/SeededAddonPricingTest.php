@@ -50,10 +50,13 @@ class SeededAddonPricingTest extends TestCase
                 '£'.number_format($contribution->minPence / 100, 0),
                 $label,
             );
-            $this->assertStringContainsString(
-                '£'.number_format($contribution->maxPence / 100, 0),
-                $label,
-            );
+
+            if ($contribution->minPence !== $contribution->maxPence) {
+                $this->assertStringNotContainsString(
+                    '£'.number_format($contribution->maxPence / 100, 0),
+                    $label,
+                );
+            }
 
             if ($addon->show_from_prefix) {
                 $this->assertStringContainsString('from ', $label);

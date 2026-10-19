@@ -36,6 +36,19 @@ class HomeLogoAndGalleryTest extends TestCase
             ->assertSee('brand/logo-test.png', false);
     }
 
+    public function test_footer_logo_image_uses_white_treatment_on_dark_footer(): void
+    {
+        Storage::fake(Media::diskName());
+        Storage::disk(Media::diskName())->put('brand/logo-test.png', 'fake-image');
+
+        SiteSetting::instance()->update(['logo_path' => 'brand/logo-test.png']);
+        app(SiteSettingsService::class)->forget();
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('brightness-0 invert', false);
+    }
+
     public function test_uploaded_hero_image_appears_on_the_homepage(): void
     {
         Storage::fake(Media::diskName());

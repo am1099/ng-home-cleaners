@@ -182,6 +182,7 @@ class SeoTest extends TestCase
         $response->assertDontSee('laravel.cloud', false);
         $response->assertDontSee('/admin', false);
         $response->assertDontSee('/get-a-quote/confirmation', false);
+        $response->assertDontSee('/confirm', false);
         $response->assertDontSee('/login', false);
     }
 
@@ -193,6 +194,7 @@ class SeoTest extends TestCase
             ->assertSee('Disallow: /admin', false)
             ->assertSee('Disallow: /livewire', false)
             ->assertSee('Disallow: /get-a-quote/confirmation', false)
+            ->assertSee('Disallow: /confirm', false)
             ->assertSee('Sitemap: '.route('sitemap', absolute: true), false);
     }
 

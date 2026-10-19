@@ -58,12 +58,15 @@ class QuoteWhatsAppMessageTest extends TestCase
             'submitted_at' => now(),
         ]);
 
-        $service = app(QuoteRequestService::class);
-        $message = $service->whatsappMessage($lead);
-        $url = $service->whatsappUrl($lead);
+        $quoteService = app(QuoteRequestService::class);
+        $message = $quoteService->whatsappMessage($lead);
+        $url = $quoteService->whatsappUrl($lead);
 
         $this->assertStringContainsString('walkthrough video', $message);
-        $this->assertStringContainsString('kitchen, bathrooms, main rooms', $message);
+        $this->assertStringContainsString('kitchen, bathrooms and main rooms', $message);
+        $this->assertStringContainsString('Clean: Regular clean', $message);
+        $this->assertStringContainsString('Postcode: NG1 1AA', $message);
+        $this->assertStringContainsString('already saved', $message);
         $this->assertStringContainsString('NG-TEST-WA', $url);
         $this->assertStringContainsString(rawurlencode('walkthrough video'), $url);
     }
