@@ -16,10 +16,13 @@ use App\Enums\QuoteRequestSource;
 use App\Models\Addon;
 use App\Models\QuoteRequest;
 use App\Models\Service;
+use App\Models\ServiceInclusion;
+use App\Models\SiteSetting;
 use App\Pricing\AddonPriceFormatter;
 use App\Pricing\Data\CalculationResult;
 use App\Pricing\Data\EstimateInput;
 use App\Pricing\EstimateInputFactory;
+use App\Pricing\Money;
 use App\Pricing\PricingEngine;
 use App\Rules\NotAnEmailAddress;
 use App\Rules\NotAPhoneNumber;
@@ -35,13 +38,11 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 
 #[Layout('layouts.quote')]
-#[Title('Get a free estimate')]
 class EstimateWizard extends Component
 {
     use WithFileUploads;
@@ -112,6 +113,11 @@ class EstimateWizard extends Component
 
     public bool $extrasOpen = true;
 
+    public bool $inclusionsOpen = false;
+
+    /** Short price form. The detailed route keeps the full estimate form. */
+    public bool $detailed = false;
+
     public bool $submitting = false;
 
     public ?string $savedReference = null;
@@ -133,6 +139,9 @@ class EstimateWizard extends Component
         $match = $requested
             ? $services->firstWhere('slug', $requested)
             : null;
+
+        $this->detailed = request()->routeIs('quote.detailed');
+        $this->extrasOpen = $this->detailed;
 
         $this->serviceId = ($match ?? $services->first())->id;
         $this->applyPropertyDefaults();
@@ -250,6 +259,25 @@ class EstimateWizard extends Component
         $this->extrasOpen = ! $this->extrasOpen;
     }
 
+    public function toggleAddon(int $addonId): void
+    {
+        $ids = array_map('intval', $this->addonIds);
+
+        if (in_array($addonId, $ids, true)) {
+            $this->addonIds = array_values(array_filter($ids, fn (int $id): bool => $id !== $addonId));
+        } else {
+            $ids[] = $addonId;
+            $this->addonIds = array_values($ids);
+        }
+
+        $this->forgetEstimateCaches();
+    }
+
+    public function updatedDetailed(): void
+    {
+        $this->forgetEstimateCaches();
+    }
+
     #[Computed]
     public function services(): Collection
     {
@@ -280,11 +308,153 @@ class EstimateWizard extends Component
     #[Computed]
     public function visibleSections(): array
     {
+        if (! $this->detailed) {
+            $sections = ['clean', 'home', 'contact'];
+
+            if (! $this->selectedService()?->requiresManualQuote()) {
+                $sections[] = 'extras';
+            }
+
+            return $sections;
+        }
+
         if ($this->selectedService()?->requiresManualQuote()) {
             return ['clean', 'property', 'when', 'details'];
         }
 
         return ['clean', 'property', 'rooms', 'condition', 'extras', 'when', 'details'];
+    }
+
+    #[Computed]
+    public function siteSettings(): SiteSetting
+    {
+        return SiteSetting::instance();
+    }
+
+    /**
+     * @return Collection<int, ServiceInclusion>
+     */
+    #[Computed]
+    public function inclusions(): Collection
+    {
+        $service = $this->selectedService();
+
+        if (! $service) {
+            return collect();
+        }
+
+        return $service->inclusions()->orderBy('sort_order')->get();
+    }
+
+    /**
+     * Live guide price for each regular-clean frequency, using the current home and extras.
+     *
+     * @return array<string, string>
+     */
+    #[Computed]
+    public function frequencyPrices(): array
+    {
+        if (! $this->selectedService()?->isRegularClean()) {
+            return [];
+        }
+
+        $prices = [];
+
+        foreach (CleaningFrequency::cases() as $frequency) {
+            $input = $this->estimateInputFor($frequency);
+
+            if (! $input) {
+                continue;
+            }
+
+            try {
+                $result = app(PricingEngine::class)->calculate($input);
+                $prices[$frequency->value] = $result->finalSinglePricePence !== null
+                    ? Money::formatPence($result->finalSinglePricePence)
+                    : $result->displayHeadline;
+            } catch (\Throwable) {
+                continue;
+            }
+        }
+
+        return $prices;
+    }
+
+    protected function estimateInputFor(CleaningFrequency $frequency): ?EstimateInput
+    {
+        $service = $this->selectedService();
+        $propertyType = PropertyType::tryFrom($this->propertyType ?? '');
+
+        if (! $service || ! $propertyType || $this->bedrooms < 0) {
+            return null;
+        }
+
+        return EstimateInputFactory::make(
+            service: $service,
+            propertyType: $propertyType,
+            bedrooms: $this->bedrooms,
+            bathrooms: $this->bathrooms,
+            wcs: $this->wcs,
+            kitchens: $this->kitchens,
+            receptionRooms: $this->receptionRooms,
+            floors: $this->floors,
+            extraRoomSlugs: $this->extraRooms,
+            frequency: $frequency,
+            propertyStatus: $this->propertyStatus ? PropertyStatus::tryFrom($this->propertyStatus) : null,
+            conditionFlagValues: $this->conditionFlags,
+            addonIds: $this->addonIds,
+            postcode: $this->postcode,
+            preferredDate: $this->preferredDate,
+            conditionNotes: $this->conditionNotes,
+            parkingNotes: $this->resolvedParkingNotes(),
+            accessNotes: $this->resolvedAccessNotes(),
+            arrivalWindow: $this->arrivalWindow ? ArrivalWindow::tryFrom($this->arrivalWindow) : null,
+        );
+    }
+
+    public function priceFigure(): ?string
+    {
+        $calculation = $this->calculation;
+
+        if (! $calculation?->isNumericEstimate || $calculation->finalSinglePricePence === null) {
+            return null;
+        }
+
+        return Money::formatPence($calculation->finalSinglePricePence);
+    }
+
+    public function homeSummary(): string
+    {
+        $beds = $this->bedrooms === 0 ? 'Studio' : $this->bedrooms.' bed';
+
+        return $beds.' · '.$this->bathrooms.' bath';
+    }
+
+    /**
+     * Display-only visit length. Does not change the guide price.
+     * Two-hour minimum, plus 30 minutes per bedroom above one and 45 minutes per bathroom above one.
+     */
+    public function guideDurationLabel(): ?string
+    {
+        if ($this->selectedService()?->requiresManualQuote()) {
+            return null;
+        }
+
+        $minutes = 120
+            + (max(0, $this->bedrooms - 1) * 30)
+            + (max(0, $this->bathrooms - 1) * 45);
+
+        $hours = intdiv($minutes, 60);
+        $fraction = match ($minutes % 60) {
+            15 => '¼',
+            30 => '½',
+            45 => '¾',
+            default => '',
+        };
+
+        $amount = $fraction === '' ? (string) $hours : $hours.$fraction;
+
+        return 'about '.$amount.' hr'.($minutes === 60 ? '' : 's');
     }
 
     #[Computed]
@@ -538,9 +708,17 @@ class EstimateWizard extends Component
 
         $this->validate($rules);
 
-        $this->phone = UkContactNormalizer::formatPhoneDisplay($this->phone);
-        $this->email = UkContactNormalizer::normalizeEmail($this->email);
-        $this->postcode = UkContactNormalizer::normalizePostcode($this->postcode);
+        if (filled($this->phone)) {
+            $this->phone = UkContactNormalizer::formatPhoneDisplay($this->phone);
+        }
+
+        if (filled($this->email)) {
+            $this->email = UkContactNormalizer::normalizeEmail($this->email);
+        }
+
+        if (filled($this->postcode)) {
+            $this->postcode = UkContactNormalizer::normalizePostcode($this->postcode);
+        }
     }
 
     protected function openWhatsAppFor(QuoteRequest $quoteRequest): void
@@ -613,6 +791,15 @@ class EstimateWizard extends Component
                     Rule::in($this->availableAddons->pluck('id')->all()),
                 ],
             ],
+            'home' => [
+                'bedrooms' => ['required', 'integer', 'min:0', 'max:5'],
+                'bathrooms' => ['required', 'integer', 'min:1', 'max:6'],
+            ],
+            'contact' => [
+                'firstName' => ['required', 'string', 'max:120'],
+                'phone' => ['nullable', 'string', 'max:30', new UkPhoneNumber, new NotAnEmailAddress],
+                'postcode' => ['required', 'string', 'max:10', new UkNgPostcode],
+            ],
             'when' => [
                 'preferredDate' => ['required', 'date', 'after_or_equal:today'],
                 'arrivalWindow' => ['required', Rule::in(array_column(ArrivalWindow::cases(), 'value'))],
@@ -679,10 +866,13 @@ class EstimateWizard extends Component
         unset($this->availableAddons);
         unset($this->estimateInput);
         unset($this->calculation);
+        unset($this->frequencyPrices);
+        unset($this->inclusions);
     }
 
     public function render()
     {
-        return view('livewire.estimate-wizard');
+        return view('livewire.estimate-wizard')
+            ->title($this->detailed ? 'Get a free estimate' : 'Your cleaning price');
     }
 }

@@ -8,6 +8,9 @@
 @endphp
 
 <div class="ng-estimate-form">
+    @if (! $detailed)
+        @include('livewire.partials.estimate-short')
+    @else
     <div wire:ignore>
         <x-public.section spacing="hero">
             <x-public.container>
@@ -512,6 +515,8 @@
             </a>
         </div>
     </div>
+
+    @endif
 
     @script
     <script>

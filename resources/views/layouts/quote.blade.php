@@ -10,6 +10,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <x-public.google-ads />
+
     @php
         $seo ??= app(\App\Services\SeoService::class)->forQuote();
         $jsonLd ??= array_values(array_filter([

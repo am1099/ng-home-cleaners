@@ -248,6 +248,14 @@
         overflow-y: auto;
     }
 
+    @media (min-width: 64rem) {
+        .ng-sticky-estimate-desktop {
+            position: sticky;
+            top: calc(var(--height-header) + 0.5rem);
+            overflow: visible;
+        }
+    }
+
     .ng-link {
         @apply font-semibold text-brand-800 underline-offset-4 transition-colors hover:text-brand-600 hover:underline;
     }

@@ -26,8 +26,9 @@ class EstimateWizardTest extends TestCase
     {
         $this->get(route('quote'))
             ->assertOk()
-            ->assertSee('Get your', false)
-            ->assertSee('instant estimate', false)
+            ->assertSee('Your cleaning price', false)
+            ->assertSee('in seconds', false)
+            ->assertSee('Read our Google reviews', false)
             ->assertSeeLivewire(EstimateWizard::class);
     }
 
@@ -37,6 +38,7 @@ class EstimateWizardTest extends TestCase
         $deep = Service::query()->where('slug', 'deep-clean')->firstOrFail();
 
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->assertSee($regular->estimate_description, false)
             ->set('serviceId', $deep->id)
@@ -48,6 +50,7 @@ class EstimateWizardTest extends TestCase
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
@@ -61,6 +64,7 @@ class EstimateWizardTest extends TestCase
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::OneOff->value)
             ->set('propertyType', PropertyType::House->value)
@@ -75,18 +79,18 @@ class EstimateWizardTest extends TestCase
         $addon = $deep->addons()->active()->orderBy('sort_order')->firstOrFail();
 
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('serviceId', $deep->id)
             ->set('propertyStatus', 'furnished')
             ->set('propertyType', PropertyType::House->value)
-            ->assertSee('None selected.', false)
             ->set('addonIds', [$addon->id])
-            ->assertDontSee('None selected.', false)
             ->assertSee($addon->label, false);
     }
 
     public function test_flat_defaults_to_one_floor(): void
     {
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('propertyType', PropertyType::Flat->value)
             ->assertSet('floors', 1);
     }
@@ -94,6 +98,7 @@ class EstimateWizardTest extends TestCase
     public function test_quantity_steppers_increment_and_respect_limits(): void
     {
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('bedrooms', 2)
             ->call('adjustQuantity', 'bedrooms', 1)
             ->assertSet('bedrooms', 3)
@@ -116,12 +121,13 @@ class EstimateWizardTest extends TestCase
             ->assertOk()
             ->assertSee('Decrease bedrooms', false)
             ->assertSee('Increase bathrooms', false)
-            ->assertSee('Increase reception rooms', false);
+            ->assertDontSee('Increase reception rooms', false);
     }
 
     public function test_split_level_flat_allows_multiple_floors(): void
     {
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('propertyType', PropertyType::Flat->value)
             ->set('splitLevelFlat', true)
             ->set('floors', 2)
@@ -141,6 +147,7 @@ class EstimateWizardTest extends TestCase
         $commercial = Service::query()->where('slug', 'office-commercial')->firstOrFail();
 
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('serviceId', $commercial->id)
             ->assertSee('Priced per visit', false);
     }
@@ -148,6 +155,7 @@ class EstimateWizardTest extends TestCase
     public function test_invalid_phone_is_rejected(): void
     {
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('preferredDate', now()->addWeek()->toDateString())
             ->set('phone', 'not-a-phone')
             ->set('firstName', 'Alex')
@@ -162,6 +170,7 @@ class EstimateWizardTest extends TestCase
     public function test_email_in_phone_field_is_rejected(): void
     {
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('preferredDate', now()->addWeek()->toDateString())
             ->set('phone', 'hello@example.com')
             ->set('firstName', 'Alex')
@@ -176,6 +185,7 @@ class EstimateWizardTest extends TestCase
     public function test_phone_in_email_field_is_rejected(): void
     {
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('preferredDate', now()->addWeek()->toDateString())
             ->set('phone', '07503651476')
             ->set('email', '07503651476')
@@ -190,6 +200,7 @@ class EstimateWizardTest extends TestCase
     public function test_invalid_postcode_is_rejected(): void
     {
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('preferredDate', now()->addWeek()->toDateString())
             ->set('phone', '07503651476')
             ->set('email', 'alex@example.com')
@@ -204,6 +215,7 @@ class EstimateWizardTest extends TestCase
     public function test_past_date_is_rejected(): void
     {
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('preferredDate', now()->subDay()->toDateString())
             ->set('phone', '07503651476')
             ->set('email', 'alex@example.com')
@@ -218,6 +230,7 @@ class EstimateWizardTest extends TestCase
     public function test_missing_service_is_rejected(): void
     {
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('serviceId', null)
             ->set('preferredDate', now()->addWeek()->toDateString())
             ->set('firstName', 'Alex')
@@ -233,6 +246,7 @@ class EstimateWizardTest extends TestCase
     public function test_single_page_shows_all_main_sections(): void
     {
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->assertSee('Which service do you need?', false)
             ->assertSee('About the property', false)
             ->assertSee('Rooms and layout', false)
@@ -252,6 +266,7 @@ class EstimateWizardTest extends TestCase
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
@@ -282,6 +297,7 @@ class EstimateWizardTest extends TestCase
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
@@ -303,6 +319,7 @@ class EstimateWizardTest extends TestCase
     public function test_cannot_submit_without_required_contact_and_visit_fields(): void
     {
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('firstName', '')
             ->set('lastName', '')
             ->set('phone', '')
@@ -330,6 +347,7 @@ class EstimateWizardTest extends TestCase
         $deep = Service::query()->where('slug', 'deep-clean')->firstOrFail();
 
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('serviceId', $deep->id)
             ->set('propertyStatus', null)
             ->set('preferredDate', now()->addWeek()->toDateString())
@@ -348,6 +366,7 @@ class EstimateWizardTest extends TestCase
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', '')
             ->set('preferredDate', now()->addWeek()->toDateString())
@@ -364,6 +383,7 @@ class EstimateWizardTest extends TestCase
     public function test_honeypot_blocks_submission_without_creating_lead(): void
     {
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('website', 'http://spam.example')
             ->set('preferredDate', now()->addWeek()->toDateString())
             ->set('firstName', 'Spam')
@@ -383,6 +403,7 @@ class EstimateWizardTest extends TestCase
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::OneOff->value)
             ->set('propertyType', PropertyType::House->value)
@@ -408,11 +429,49 @@ class EstimateWizardTest extends TestCase
     public function test_navigation_state_preserved_when_changing_inputs(): void
     {
         Livewire::test(EstimateWizard::class)
+            ->set('detailed', true)
             ->set('bedrooms', 4)
             ->set('bathrooms', 2)
             ->set('firstName', 'Alex')
             ->assertSet('bedrooms', 4)
             ->assertSet('bathrooms', 2)
             ->assertSet('firstName', 'Alex');
+    }
+
+    public function test_short_form_saves_a_whatsapp_lead_without_a_phone_number(): void
+    {
+        $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
+
+        Livewire::test(EstimateWizard::class)
+            ->assertSet('detailed', false)
+            ->assertSee('Full name', false)
+            ->assertSee('about 2½ hrs', false)
+            ->set('serviceId', $regular->id)
+            ->set('frequency', CleaningFrequency::Fortnightly->value)
+            ->set('bedrooms', 2)
+            ->set('bathrooms', 1)
+            ->set('firstName', 'Jane Smith')
+            ->set('postcode', 'NG1 1AA')
+            ->call('submitViaWhatsApp')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('quote_requests', [
+            'first_name' => 'Jane Smith',
+            'postcode' => 'NG1 1AA',
+            'phone' => null,
+            'email' => null,
+            'customer_id' => null,
+            'service_id' => $regular->id,
+        ]);
+    }
+
+    public function test_short_form_rejects_an_invalid_optional_phone(): void
+    {
+        Livewire::test(EstimateWizard::class)
+            ->set('firstName', 'Jane Smith')
+            ->set('phone', 'not-a-phone')
+            ->set('postcode', 'NG1 1AA')
+            ->call('submitViaWhatsApp')
+            ->assertHasErrors(['phone']);
     }
 }

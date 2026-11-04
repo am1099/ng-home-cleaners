@@ -74,9 +74,9 @@ final readonly class WizardSubmissionData
             phone: UkContactNormalizer::formatPhoneDisplay($wizard->phone),
             email: UkContactNormalizer::normalizeEmail($wizard->email),
             postcode: UkContactNormalizer::normalizePostcode($wizard->postcode),
-            addressLine1: trim($wizard->addressLine1),
+            addressLine1: $wizard->detailed ? trim($wizard->addressLine1) : '',
             addressLine2: filled($wizard->addressLine2) ? trim($wizard->addressLine2) : null,
-            city: trim($wizard->city),
+            city: $wizard->detailed ? trim($wizard->city) : '',
             parkingNotes: $wizard->resolvedParkingNotes(),
             accessNotes: $wizard->resolvedAccessNotes(),
         );
@@ -144,7 +144,7 @@ final readonly class WizardSubmissionData
             conditionNotes: $this->conditionNotes,
             parkingNotes: $this->parkingNotes,
             accessNotes: $this->accessNotes,
-            arrivalWindow: ArrivalWindow::from($this->arrivalWindow),
+            arrivalWindow: filled($this->arrivalWindow) ? ArrivalWindow::from($this->arrivalWindow) : null,
         );
     }
 }

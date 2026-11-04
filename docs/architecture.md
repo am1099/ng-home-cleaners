@@ -96,7 +96,8 @@ All admin policies extend `AdminPolicy` (authenticated staff access).
 | `/move-in-move-out` | `MoveInOutController` | Move-in / move-out landing using the pricing engine |
 | `/about` | `AboutController` | Site settings (story, promises) |
 | `/contact` | `ContactController` | Site settings (phone, email, WhatsApp, hours) |
-| `/get-a-quote` | `EstimateWizard` (Livewire) | Multi-step estimator; primary CTA books via WhatsApp, secondary emails the request |
+| `/get-a-quote` | `EstimateWizard` (Livewire) | Short price form: service, frequency, bedrooms, bathrooms, extras, name, optional phone, postcode. WhatsApp saves the lead. |
+| `/get-a-quote/detailed` | `EstimateWizard` (Livewire) | Full estimate form for landlords, agencies and larger jobs |
 | `/get-a-quote/confirmation/{reference}` | `QuoteConfirmationController` | Post-submit confirmation (reference, estimate, next steps) |
 | `/confirm` | `BookingConfirmationForm` (Livewire) | Public booking confirmation (access, parking, equipment). `noindex`. Stored as `booking_confirmations` |
 | `/privacy`, `/terms`, `/cookies` | `LegalPageController` | `legal_pages` table |
@@ -162,24 +163,21 @@ Changes take effect immediately after save (pricing cache cleared).
 
 ## Estimate form (Phase 6)
 
-Route: `/get-a-quote` → `App\Livewire\EstimateWizard` (full-page Livewire component).
+Route: `/get-a-quote` → `App\Livewire\EstimateWizard`.
 
-### Layout
+The public form asks for the clean, how often (regular only), bedrooms, bathrooms, optional extras, full name, an optional phone number, and postcode. **Book via WhatsApp** saves that lead and opens a chat. Fields the short form does not ask use neutral pricing defaults: house, floors at the included baseline, one kitchen, one reception, no condition flags. Each frequency chip is a live engine price for the current home and extras.
 
-Single-page numbered sections (Joya-style), wide grid so property/rooms/details use horizontal space. Sticky live guide estimate on desktop; compact bar on mobile (Livewire island). Commercial hides rooms, condition, and extras via Alpine.
+Visit length on the price card is display-only: a two-hour minimum, plus 30 minutes per bedroom above one and 45 minutes per bathroom above one. It does not change the price.
 
-### Sections (residential)
-
-Service → Property → Rooms → Condition → Extras (optional accordion) → When & details → Submit (email or WhatsApp)
+`/get-a-quote/detailed` keeps the full form (property, rooms, condition, date, address, photos, email) for landlords, agencies and larger jobs.
 
 ### Key behaviours
 
-- Live guide price via `PricingEngine` as answers change (island updates for most fields)
-- Service / property-type changes remorph the form so extras and floor defaults stay correct
-- Flat defaults to 1 floor; split-level / maisonette unlocks multi-floor
+- Live guide price via `PricingEngine` as answers change
+- Flat defaults to 1 floor on the detailed form; split-level / maisonette unlocks multi-floor
 - Regular clean frequencies: One-off, Weekly, Fortnightly, Monthly
-- Arrival windows (not exact slots); UK phone, email, NG postcode validation
-- Full CRM lead capture on submit; honeypot + IP rate limit; confirmation page unchanged
+- Short WhatsApp leads can omit phone and email. A customer record is created only when a phone number is given
+- Honeypot + IP rate limit; confirmation page unchanged for the detailed email path
 
 ## Lead generation (Phase 7)
 
@@ -388,6 +386,7 @@ Skip link, focus styles, reduced-motion CSS, estimate section labels, field `ari
 - Session `secure` cookie defaults on in production
 - Branded `404` / `419` / `500` (minimal layout for 419/500 so DB outages still render)
 - Analytics events are provider-agnostic (`window.ngTrack`); no vendor unless `ANALYTICS_ENABLED` + driver
+- Google Ads tag (`config('analytics.google_ads_id')`) on public and quote layouts only. Consent Mode defaults advertising storage to denied until cookie acceptance.
 
 ### Analytics events
 

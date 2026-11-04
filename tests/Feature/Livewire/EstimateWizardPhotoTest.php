@@ -31,7 +31,7 @@ class EstimateWizardPhotoTest extends TestCase
     {
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
-        Livewire::test(EstimateWizard::class)
+        Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
@@ -63,7 +63,7 @@ class EstimateWizardPhotoTest extends TestCase
             UploadedFile::fake()->image('bathroom.png', 400, 300),
         ];
 
-        Livewire::test(EstimateWizard::class)
+        Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
@@ -97,7 +97,7 @@ class EstimateWizardPhotoTest extends TestCase
     {
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
-        Livewire::test(EstimateWizard::class)
+        Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
@@ -127,7 +127,7 @@ class EstimateWizardPhotoTest extends TestCase
     {
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
-        Livewire::test(EstimateWizard::class)
+        Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
@@ -158,7 +158,7 @@ class EstimateWizardPhotoTest extends TestCase
             $photos[] = UploadedFile::fake()->image("room-{$i}.jpg", 200, 200);
         }
 
-        Livewire::test(EstimateWizard::class)
+        Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)

@@ -32,6 +32,7 @@ Set in production `.env` (never commit secrets):
 - Resend mail: `MAIL_MAILER=resend`, `RESEND_API_KEY`, and `MAIL_FROM_ADDRESS` on a **verified Resend domain** (e.g. `hello@nghomecleaners.co.uk`). `hello@example.com` will be rejected.
 - `SESSION_SECURE_COOKIE=true` (or leave unset — defaults to secure when `APP_ENV=production`)
 - Optional analytics: `ANALYTICS_ENABLED=true`, `ANALYTICS_DRIVER=plausible`, and `PLAUSIBLE_DOMAIN=your-domain`. The Plausible script loads only after cookie consent.
+- Google Ads: public pages include the Ads tag (`GOOGLE_ADS_ID`, default `AW-18369596770`). Advertising storage stays denied until the visitor accepts the cookie banner. Set `GOOGLE_ADS_ID` empty and recache config to remove it. The tag is not loaded in Filament admin.
 
 ## Object storage (Laravel Cloud)
 

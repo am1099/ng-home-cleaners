@@ -20,6 +20,10 @@ class SendQuoteFollowUpJob implements ShouldQueue
             ->whereNull('follow_up_sent_at')
             ->where('submitted_at', '<=', now()->subDay())
             ->each(function (QuoteRequest $quoteRequest): void {
+                if (blank($quoteRequest->email)) {
+                    return;
+                }
+
                 Mail::to($quoteRequest->email)->queue(new CustomerQuoteFollowUpMail($quoteRequest));
 
                 $quoteRequest->forceFill([

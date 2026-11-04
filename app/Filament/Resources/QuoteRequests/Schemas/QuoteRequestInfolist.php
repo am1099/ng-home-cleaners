@@ -54,7 +54,7 @@ class QuoteRequestInfolist
                 ->columns(2)
                 ->schema([
                     TextEntry::make('full_name')->label('Name')->state(fn ($record) => $record->fullName()),
-                    TextEntry::make('phone')->copyable(),
+                    TextEntry::make('phone')->copyable()->placeholder('—'),
                     TextEntry::make('email')->copyable()->placeholder('—'),
                     TextEntry::make('postcode')->placeholder('—'),
                     TextEntry::make('address_line1')->label('Address')->placeholder('—')->columnSpanFull(),

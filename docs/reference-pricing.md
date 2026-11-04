@@ -176,6 +176,8 @@ hi = max(hi, 65)
 
 Comment in source: “2h minimum at £24/hr” (marketing copy elsewhere says two-hour minimum visit).
 
+The short quote page shows a display-only duration from that minimum: 2 hours, plus 30 minutes for each bedroom above one and 45 minutes for each bathroom above one. A 2 bed, 1 bath clean reads “about 2½ hrs”. This label does not change the guide price.
+
 ### 6.2 Frequency discounts (Regular only)
 
 Applied when computing the single displayed “From £X a visit” price (not to the lo/hi band directly).

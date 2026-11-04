@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <x-public.google-ads />
+
     @php
         $seo ??= app(\App\Services\SeoService::class)->forQuoteConfirmation();
         $jsonLd ??= [app(\App\Services\SeoService::class)->organizationJsonLd()];
@@ -31,5 +33,7 @@
     </main>
 
     <x-public.footer :show-gallery-nav="$showGalleryNav ?? false" />
+
+    <x-public.cookie-consent />
 </body>
 </html>

@@ -45,7 +45,7 @@ class QuoteRequestSubmissionTest extends TestCase
     {
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
-        Livewire::test(EstimateWizard::class)
+        Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
@@ -117,7 +117,7 @@ class QuoteRequestSubmissionTest extends TestCase
     {
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
-        Livewire::test(EstimateWizard::class)
+        Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
@@ -157,7 +157,7 @@ class QuoteRequestSubmissionTest extends TestCase
     {
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
-        $component = Livewire::test(EstimateWizard::class)
+        $component = Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
@@ -189,7 +189,7 @@ class QuoteRequestSubmissionTest extends TestCase
     {
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
-        $component = Livewire::test(EstimateWizard::class)
+        $component = Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
@@ -216,7 +216,7 @@ class QuoteRequestSubmissionTest extends TestCase
     {
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
-        Livewire::test(EstimateWizard::class)
+        Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $regular->id)
             ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)

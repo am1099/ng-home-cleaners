@@ -24,7 +24,11 @@
     <div class="mx-auto max-w-3xl rounded-[var(--radius-card)] border border-border bg-surface-page p-4 shadow-[var(--shadow-elevated)] sm:p-5">
         <h2 id="cookie-consent-title" class="text-sm font-semibold text-ink">Cookies and analytics</h2>
         <p id="cookie-consent-copy" class="mt-2 text-sm leading-relaxed text-ink-muted">
-            We use optional analytics (Plausible) to understand which pages help people book. Nothing is loaded until you accept.
+            @if (filled(config('analytics.google_ads_id')))
+                We use optional analytics and Google Ads tags to see which pages help people book and whether our adverts lead to enquiries. Advertising cookies stay off until you accept.
+            @else
+                We use optional analytics (Plausible) to understand which pages help people book. Nothing is loaded until you accept.
+            @endif
             See the <a href="{{ $policyUrl }}" class="ng-link">cookie policy</a> for details.
         </p>
         <div class="mt-4 flex flex-wrap gap-2">
@@ -33,7 +37,7 @@
                 class="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-[var(--radius-pill)] bg-brand-700 px-4 text-sm font-semibold text-white hover:bg-brand-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700"
                 @click="accept()"
             >
-                Accept analytics
+                Accept cookies
             </button>
             <button
                 type="button"

@@ -38,35 +38,37 @@ class QuoteRequestService
         $calculation = $this->pricingEngine->calculate($data->toEstimateInput());
 
         return DB::transaction(function () use ($data, $source, $whatsappInitiated, $service, $calculation): QuoteRequest {
-            $customer = $this->reconcileCustomer([
-                'first_name' => $data->firstName,
-                'last_name' => $data->lastName,
-                'phone' => $data->phone,
-                'email' => $data->email,
-                'postcode' => $data->postcode,
-                'address_line1' => $data->addressLine1,
-                'address_line2' => $data->addressLine2,
-                'city' => $data->city,
-            ]);
+            $customer = filled($data->phone)
+                ? $this->reconcileCustomer([
+                    'first_name' => $data->firstName,
+                    'last_name' => $data->lastName,
+                    'phone' => $data->phone,
+                    'email' => filled($data->email) ? $data->email : null,
+                    'postcode' => $data->postcode,
+                    'address_line1' => $data->addressLine1,
+                    'address_line2' => $data->addressLine2,
+                    'city' => $data->city,
+                ])
+                : null;
 
             return QuoteRequest::query()->create([
                 'reference' => $this->referenceGenerator->next(),
-                'customer_id' => $customer->id,
+                'customer_id' => $customer?->id,
                 'service_id' => $service->id,
                 'source' => $source,
                 'status' => QuoteRequestStatus::New,
                 'first_name' => $data->firstName,
                 'last_name' => $data->lastName,
-                'phone' => $data->phone,
-                'email' => $data->email,
+                'phone' => filled($data->phone) ? $data->phone : null,
+                'email' => filled($data->email) ? $data->email : null,
                 'postcode' => $data->postcode,
-                'address_line1' => $data->addressLine1,
+                'address_line1' => filled($data->addressLine1) ? $data->addressLine1 : null,
                 'address_line2' => $data->addressLine2,
-                'city' => $data->city,
+                'city' => filled($data->city) ? $data->city : null,
                 'parking_notes' => $data->parkingNotes ?: null,
                 'access_notes' => $data->accessNotes ?: null,
-                'preferred_date' => $data->preferredDate,
-                'arrival_window' => $data->arrivalWindow,
+                'preferred_date' => filled($data->preferredDate) ? $data->preferredDate : null,
+                'arrival_window' => filled($data->arrivalWindow) ? $data->arrivalWindow : null,
                 'frequency' => $data->frequency,
                 'property_type' => $data->propertyType,
                 'bedrooms' => $data->bedrooms,
@@ -324,60 +326,58 @@ class QuoteRequestService
 
     public function whatsappMessage(QuoteRequest $quoteRequest): string
     {
-        $serviceName = $quoteRequest->service?->name ?? 'cleaning enquiry';
-        $lines = [
-            "Hi, I've just requested a clean with NG Home Cleaners.",
-            'This request is already saved.',
-            'Reference: '.$quoteRequest->reference,
-            'Clean: '.$serviceName,
-        ];
-
-        if (filled($quoteRequest->postcode)) {
-            $lines[] = 'Postcode: '.$quoteRequest->postcode;
-        }
+        $name = trim($quoteRequest->fullName());
+        $serviceName = strtolower($quoteRequest->service?->name ?? 'clean');
+        $frequency = filled($quoteRequest->frequency)
+            ? strtolower((string) CleaningFrequency::tryFrom((string) $quoteRequest->frequency)?->label())
+            : null;
 
         $rooms = [];
 
         if ($quoteRequest->bedrooms !== null) {
             $rooms[] = $quoteRequest->bedrooms === 0
-                ? 'Studio'
-                : $quoteRequest->bedrooms.' bedroom'.($quoteRequest->bedrooms === 1 ? '' : 's');
+                ? 'a studio'
+                : 'a '.$quoteRequest->bedrooms.' bedroom'.($quoteRequest->bedrooms === 1 ? '' : 's');
         }
 
         if ($quoteRequest->bathrooms !== null) {
             $rooms[] = $quoteRequest->bathrooms.' bathroom'.($quoteRequest->bathrooms === 1 ? '' : 's');
         }
 
-        if ($rooms !== []) {
-            $lines[] = 'Property: '.implode(', ', $rooms);
+        $home = $rooms !== [] ? implode(', ', $rooms) : 'my home';
+        $clean = trim(($frequency ? $frequency.' ' : '').$serviceName);
+
+        $lines = ["Hi, I'd like a quote and to book a clean, please."];
+
+        $request = $name !== ''
+            ? "I'm {$name}. I'd like a {$clean} for {$home}"
+            : "I'd like a {$clean} for {$home}";
+
+        if (filled($quoteRequest->postcode)) {
+            $request .= ' in '.$quoteRequest->postcode;
         }
+
+        $lines[] = $request.'.';
 
         if ($quoteRequest->preferred_date) {
             $window = ArrivalWindow::tryFrom((string) $quoteRequest->arrival_window)?->label();
-            $visit = $quoteRequest->preferred_date->format('l j F Y');
+            $visit = 'I would like the first visit on '.$quoteRequest->preferred_date->format('l j F Y');
 
             if ($window) {
                 $visit .= ' ('.$window.')';
             }
 
-            $lines[] = 'Preferred visit: '.$visit;
+            $lines[] = $visit.'.';
         }
 
-        if (filled($quoteRequest->frequency)) {
-            $frequency = CleaningFrequency::tryFrom((string) $quoteRequest->frequency)?->label();
-
-            if ($frequency) {
-                $lines[] = 'Frequency: '.$frequency;
-            }
-        }
-
-        $lines[] = 'Guide price: '.($quoteRequest->guide_estimate_headline ?? 'to be confirmed');
+        $price = $quoteRequest->guide_estimate_headline ?: 'to be confirmed';
+        $lines[] = 'The guide price I saw on your site was '.$price.' (reference '.$quoteRequest->reference.').';
 
         if (! empty($quoteRequest->property_photo_paths)) {
-            $lines[] = 'Photos uploaded with the form are already saved against this request.';
+            $lines[] = "I've also added photos of the home.";
         }
 
-        $lines[] = 'Please could you confirm availability? A short walkthrough video of the kitchen, bathrooms and main rooms helps us lock the price.';
+        $lines[] = 'Could you let me know if you can take this? I can send a short walkthrough video of the kitchen, bathrooms and main rooms so you can confirm the price.';
 
         return implode("\n", $lines);
     }

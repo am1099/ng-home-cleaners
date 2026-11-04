@@ -33,7 +33,7 @@ class ServicesVisibilityTest extends TestCase
             ->assertOk()
             ->assertSee($service->name, false);
 
-        Livewire::test(EstimateWizard::class)
+        Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->assertSee($service->name, false);
     }
 
@@ -52,7 +52,7 @@ class ServicesVisibilityTest extends TestCase
             ->assertOk()
             ->assertDontSee(route('services.show', $service, absolute: true), false);
 
-        Livewire::test(EstimateWizard::class)
+        Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->assertDontSee($service->name, false);
     }
 
@@ -69,7 +69,7 @@ class ServicesVisibilityTest extends TestCase
             ->assertOk()
             ->assertSee('Weekly home tidy', false);
 
-        Livewire::test(EstimateWizard::class)
+        Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $service->id)
             ->assertSee('CMS-updated estimate blurb for regular cleans.', false);
     }

@@ -164,16 +164,16 @@ final class SeoService
         $site = $this->site();
 
         return new SeoPage(
-            title: $this->brandedTitle('Get a free estimate', $site),
+            title: $this->brandedTitle('Your cleaning price', $site),
             description: $this->description(
                 null,
-                'Get a guide price for cleaning in Nottingham. Your fixed price follows in writing within one working day.',
+                'See a guide price for cleaning in Nottingham in a few taps, then book on WhatsApp. Your fixed price is confirmed before we start.',
             ),
             canonical: $this->absoluteRoute('quote'),
             ogImage: $this->defaultOgImage($site),
             breadcrumbs: [
                 ['name' => 'Home', 'url' => $this->absoluteRoute('home')],
-                ['name' => 'Get a free estimate', 'url' => $this->absoluteRoute('quote')],
+                ['name' => 'Your cleaning price', 'url' => $this->absoluteRoute('quote')],
             ],
         );
     }

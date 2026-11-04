@@ -31,6 +31,22 @@
 
         root.dataset.analyticsConsent = value;
         window.dispatchEvent(new CustomEvent('ng:consent', { detail: { value } }));
+        updateGoogleConsent(value === 'accepted');
+    }
+
+    function updateGoogleConsent(granted) {
+        if (typeof window.gtag !== 'function') {
+            return;
+        }
+
+        const state = granted ? 'granted' : 'denied';
+
+        window.gtag('consent', 'update', {
+            ad_storage: state,
+            ad_user_data: state,
+            ad_personalization: state,
+            analytics_storage: state,
+        });
     }
 
     function sendToDriver(event, payload) {

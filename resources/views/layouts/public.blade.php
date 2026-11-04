@@ -10,6 +10,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <x-public.google-ads />
+
     <x-public.seo :page="$seo ?? null" />
 
     @foreach (($jsonLd ?? []) as $block)

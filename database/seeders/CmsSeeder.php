@@ -459,8 +459,8 @@ class CmsSeeder extends Seeder
             'cookies' => [
                 'title' => 'Cookie policy',
                 'seo_title' => 'Cookie policy',
-                'seo_description' => 'Essential cookies used by the NG Home Cleaners website. We do not use advertising cookies.',
-                'content' => 'This site uses essential cookies required for basic functionality and security. We do not use advertising cookies.',
+                'seo_description' => 'Essential cookies and optional Google Ads tags used by the NG Home Cleaners website.',
+                'content' => "This site uses essential cookies required for basic functionality and security.\n\nIf you accept cookies, we also use Google Ads tags to measure visits from our adverts and record conversions, such as an estimate request. Those advertising cookies stay off until you accept. If you choose essential only, the Google tag remains on the page but advertising storage stays denied.",
             ],
         ];
 

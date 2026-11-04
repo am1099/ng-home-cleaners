@@ -69,7 +69,7 @@ class HardeningTest extends TestCase
             RateLimiter::hit($key, 60);
         }
 
-        Livewire::test(EstimateWizard::class)
+        Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->call('submit')
             ->assertHasErrors(['submit']);
     }

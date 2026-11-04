@@ -24,4 +24,10 @@ return [
         'script_url' => env('PLAUSIBLE_SCRIPT_URL', 'https://plausible.io/js/script.js'),
     ],
 
+    /*
+    | Google Ads tag (AW-…). Loaded on public pages. Advertising storage stays
+    | denied until the visitor accepts the cookie banner. Set to empty to disable.
+    */
+    'google_ads_id' => env('GOOGLE_ADS_ID', 'AW-18369596770'),
+
 ];

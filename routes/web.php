@@ -28,6 +28,7 @@ Route::get('/move-in-move-out', MoveInOutController::class)->name('move-in-out')
 Route::get('/about', AboutController::class)->name('about');
 Route::get('/contact', ContactController::class)->name('contact');
 Route::livewire('/get-a-quote', EstimateWizard::class)->name('quote');
+Route::livewire('/get-a-quote/detailed', EstimateWizard::class)->name('quote.detailed');
 Route::get('/get-a-quote/confirmation/{reference}', QuoteConfirmationController::class)->name('quote.confirmation');
 Route::livewire('/confirm', BookingConfirmationForm::class)->name('booking.confirm');
 Route::get('/privacy', fn (LegalPageController $controller) => $controller('privacy'))->name('legal.privacy');

@@ -64,9 +64,11 @@ class QuoteWhatsAppMessageTest extends TestCase
 
         $this->assertStringContainsString('walkthrough video', $message);
         $this->assertStringContainsString('kitchen, bathrooms and main rooms', $message);
-        $this->assertStringContainsString('Clean: Regular clean', $message);
-        $this->assertStringContainsString('Postcode: NG1 1AA', $message);
-        $this->assertStringContainsString('already saved', $message);
+        $this->assertStringContainsString("I'd like a quote and to book a clean", $message);
+        $this->assertStringContainsString('regular clean', $message);
+        $this->assertStringContainsString('NG1 1AA', $message);
+        $this->assertStringContainsString("I'm Alex Taylor", $message);
+        $this->assertStringNotContainsString('already saved', $message);
         $this->assertStringContainsString('NG-TEST-WA', $url);
         $this->assertStringContainsString(rawurlencode('walkthrough video'), $url);
     }
@@ -109,6 +111,6 @@ class QuoteWhatsAppMessageTest extends TestCase
 
         $message = app(QuoteRequestService::class)->whatsappMessage($lead);
 
-        $this->assertStringContainsString('Photos uploaded with the form are already saved', $message);
+        $this->assertStringContainsString("I've also added photos of the home.", $message);
     }
 }

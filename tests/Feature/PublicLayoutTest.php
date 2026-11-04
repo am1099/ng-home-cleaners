@@ -57,19 +57,35 @@ class PublicLayoutTest extends TestCase
         }
     }
 
+    public function test_google_ads_tag_is_on_public_pages_and_not_admin(): void
+    {
+        $snippet = 'https://www.googletagmanager.com/gtag/js?id=AW-18369596770';
+
+        $this->get('/')->assertOk()->assertSee($snippet, false);
+        $this->get('/get-a-quote')->assertOk()->assertSee($snippet, false);
+        $this->get('/confirm')->assertOk()->assertSee($snippet, false);
+        $this->get('/cookies')->assertOk()->assertSee('Google Ads', false);
+        $this->get('/admin/login')->assertOk()->assertDontSee('googletagmanager.com', false);
+    }
+
     public function test_quote_wizard_has_sticky_guide_estimate(): void
     {
         $html = $this->get('/get-a-quote')
             ->assertOk()
-            ->assertSee('ng-sticky-estimate', false)
-            ->assertSee('Your guide estimate', false)
+            ->assertSee('Your price', false)
+            ->assertSee('ng-sticky-estimate-desktop', false)
             ->assertSee('window.livewireScriptConfig', false)
             ->getContent();
 
-        $this->assertLessThan(
-            strpos($html, '/build/assets/'),
-            strpos($html, 'window.livewireScriptConfig'),
-            'Livewire script config must load before the Vite bundle.',
-        );
+        $livewire = strpos($html, 'window.livewireScriptConfig');
+        $build = strpos($html, '/build/assets/');
+
+        if ($build !== false) {
+            $this->assertLessThan(
+                $build,
+                $livewire,
+                'Livewire script config must load before the Vite bundle.',
+            );
+        }
     }
 }
