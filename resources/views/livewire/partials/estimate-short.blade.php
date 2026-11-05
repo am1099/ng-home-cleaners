@@ -3,7 +3,7 @@
     $service = $this->selectedService;
     $isRegular = (bool) $service?->isRegularClean();
     $isCommercial = (bool) $service?->requiresManualQuote();
-    $cardClass = 'flex min-h-[4.75rem] cursor-pointer flex-col justify-center rounded-[var(--radius-md)] border border-border bg-white px-4 py-3 text-left transition has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand-600';
+    $cardClass = 'flex cursor-pointer flex-col justify-center rounded-[var(--radius-md)] border border-border bg-white px-3 py-2.5 text-left transition has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand-600 sm:min-h-[4.75rem] sm:px-4 sm:py-3';
     $chipClass = 'flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-md)] border border-border bg-white px-3 py-2.5 text-center transition has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand-600';
     $area = trim((string) \Illuminate\Support\Str::before((string) $settings->service_area_summary, '('));
 @endphp
@@ -101,13 +101,13 @@
                             <h2 id="step-service" class="ng-display text-xl sm:text-2xl">What do you need?</h2>
                         </div>
 
-                        <div class="mt-5 grid gap-3 sm:grid-cols-2">
+                        <div class="mt-4 grid grid-cols-2 gap-2 sm:mt-5 sm:gap-3">
                             @foreach ($this->services as $option)
                                 <label class="{{ $cardClass }}" wire:key="service-{{ $option->id }}">
                                     <input type="radio" name="serviceId" wire:model.live="serviceId" value="{{ $option->id }}" class="sr-only">
-                                    <span class="text-base font-semibold text-ink">{{ $option->name }}</span>
+                                    <span class="text-sm font-semibold leading-snug text-ink sm:text-base">{{ filled($option->card_title) ? $option->card_title : $option->name }}</span>
                                     @if (filled($option->estimate_description))
-                                        <span class="mt-1 text-sm font-normal text-ink-muted">{{ $option->estimate_description }}</span>
+                                        <span class="mt-1 text-xs font-normal leading-snug text-ink-muted sm:text-sm">{{ $option->estimate_description }}</span>
                                     @endif
                                 </label>
                             @endforeach

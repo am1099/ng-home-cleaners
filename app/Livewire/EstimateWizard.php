@@ -287,6 +287,7 @@ class EstimateWizard extends Component
                 'id',
                 'name',
                 'slug',
+                'card_title',
                 'estimate_description',
                 'is_active',
                 'sort_order',
