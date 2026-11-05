@@ -114,6 +114,15 @@
                         </div>
                         @error('serviceId') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
 
+                        <p class="mt-3 text-sm leading-snug text-ink-muted">
+                            <span class="mr-1.5 text-brand-700" aria-hidden="true">&#10003;</span>
+                            @if ($isCommercial)
+                                Includes the kitchen, washrooms and reception.
+                            @else
+                                Includes the kitchen and living room.
+                            @endif
+                        </p>
+
                         @if ($this->inclusions->isNotEmpty())
                             <div class="mt-4 rounded-[var(--radius-md)] border border-border">
                                 <button
@@ -188,7 +197,7 @@
                             />
                         </div>
 
-                        @if (! $isCommercial)
+                        @if ($this->availableAddons->isNotEmpty())
                             <div class="mt-4 rounded-[var(--radius-md)] border border-border">
                                 <button
                                     type="button"
@@ -201,7 +210,7 @@
                                 </button>
                                 @if ($extrasOpen)
                                     <div class="grid gap-2 border-t border-border p-3 sm:grid-cols-2">
-                                        @forelse ($this->availableAddons as $addon)
+                                        @foreach ($this->availableAddons as $addon)
                                             @php $selected = in_array((int) $addon->id, array_map('intval', $addonIds), true); @endphp
                                             <button
                                                 type="button"
@@ -216,9 +225,7 @@
                                             >
                                                 {{ $this->addonDisplayLabel($addon) }}
                                             </button>
-                                        @empty
-                                            <p class="text-sm text-ink-muted">No extras for this service.</p>
-                                        @endforelse
+                                        @endforeach
                                     </div>
                                 @endif
                             </div>
@@ -307,7 +314,7 @@
                             wire:click.prevent="submitViaWhatsApp"
                             wire:loading.attr="disabled"
                             @disabled($submitting)
-                            class="mt-4 inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 text-sm font-semibold text-white shadow-md shadow-[#25D366]/30 transition hover:bg-[#1ebe5d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366] disabled:cursor-wait disabled:opacity-50"
+                            class="mt-4 hidden min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 text-sm font-semibold text-white shadow-md shadow-[#25D366]/30 transition hover:bg-[#1ebe5d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366] disabled:cursor-wait disabled:opacity-50 lg:inline-flex"
                         >
                             <span wire:loading.remove wire:target="submitViaWhatsApp">Book via WhatsApp</span>
                             <span wire:loading wire:target="submitViaWhatsApp">Saving…</span>
@@ -336,4 +343,34 @@
             </div>
         </x-public.container>
     </x-public.section>
+
+    <div class="ng-mobile-quote-bar fixed inset-x-0 bottom-0 z-40 border-t border-border bg-white/95 shadow-[0_-10px_30px_rgba(16,33,30,0.08)] backdrop-blur-md lg:hidden" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom))">
+        <div class="flex items-center justify-between gap-4 px-4 pt-3">
+            <div class="min-w-0">
+                <p class="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-ink-muted">Your price</p>
+                @if ($isCommercial)
+                    <p class="ng-display mt-1 text-xl leading-none text-ink">Quoted</p>
+                @elseif ($this->priceFigure())
+                    <p class="mt-1 flex items-baseline gap-1.5 leading-none text-ink">
+                        <span class="ng-display text-[1.85rem] tracking-tight">{{ $this->priceFigure() }}</span>
+                        @if ($isRegular)
+                            <span class="text-sm font-medium text-ink-muted">/ visit</span>
+                        @endif
+                    </p>
+                @else
+                    <p class="ng-display mt-1 text-xl leading-none text-ink">—</p>
+                @endif
+            </div>
+            <button
+                type="button"
+                wire:click.prevent="submitViaWhatsApp"
+                wire:loading.attr="disabled"
+                @disabled($submitting)
+                class="inline-flex h-12 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#25D366] px-5 text-sm font-semibold text-white shadow-md shadow-[#25D366]/35 transition hover:bg-[#1ebe5d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366] disabled:cursor-wait disabled:opacity-50"
+            >
+                <span wire:loading.remove wire:target="submitViaWhatsApp">WhatsApp us</span>
+                <span wire:loading wire:target="submitViaWhatsApp">Saving…</span>
+            </button>
+        </div>
+    </div>
 </div>

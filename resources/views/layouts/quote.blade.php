@@ -49,6 +49,6 @@
 
     <x-public.footer :show-gallery-nav="$showGalleryNav ?? false" />
 
-    <x-public.cookie-consent offset-class="bottom-28 lg:bottom-6" />
+    <x-public.cookie-consent offset-class="bottom-[calc(4.75rem+env(safe-area-inset-bottom))] lg:bottom-6" />
 </body>
 </html>

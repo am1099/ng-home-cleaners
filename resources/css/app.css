@@ -256,6 +256,12 @@
         }
     }
 
+    @media (max-width: 63.999rem) {
+        .ng-quote-page:has(.ng-mobile-quote-bar) {
+            padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+        }
+    }
+
     .ng-link {
         @apply font-semibold text-brand-800 underline-offset-4 transition-colors hover:text-brand-600 hover:underline;
     }
