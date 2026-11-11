@@ -3,14 +3,13 @@
 namespace App\Services;
 
 use App\Data\WizardSubmissionData;
-use App\Enums\ArrivalWindow;
-use App\Enums\CleaningFrequency;
 use App\Enums\QuoteRequestSource;
 use App\Enums\QuoteRequestStatus;
 use App\Models\Customer;
 use App\Models\QuoteRequest;
 use App\Models\Service;
 use App\Models\SiteSetting;
+use App\Pricing\Money;
 use App\Pricing\PricingEngine;
 use App\Support\Media;
 use App\Support\UkContactNormalizer;
@@ -57,11 +56,11 @@ class QuoteRequestService
                 'service_id' => $service->id,
                 'source' => $source,
                 'status' => QuoteRequestStatus::New,
-                'first_name' => $data->firstName,
-                'last_name' => $data->lastName,
+                'first_name' => filled($data->firstName) ? $data->firstName : null,
+                'last_name' => filled($data->lastName) ? $data->lastName : null,
                 'phone' => filled($data->phone) ? $data->phone : null,
                 'email' => filled($data->email) ? $data->email : null,
-                'postcode' => $data->postcode,
+                'postcode' => filled($data->postcode) ? $data->postcode : null,
                 'address_line1' => filled($data->addressLine1) ? $data->addressLine1 : null,
                 'address_line2' => $data->addressLine2,
                 'city' => filled($data->city) ? $data->city : null,
@@ -326,60 +325,75 @@ class QuoteRequestService
 
     public function whatsappMessage(QuoteRequest $quoteRequest): string
     {
-        $name = trim($quoteRequest->fullName());
-        $serviceName = strtolower($quoteRequest->service?->name ?? 'clean');
-        $frequency = filled($quoteRequest->frequency)
-            ? strtolower((string) CleaningFrequency::tryFrom((string) $quoteRequest->frequency)?->label())
-            : null;
+        $serviceName = $quoteRequest->service?->name ?? 'Clean';
 
-        $rooms = [];
+        $parts = [];
 
         if ($quoteRequest->bedrooms !== null) {
-            $rooms[] = $quoteRequest->bedrooms === 0
-                ? 'a studio'
-                : 'a '.$quoteRequest->bedrooms.' bedroom'.($quoteRequest->bedrooms === 1 ? '' : 's');
+            $parts[] = $quoteRequest->bedrooms === 0
+                ? 'studio'
+                : $quoteRequest->bedrooms.' bed';
         }
 
         if ($quoteRequest->bathrooms !== null) {
-            $rooms[] = $quoteRequest->bathrooms.' bathroom'.($quoteRequest->bathrooms === 1 ? '' : 's');
+            $parts[] = $quoteRequest->bathrooms.' bath';
         }
 
-        $home = $rooms !== [] ? implode(', ', $rooms) : 'my home';
-        $clean = trim(($frequency ? $frequency.' ' : '').$serviceName);
+        $meta = [];
 
-        $lines = ["Hi, I'd like a quote and to book a clean, please."];
-
-        $request = $name !== ''
-            ? "I'm {$name}. I'd like a {$clean} for {$home}"
-            : "I'd like a {$clean} for {$home}";
-
-        if (filled($quoteRequest->postcode)) {
-            $request .= ' in '.$quoteRequest->postcode;
+        if ($quoteRequest->is_numeric_estimate && $quoteRequest->guide_single_price_pence !== null) {
+            $meta[] = Money::formatPence((int) $quoteRequest->guide_single_price_pence);
         }
 
-        $lines[] = $request.'.';
+        $duration = $this->guideDurationLabel($quoteRequest);
 
-        if ($quoteRequest->preferred_date) {
-            $window = ArrivalWindow::tryFrom((string) $quoteRequest->arrival_window)?->label();
-            $visit = 'I would like the first visit on '.$quoteRequest->preferred_date->format('l j F Y');
-
-            if ($window) {
-                $visit .= ' ('.$window.')';
-            }
-
-            $lines[] = $visit.'.';
+        if ($duration !== null) {
+            $meta[] = $duration;
         }
 
-        $price = $quoteRequest->guide_estimate_headline ?: 'to be confirmed';
-        $lines[] = 'The guide price I saw on your site was '.$price.' (reference '.$quoteRequest->reference.').';
+        $detail = implode(', ', $parts);
 
-        if (! empty($quoteRequest->property_photo_paths)) {
-            $lines[] = "I've also added photos of the home.";
+        if ($meta !== []) {
+            $detail = trim($detail.' ('.implode(', ', $meta).')');
         }
 
-        $lines[] = 'Could you let me know if you can take this? I can send a short walkthrough video of the kitchen, bathrooms and main rooms so you can confirm the price.';
+        $book = "I'd like to BOOK: {$serviceName}";
 
-        return implode("\n", $lines);
+        if ($detail !== '') {
+            $book .= ' — '.$detail;
+        }
+
+        return "Hi NG Home Cleaners— {$book}. When are you next available?";
+    }
+
+    /**
+     * Display-only visit length for WhatsApp copy. Matches the short quote form.
+     */
+    protected function guideDurationLabel(QuoteRequest $quoteRequest): ?string
+    {
+        if ($quoteRequest->service?->requiresManualQuote()) {
+            return null;
+        }
+
+        if ($quoteRequest->bedrooms === null || $quoteRequest->bathrooms === null) {
+            return null;
+        }
+
+        $minutes = 120
+            + (max(0, (int) $quoteRequest->bedrooms - 1) * 30)
+            + (max(0, (int) $quoteRequest->bathrooms - 1) * 45);
+
+        $hours = intdiv($minutes, 60);
+        $fraction = match ($minutes % 60) {
+            15 => '¼',
+            30 => '½',
+            45 => '¾',
+            default => '',
+        };
+
+        $amount = $fraction === '' ? (string) $hours : $hours.$fraction;
+
+        return 'about '.$amount.' hr'.($minutes === 60 ? '' : 's');
     }
 
     public function whatsappUrl(QuoteRequest $quoteRequest): string

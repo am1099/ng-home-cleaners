@@ -36,9 +36,9 @@ class PaymentInfolist
                         ->url(fn (Payment $record): ?string => $record->booking_id
                             ? BookingResource::getUrl('view', ['record' => $record->booking_id])
                             : null),
-                    TextEntry::make('reference')->placeholder('—'),
+                    TextEntry::make('reference'),
                     TextEntry::make('notes')
-                        ->placeholder('—')
+
                         ->columnSpanFull(),
                 ]),
 
@@ -54,7 +54,7 @@ class PaymentInfolist
                                 ->columnSpan(3),
                             TextEntry::make('status')
                                 ->badge()
-                                ->formatStateUsing(fn ($state, Invoice $record): string => $record->status?->label() ?? '—')
+                                ->formatStateUsing(fn ($state, Invoice $record): string => $record->status?->label() ?? '')
                                 ->color(fn ($state, Invoice $record): string => $record->status?->color() ?? 'gray')
                                 ->columnSpan(2),
                             TextEntry::make('total')

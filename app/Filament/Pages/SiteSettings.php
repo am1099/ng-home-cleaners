@@ -123,6 +123,7 @@ class SiteSettings extends Page
                                             ->dehydrated(false),
                                         TagsInput::make('lead_notification_emails')
                                             ->label('Lead notification emails')
+                                            ->helperText('New quote requests are emailed here. Press Enter after each address. If this is empty, they go to the contact email above.')
                                             ->columnSpanFull(),
                                     ]),
                             ]),
@@ -147,7 +148,7 @@ class SiteSettings extends Page
                         Tab::make('Homepage')
                             ->schema([
                                 Section::make('Hero')
-                                    ->description('Homepage hero title, supporting text, and the circular image on the right.')
+                                    ->description('Homepage hero title, supporting text, and the photograph beside the headline.')
                                     ->columns(2)
                                     ->schema([
                                         TextInput::make('home_hero_title')
@@ -162,7 +163,7 @@ class SiteSettings extends Page
                                             ->columnSpanFull(),
                                         SecureImageUpload::make('home_hero_image', 'brand/hero', 1600)
                                             ->label('Hero image')
-                                            ->helperText('Shown in the large circular frame on the right of the homepage hero. Use a bright, tidy interior photo.')
+                                            ->helperText('Shown full height beside the headline. Use a bright, tidy interior photo.')
                                             ->columnSpanFull(),
                                         TextInput::make('home_hero_image_alt')
                                             ->label('Hero image alternative text')

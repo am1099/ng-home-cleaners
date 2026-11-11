@@ -125,7 +125,7 @@ class CrmStatsOverview extends StatsOverviewWidget
 
             Stat::make(
                 'Lead conversion',
-                $data['conversion_rate'] === null ? '—' : $data['conversion_rate'].'%',
+                $data['conversion_rate'] === null ? '' : $data['conversion_rate'].'%',
             )
                 ->description($conversionDescription)
                 ->descriptionIcon(Heroicon::OutlinedArrowTrendingUp)
@@ -138,7 +138,7 @@ class CrmStatsOverview extends StatsOverviewWidget
 
             Stat::make(
                 'Most requested service',
-                $mostRequested['name'] ?? '—',
+                $mostRequested['name'] ?? '',
             )
                 ->description($mostRequested
                     ? $mostRequested['count'].' lead'.($mostRequested['count'] === 1 ? '' : 's').' all time'

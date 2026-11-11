@@ -146,13 +146,13 @@ class InvoicesTable
             TextColumn::make('issue_date')
                 ->label('Issued')
                 ->date('d M Y')
-                ->placeholder('—')
+
                 ->sortable()
                 ->wrapHeader(false),
             TextColumn::make('due_date')
                 ->label('Due')
                 ->date('d M Y')
-                ->placeholder('—')
+
                 ->sortable()
                 ->wrapHeader(false),
             TextColumn::make('total')
@@ -175,7 +175,7 @@ class InvoicesTable
                 ->wrapHeader(false)
                 ->formatStateUsing(fn ($state, Invoice $record): string => $record->isOverdue()
                     ? 'Overdue'
-                    : ($record->status instanceof InvoiceStatus ? $record->status->label() : '—'))
+                    : ($record->status instanceof InvoiceStatus ? $record->status->label() : ''))
                 ->color(fn ($state, Invoice $record): string => $record->isOverdue()
                     ? 'danger'
                     : ($record->status instanceof InvoiceStatus ? $record->status->color() : 'gray')),
@@ -200,7 +200,7 @@ class InvoicesTable
                         ->badge()
                         ->formatStateUsing(fn ($state, Invoice $record): string => $record->isOverdue()
                             ? 'Overdue'
-                            : ($record->status instanceof InvoiceStatus ? $record->status->label() : '—'))
+                            : ($record->status instanceof InvoiceStatus ? $record->status->label() : ''))
                         ->color(fn ($state, Invoice $record): string => $record->isOverdue()
                             ? 'danger'
                             : ($record->status instanceof InvoiceStatus ? $record->status->color() : 'gray'))

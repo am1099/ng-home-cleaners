@@ -6,6 +6,7 @@ use App\Filament\Resources\Invoices\Pages\CreateInvoice;
 use App\Filament\Resources\Invoices\Pages\EditInvoice;
 use App\Filament\Resources\Invoices\Pages\ListInvoices;
 use App\Filament\Resources\Invoices\Pages\ViewInvoice;
+use App\Filament\Resources\Invoices\RelationManagers\PaymentsRelationManager;
 use App\Filament\Resources\Invoices\Schemas\InvoiceForm;
 use App\Filament\Resources\Invoices\Schemas\InvoiceInfolist;
 use App\Filament\Resources\Invoices\Tables\InvoicesTable;
@@ -70,6 +71,13 @@ class InvoiceResource extends Resource
             'create' => CreateInvoice::route('/create'),
             'view' => ViewInvoice::route('/{record}'),
             'edit' => EditInvoice::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            PaymentsRelationManager::class,
         ];
     }
 

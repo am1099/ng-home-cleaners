@@ -42,7 +42,7 @@ class QuoteRequestForm
     {
         return $schema->columns(1)->components([
             ...self::sourceAndServiceSection(includeAllSources: false),
-            ...self::customerSection(),
+            ...self::requiredCustomerSection(),
             ...self::visitAndPropertySection(),
             ...self::conditionAndExtrasSection(),
             ...self::notesSection(includeInternalNotes: true),
@@ -128,6 +128,38 @@ class QuoteRequestForm
     {
         return [
             Section::make('Customer')
+                ->description('Short WhatsApp bookings often arrive without these — add them after the chat.')
+                ->columns(3)
+                ->schema([
+                    Select::make('customer_id')
+                        ->label('Link existing customer (optional)')
+                        ->relationship('customer', 'email')
+                        ->getOptionLabelFromRecordUsing(fn ($record) => $record->fullName().' · '.($record->email ?: $record->phone_display))
+                        ->searchable(['first_name', 'last_name', 'email', 'phone_display', 'phone_normalized'])
+                        ->preload()
+                        ->helperText('Leave blank to keep the current customer link. Conflicting phone+email pairs are not merged.')
+                        ->columnSpanFull(),
+                    TextInput::make('first_name')->maxLength(100),
+                    TextInput::make('last_name')->maxLength(100),
+                    TextInput::make('phone')->tel()->maxLength(30),
+                    TextInput::make('email')->email()->maxLength(255),
+                    TextInput::make('postcode')->maxLength(10),
+                    TextInput::make('city')->maxLength(100),
+                    TextInput::make('address_line1')->label('Address line 1')->maxLength(255)->columnSpan(2),
+                    TextInput::make('address_line2')->label('Address line 2')->maxLength(255),
+                ]),
+        ];
+    }
+
+    /**
+     * Manual phone leads still need a name and phone.
+     *
+     * @return list<Component>
+     */
+    private static function requiredCustomerSection(): array
+    {
+        return [
+            Section::make('Customer')
                 ->columns(3)
                 ->schema([
                     Select::make('customer_id')
@@ -167,7 +199,8 @@ class QuoteRequestForm
                         ->options(collect(CleaningFrequency::cases())->mapWithKeys(
                             fn (CleaningFrequency $frequency) => [$frequency->value => $frequency->label()],
                         ))
-                        ->native(false),
+                        ->native(false)
+                        ->helperText('Website quotes use one price by beds and baths. Keep this for admin notes only.'),
                     Select::make('property_type')
                         ->options(collect(PropertyType::cases())->mapWithKeys(
                             fn (PropertyType $type) => [$type->value => $type->label()],

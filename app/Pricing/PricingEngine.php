@@ -86,7 +86,7 @@ class PricingEngine
         if ($input->service->isRegularClean()) {
             $finalSingle = max((int) $settings->regular_min_pence, $rounded->minPence);
             $displayHeadline = Money::formatPence($finalSingle).' a visit';
-            $displayDetail = $this->frequencyDetail($input->frequency, $settings);
+            $displayDetail = 'Guide price based on bedrooms and bathrooms.';
         } else {
             $finalSingle = $rounded->minPence;
             $displayHeadline = Money::formatPence($finalSingle);
@@ -415,16 +415,6 @@ class PricingEngine
                 detail: sprintf('%s (−%s%%)', $input->frequency->label(), rtrim(rtrim($percent, '0'), '.') ?: '0'),
             ),
         ];
-    }
-
-    private function frequencyDetail(?CleaningFrequency $frequency, $settings): string
-    {
-        return match ($frequency) {
-            CleaningFrequency::Weekly => 'Includes the '.rtrim(rtrim((string) $settings->weekly_discount_percent, '0'), '.').'% weekly discount.',
-            CleaningFrequency::Fortnightly => 'Includes the '.rtrim(rtrim((string) $settings->fortnightly_discount_percent, '0'), '.').'% fortnightly discount.',
-            CleaningFrequency::Monthly => 'Monthly visits — no frequency discount.',
-            default => 'One-off visit — no frequency discount.',
-        };
     }
 
     public function calculateAddonContribution(Addon $addon, ?EstimateInput $context = null): PriceRange

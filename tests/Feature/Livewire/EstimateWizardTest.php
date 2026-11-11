@@ -361,23 +361,15 @@ class EstimateWizardTest extends TestCase
             ->assertHasErrors(['propertyStatus']);
     }
 
-    public function test_regular_requires_frequency(): void
+    public function test_short_form_hides_how_often_and_defaults_regular_to_one_off(): void
     {
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
         Livewire::test(EstimateWizard::class)
-            ->set('detailed', true)
+            ->assertSet('detailed', false)
+            ->assertDontSee('How often?', false)
             ->set('serviceId', $regular->id)
-            ->set('frequency', '')
-            ->set('preferredDate', now()->addWeek()->toDateString())
-            ->set('firstName', 'Alex')
-            ->set('lastName', 'Taylor')
-            ->set('phone', '07503651476')
-            ->set('email', 'alex@example.com')
-            ->set('postcode', 'NG1 1AA')
-            ->set('addressLine1', '1 Test Street')
-            ->call('submit')
-            ->assertHasErrors(['frequency']);
+            ->assertSet('frequency', CleaningFrequency::OneOff->value);
     }
 
     public function test_honeypot_blocks_submission_without_creating_lead(): void
@@ -438,43 +430,33 @@ class EstimateWizardTest extends TestCase
             ->assertSet('firstName', 'Alex');
     }
 
-    public function test_short_form_saves_a_whatsapp_lead_without_a_phone_number(): void
+    public function test_short_form_saves_a_whatsapp_lead_without_contact_details(): void
     {
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
         Livewire::test(EstimateWizard::class)
             ->assertSet('detailed', false)
-            ->assertSee('Full name', false)
+            ->assertDontSee('Your details', false)
+            ->assertDontSee('Full name', false)
             ->assertSee('about 2½ hrs', false)
             ->assertSee('Includes the kitchen and living room.', false)
-            ->assertSee('WhatsApp us', false)
+            ->assertSee('Book via WhatsApp', false)
+            ->assertDontSee('How often?', false)
             ->assertDontSee('Add extras', false)
             ->set('serviceId', $regular->id)
-            ->set('frequency', CleaningFrequency::Fortnightly->value)
             ->set('bedrooms', 2)
             ->set('bathrooms', 1)
-            ->set('firstName', 'Jane Smith')
-            ->set('postcode', 'NG1 1AA')
             ->call('submitViaWhatsApp')
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('quote_requests', [
-            'first_name' => 'Jane Smith',
-            'postcode' => 'NG1 1AA',
+            'first_name' => null,
+            'last_name' => null,
+            'postcode' => null,
             'phone' => null,
             'email' => null,
             'customer_id' => null,
             'service_id' => $regular->id,
         ]);
-    }
-
-    public function test_short_form_rejects_an_invalid_optional_phone(): void
-    {
-        Livewire::test(EstimateWizard::class)
-            ->set('firstName', 'Jane Smith')
-            ->set('phone', 'not-a-phone')
-            ->set('postcode', 'NG1 1AA')
-            ->call('submitViaWhatsApp')
-            ->assertHasErrors(['phone']);
     }
 }

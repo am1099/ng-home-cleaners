@@ -91,15 +91,19 @@ class QuoteRequestsTable
                 ->sortable(),
             TextColumn::make('customer_name')
                 ->label('Customer')
-                ->state(fn ($record) => $record->fullName())
-                ->description(fn ($record) => $record->email ?: $record->phone)
+                ->state(fn ($record) => $record->displayName())
+                ->description(fn ($record) => $record->email
+                    ?: $record->phone
+                    ?: ($record->hasContactDetails() ? null : 'Details via WhatsApp'))
+                ->placeholder('—')
                 ->searchable(query: function (Builder $query, string $search): Builder {
                     return $query->where(function (Builder $inner) use ($search): void {
                         $inner->where('first_name', 'like', "%{$search}%")
                             ->orWhere('last_name', 'like', "%{$search}%")
-                            ->orWhereRaw("first_name || ' ' || last_name like ?", ["%{$search}%"])
+                            ->orWhereRaw("coalesce(first_name, '') || ' ' || coalesce(last_name, '') like ?", ["%{$search}%"])
                             ->orWhere('email', 'like', "%{$search}%")
-                            ->orWhere('phone', 'like', "%{$search}%");
+                            ->orWhere('phone', 'like', "%{$search}%")
+                            ->orWhere('reference', 'like', "%{$search}%");
                     });
                 }),
             TextColumn::make('source')
@@ -108,28 +112,31 @@ class QuoteRequestsTable
                 ->color(fn (QuoteRequestSource $state): string => $state->color()),
             TextColumn::make('service.name')
                 ->label('Service')
+                ->description(fn ($record) => $record->homeSummary() ?: null)
                 ->wrap()
                 ->toggleable(),
             TextColumn::make('postcode')
+                ->placeholder('—')
                 ->searchable()
                 ->sortable()
                 ->toggleable(),
             TextColumn::make('preferred_date')
                 ->label('Preferred date')
                 ->date('d M Y')
+                ->placeholder('—')
                 ->sortable()
-                ->placeholder('—'),
+                ->toggleable(),
             TextColumn::make('arrival_window')
                 ->label('Arrival')
-                ->formatStateUsing(fn (?string $state): string => ArrivalWindow::tryFrom((string) $state)?->label() ?? '—')
-                ->toggleable(),
+                ->formatStateUsing(fn (?string $state): string => ArrivalWindow::tryFrom((string) $state)?->label() ?? '')
+                ->placeholder('—')
+                ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('guide_estimate_headline')
                 ->label('Guide estimate')
-                ->wrap()
-                ->placeholder('—'),
+                ->wrap(),
             TextColumn::make('final_quote_amount_pence')
                 ->label('Final quote')
-                ->formatStateUsing(fn (?int $state): string => $state !== null ? Money::formatPence($state) : '—')
+                ->formatStateUsing(fn (?int $state): string => $state !== null ? Money::formatPence($state) : '')
                 ->sortable(),
             TextColumn::make('status')
                 ->badge()
@@ -159,16 +166,18 @@ class QuoteRequestsTable
                 ]),
                 TextColumn::make('customer_name')
                     ->label('Customer')
-                    ->state(fn ($record) => $record->fullName())
+                    ->state(fn ($record) => $record->displayName())
                     ->weight(FontWeight::SemiBold)
                     ->description(fn ($record): string => collect([
                         $record->phone,
                         $record->email,
+                        $record->hasContactDetails() ? null : 'Details via WhatsApp',
                     ])->filter()->implode(' · ')),
                 TextColumn::make('service.name')
                     ->label('Service')
                     ->weight(FontWeight::Medium)
                     ->description(fn ($record): string => collect([
+                        $record->homeSummary(),
                         $record->postcode,
                         $record->preferred_date?->format('d M Y'),
                         ArrivalWindow::tryFrom((string) $record->arrival_window)?->shortLabel(),
@@ -176,7 +185,7 @@ class QuoteRequestsTable
                 Split::make([
                     TextColumn::make('guide_estimate_headline')
                         ->description('Guide', position: 'above')
-                        ->placeholder('—')
+
                         ->weight(FontWeight::Medium),
                     TextColumn::make('final_quote_amount_pence')
                         ->description('Final quote', position: 'above')

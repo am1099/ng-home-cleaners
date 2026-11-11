@@ -29,29 +29,6 @@
 
     <x-public.section spacing="follow">
         <x-public.container>
-            @if ($whatsappNotice)
-                <x-public.alert variant="success" title="Request saved" class="mb-6" role="status">
-                    {{ $whatsappNotice }}
-                </x-public.alert>
-            @endif
-
-            @error('submit')
-                <x-public.alert variant="error" title="Could not send request" class="mb-6" role="alert">
-                    {{ $message }}
-                </x-public.alert>
-            @enderror
-
-            @if ($errors->any() && ! $errors->has('submit'))
-                <div class="mb-6 rounded-[var(--radius-md)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert" aria-live="assertive">
-                    <p class="font-semibold">Please fix the highlighted fields below.</p>
-                    <ul class="mt-2 list-disc space-y-1 pl-5">
-                        @foreach ($errors->all() as $message)
-                            <li>{{ $message }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
             {{-- In-flow mobile estimate (desktop has the sidebar) --}}
             <div class="mb-5 rounded-[var(--radius-card)] border border-border bg-surface-card p-4 shadow-[var(--shadow-card)] lg:hidden" aria-live="polite">
                 <div class="flex items-center justify-between gap-3">
@@ -103,21 +80,6 @@
                             @endforeach
                         </div>
                         @error('serviceId') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-
-                        @if ($isRegular)
-                        <div class="mt-5">
-                            <p class="{{ $labelClass }}">How often?</p>
-                            <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                                @foreach (\App\Enums\CleaningFrequency::cases() as $option)
-                                    <label class="{{ $chipClass }}">
-                                        <input type="radio" name="frequency" wire:model.live="frequency" value="{{ $option->value }}" class="sr-only">
-                                        {{ $option->label() }}
-                                    </label>
-                                @endforeach
-                            </div>
-                            @error('frequency') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-                        </div>
-                        @endif
 
                         @if ($isCommercial)
                         <div class="mt-5">

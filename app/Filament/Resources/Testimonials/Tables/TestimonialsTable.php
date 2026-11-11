@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Testimonials\Tables;
 
 use App\Filament\Support\ResponsiveRecordTable;
 use App\Filament\Support\StandardRecordActions;
+use Asignua\FilamentRating\Columns\RatingColumn;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Support\Enums\FontWeight;
@@ -24,7 +25,7 @@ class TestimonialsTable
             tableColumns: [
                 TextColumn::make('sort_order')->label('#')->sortable(),
                 TextColumn::make('customer_name')->searchable(),
-                TextColumn::make('rating'),
+                RatingColumn::make('rating')->stars(5)->color('warning')->showValue(),
                 TextColumn::make('location')->toggleable(),
                 ToggleColumn::make('is_published')->label('Published'),
                 IconColumn::make('is_demo')->label('Demo')->boolean(),
@@ -39,13 +40,9 @@ class TestimonialsTable
                         ToggleColumn::make('is_published')->label('Published')->grow(false),
                     ]),
                     Split::make([
-                        TextColumn::make('rating')
-                            ->description('Rating', position: 'above')
-                            ->weight(FontWeight::SemiBold)
-                            ->grow(false),
+                        RatingColumn::make('rating')->stars(5)->color('warning')->showValue()->grow(false),
                         TextColumn::make('location')
-                            ->description('Location', position: 'above')
-                            ->placeholder('—'),
+                            ->description('Location', position: 'above'),
                         IconColumn::make('is_demo')->label('Demo')->boolean()->grow(false),
                     ]),
                 ]),

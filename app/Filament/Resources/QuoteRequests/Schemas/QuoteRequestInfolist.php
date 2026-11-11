@@ -37,7 +37,11 @@ class QuoteRequestInfolist
                         ->color(fn (QuoteRequestSource $state): string => $state->color()),
                     TextEntry::make('submitted_at')->label('Submitted')->dateTime('d M Y H:i'),
                     TextEntry::make('service.name')->label('Service'),
-                    TextEntry::make('guide_estimate_headline')->label('Guide estimate')->placeholder('—'),
+                    TextEntry::make('home_summary')
+                        ->label('Home')
+                        ->state(fn ($record) => $record->homeSummary())
+                        ->placeholder('—'),
+                    TextEntry::make('guide_estimate_headline')->label('Guide estimate'),
                     TextEntry::make('final_quote_amount_pence')
                         ->label('Final quoted amount')
                         ->formatStateUsing(fn (?int $state): string => $state !== null ? Money::formatPence($state) : 'Not set')
@@ -51,9 +55,15 @@ class QuoteRequestInfolist
                 ]),
 
             Section::make('Customer details')
+                ->description(fn ($record) => $record->hasContactDetails()
+                    ? null
+                    : 'Short website bookings no longer collect name or contact details — fill these in after WhatsApp.')
                 ->columns(2)
                 ->schema([
-                    TextEntry::make('full_name')->label('Name')->state(fn ($record) => $record->fullName()),
+                    TextEntry::make('full_name')
+                        ->label('Name')
+                        ->state(fn ($record) => $record->displayName())
+                        ->placeholder('—'),
                     TextEntry::make('phone')->copyable()->placeholder('—'),
                     TextEntry::make('email')->copyable()->placeholder('—'),
                     TextEntry::make('postcode')->placeholder('—'),
@@ -65,50 +75,57 @@ class QuoteRequestInfolist
                 ]),
 
             Section::make('Visit preference')
+                ->description('Website short quotes book via WhatsApp — preferred date and frequency are usually confirmed in chat.')
                 ->columns(2)
                 ->schema([
-                    TextEntry::make('preferred_date')->date('l j F Y')->placeholder('—'),
+                    TextEntry::make('preferred_date')->date('l j F Y')->placeholder('Confirm on WhatsApp'),
                     TextEntry::make('arrival_window')->formatStateUsing(
-                        fn (?string $state) => ArrivalWindow::tryFrom((string) $state)?->label() ?? '—',
-                    ),
-                    TextEntry::make('frequency')->formatStateUsing(
-                        fn (?string $state) => $state ? (CleaningFrequency::tryFrom($state)?->label() ?? $state) : '—',
-                    ),
+                        fn (?string $state) => ArrivalWindow::tryFrom((string) $state)?->label() ?? '',
+                    )->placeholder('Confirm on WhatsApp'),
+                    TextEntry::make('frequency')
+                        ->label('Frequency')
+                        ->formatStateUsing(
+                            fn (?string $state) => match (CleaningFrequency::tryFrom((string) $state)) {
+                                CleaningFrequency::OneOff, null => 'Single website price (beds & baths)',
+                                default => CleaningFrequency::tryFrom((string) $state)?->label() ?? $state,
+                            },
+                        )
+                        ->placeholder('Single website price (beds & baths)'),
                 ]),
 
             Section::make('Property & rooms')
                 ->columns(3)
                 ->schema([
                     TextEntry::make('property_type')->formatStateUsing(
-                        fn (?string $state) => PropertyType::tryFrom((string) $state)?->label() ?? '—',
-                    ),
+                        fn (?string $state) => PropertyType::tryFrom((string) $state)?->label() ?? '',
+                    )->placeholder('—'),
                     TextEntry::make('bedrooms')->formatStateUsing(
-                        fn (?int $state) => $state === null ? '—' : ($state === 0 ? 'Studio' : (string) $state),
-                    ),
+                        fn (?int $state) => $state === null ? '' : ($state === 0 ? 'Studio' : (string) $state),
+                    )->placeholder('—'),
+                    TextEntry::make('bathrooms')->placeholder('—'),
                     TextEntry::make('floors')->placeholder('—'),
                     TextEntry::make('split_level_flat')->label('Split-level flat')->formatStateUsing(
                         fn (?bool $state) => $state ? 'Yes' : 'No',
                     ),
-                    TextEntry::make('bathrooms')->placeholder('—'),
                     TextEntry::make('wcs')->label('WCs')->placeholder('—'),
                     TextEntry::make('kitchens')->placeholder('—'),
                     TextEntry::make('reception_rooms')->label('Reception rooms')->placeholder('—'),
                     TextEntry::make('extra_rooms')->formatStateUsing(
-                        fn (mixed $state) => empty(ArrayState::normalize($state)) ? '—' : collect(ArrayState::normalize($state))->join(', '),
-                    )->columnSpanFull(),
+                        fn (mixed $state) => empty(ArrayState::normalize($state)) ? '' : collect(ArrayState::normalize($state))->join(', '),
+                    )->placeholder('—')->columnSpanFull(),
                 ]),
 
             Section::make('Condition')
                 ->columns(2)
                 ->schema([
                     TextEntry::make('property_status')->formatStateUsing(
-                        fn (?string $state) => $state ? (PropertyStatus::tryFrom($state)?->label() ?? $state) : '—',
+                        fn (?string $state) => $state ? (PropertyStatus::tryFrom($state)?->label() ?? $state) : '',
                     ),
                     TextEntry::make('condition_flags')->formatStateUsing(function (mixed $state): string {
                         $flags = ArrayState::normalize($state);
 
                         if ($flags === []) {
-                            return '—';
+                            return '';
                         }
 
                         return collect($flags)
@@ -116,7 +133,7 @@ class QuoteRequestInfolist
                             ->filter()
                             ->join(', ');
                     })->columnSpanFull(),
-                    TextEntry::make('condition_notes')->placeholder('—')->columnSpanFull(),
+                    TextEntry::make('condition_notes')->columnSpanFull(),
                 ]),
 
             Section::make('Property photos')
@@ -156,7 +173,7 @@ class QuoteRequestInfolist
 
             Section::make('Submitted estimate breakdown')
                 ->schema([
-                    TextEntry::make('guide_estimate_detail')->label('Guide detail')->placeholder('—')->columnSpanFull(),
+                    TextEntry::make('guide_estimate_detail')->label('Guide detail')->columnSpanFull(),
                     TextEntry::make('pricing_breakdown')
                         ->label('Price breakdown')
                         ->state(function ($record): string {
@@ -213,11 +230,11 @@ class QuoteRequestInfolist
                 ->columns(2)
                 ->schema([
                     TextEntry::make('internal_notes')->placeholder('No notes yet.')->columnSpanFull(),
-                    TextEntry::make('contacted_at')->dateTime('d M Y H:i')->placeholder('—'),
-                    TextEntry::make('quote_sent_at')->dateTime('d M Y H:i')->placeholder('—'),
-                    TextEntry::make('won_at')->dateTime('d M Y H:i')->placeholder('—'),
-                    TextEntry::make('lost_at')->dateTime('d M Y H:i')->placeholder('—'),
-                    TextEntry::make('whatsapp_initiated_at')->dateTime('d M Y H:i')->placeholder('—'),
+                    TextEntry::make('contacted_at')->dateTime('d M Y H:i'),
+                    TextEntry::make('quote_sent_at')->dateTime('d M Y H:i'),
+                    TextEntry::make('won_at')->dateTime('d M Y H:i'),
+                    TextEntry::make('lost_at')->dateTime('d M Y H:i'),
+                    TextEntry::make('whatsapp_initiated_at')->dateTime('d M Y H:i'),
                 ]),
         ]);
     }

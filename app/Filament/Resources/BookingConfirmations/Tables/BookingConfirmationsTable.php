@@ -23,8 +23,8 @@ class BookingConfirmationsTable
                     ->color(fn (BookingConfirmationStatus $state): string => $state->color()),
                 TextColumn::make('customer_id')
                     ->label('Customer')
-                    ->formatStateUsing(fn ($state, BookingConfirmation $record): string => $record->customer?->fullName() ?? '—'),
-                TextColumn::make('booking.reference')->label('Booking')->placeholder('—'),
+                    ->formatStateUsing(fn ($state, BookingConfirmation $record): string => $record->customer?->fullName() ?? ''),
+                TextColumn::make('booking.reference')->label('Booking'),
             ])
             ->defaultSort('submitted_at', 'desc')
             ->recordActions([

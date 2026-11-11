@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'published_at',
     'is_demo',
     'sort_order',
+    'google_review_id',
+    'reviewed_at',
 ])]
 class Testimonial extends Model
 {
@@ -36,6 +38,7 @@ class Testimonial extends Model
             'published_at' => 'datetime',
             'is_demo' => 'boolean',
             'sort_order' => 'integer',
+            'reviewed_at' => 'datetime',
         ];
     }
 

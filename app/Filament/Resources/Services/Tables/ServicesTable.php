@@ -37,7 +37,7 @@ class ServicesTable
                         ToggleColumn::make('is_active')->label('Active')->grow(false),
                     ]),
                     ResponsiveRecordTable::meta(
-                        TextColumn::make('slug')->placeholder('—'),
+                        TextColumn::make('slug'),
                     ),
                 ]),
             ],

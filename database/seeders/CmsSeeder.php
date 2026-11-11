@@ -91,7 +91,7 @@ class CmsSeeder extends Seeder
                 'slug' => 'regular-clean',
                 'card_title' => 'Regular clean',
                 'short_description' => 'Get your evenings and Sundays back. Weekly or fortnightly on a day that suits you.',
-                'estimate_description' => 'Weekly, fortnightly or one-off',
+                'estimate_description' => 'Keep on top of the home',
                 'full_description' => 'A regular upkeep clean for homes that already have a reasonable baseline standard.',
                 'icon' => ServiceIcon::House,
                 'cta_label' => 'Book my first clean',

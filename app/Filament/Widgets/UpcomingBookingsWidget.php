@@ -41,11 +41,10 @@ class UpcomingBookingsWidget extends TableWidget
                     ->sortable(),
                 TextColumn::make('customer_name')
                     ->label('Customer')
-                    ->state(fn (Booking $record): string => $record->customer?->fullName() ?? '—')
+                    ->state(fn (Booking $record): string => $record->customer?->fullName() ?? '')
                     ->url(fn (Booking $record): string => BookingResource::getUrl('view', ['record' => $record])),
                 TextColumn::make('service.name')
-                    ->label('Service')
-                    ->placeholder('—'),
+                    ->label('Service'),
                 TextColumn::make('arrival_window')
                     ->label('Arrival')
                     ->formatStateUsing(fn (ArrivalWindow $state): string => $state->shortLabel()),

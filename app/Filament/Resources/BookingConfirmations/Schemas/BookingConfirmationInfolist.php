@@ -27,11 +27,11 @@ class BookingConfirmationInfolist
                     TextEntry::make('address')->columnSpanFull(),
                     TextEntry::make('access_instructions')->label('Access')->columnSpanFull(),
                     TextEntry::make('parking')
-                        ->formatStateUsing(fn ($state): string => $state?->label() ?? '—'),
+                        ->formatStateUsing(fn ($state): string => $state?->label() ?? ''),
                     TextEntry::make('equipment_preference')
                         ->label('Hoover and mop')
-                        ->formatStateUsing(fn ($state): string => $state?->label() ?? '—'),
-                    TextEntry::make('notes')->placeholder('—')->columnSpanFull(),
+                        ->formatStateUsing(fn ($state): string => $state?->label() ?? ''),
+                    TextEntry::make('notes')->columnSpanFull(),
                     TextEntry::make('valuables_confirmed_at')->label('Valuables secured')->dateTime('j M Y, H:i'),
                     TextEntry::make('payment_confirmed_at')->label('Payment sent')->dateTime('j M Y, H:i'),
                 ]),

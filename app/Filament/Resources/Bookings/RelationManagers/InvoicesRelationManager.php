@@ -31,7 +31,7 @@ class InvoicesRelationManager extends RelationManager
                     ->label('Invoice number')
                     ->state(fn (Invoice $record): string => $record->displayNumber())
                     ->url(fn (Invoice $record): string => InvoiceResource::getUrl('view', ['record' => $record])),
-                TextColumn::make('issue_date')->date('d M Y')->placeholder('—'),
+                TextColumn::make('issue_date')->date('d M Y'),
                 TextColumn::make('total')
                     ->state(fn (Invoice $record): string => $record->totalDisplay()),
                 TextColumn::make('paid')
@@ -42,7 +42,7 @@ class InvoicesRelationManager extends RelationManager
                     ->badge()
                     ->formatStateUsing(fn ($state, Invoice $record): string => $record->isOverdue()
                         ? 'Overdue'
-                        : ($record->status instanceof InvoiceStatus ? $record->status->label() : '—'))
+                        : ($record->status instanceof InvoiceStatus ? $record->status->label() : ''))
                     ->color(fn ($state, Invoice $record): string => $record->isOverdue()
                         ? 'danger'
                         : ($record->status instanceof InvoiceStatus ? $record->status->color() : 'gray')),

@@ -61,7 +61,7 @@ class RecentWorksTable
                         ToggleColumn::make('is_published')->label('Published')->grow(false),
                     ]),
                     ResponsiveRecordTable::meta(
-                        TextColumn::make('description')->limit(80)->placeholder('—')->wrap(),
+                        TextColumn::make('description')->limit(80)->wrap(),
                     ),
                 ]),
             ],

@@ -8,6 +8,7 @@ use App\Enums\BookingConfirmationParking;
 use App\Enums\BookingConfirmationStatus;
 use App\Models\BookingConfirmation;
 use App\Models\SiteSetting;
+use App\Livewire\Concerns\FlashesToasts;
 use App\Services\BookingConfirmationMatcher;
 use App\Services\SeoService;
 use Illuminate\Support\Facades\RateLimiter;
@@ -21,6 +22,8 @@ use Livewire\Component;
 #[Title('Confirm your booking')]
 class BookingConfirmationForm extends Component
 {
+    use FlashesToasts;
+
     public string $fullName = '';
 
     public string $address = '';
@@ -47,6 +50,7 @@ class BookingConfirmationForm extends Component
     ): void {
         if (filled($this->website)) {
             $this->submitted = true;
+            $this->toastSuccess('Confirmation received', 'We\'ll WhatsApp you shortly.');
 
             return;
         }
@@ -54,23 +58,35 @@ class BookingConfirmationForm extends Component
         $key = 'booking-confirm:'.request()->ip();
 
         if (RateLimiter::tooManyAttempts($key, 5)) {
+            $message = 'Too many confirmation attempts from this connection. Please wait a few minutes and try again.';
+            $this->toastError('Could not send confirmation', $message);
+
             throw ValidationException::withMessages([
-                'submit' => 'Too many confirmation attempts from this connection. Please wait a few minutes and try again.',
+                'submit' => $message,
             ]);
         }
 
         RateLimiter::hit($key, 60);
 
-        $validated = $this->validate([
-            'fullName' => ['required', 'string', 'max:120'],
-            'address' => ['required', 'string', 'max:500'],
-            'accessInstructions' => ['required', 'string', 'max:1000'],
-            'parking' => ['required', Rule::enum(BookingConfirmationParking::class)],
-            'equipmentPreference' => ['required', Rule::enum(BookingConfirmationEquipment::class)],
-            'notes' => ['nullable', 'string', 'max:1000'],
-            'valuablesSecured' => ['accepted'],
-            'paymentSent' => ['accepted'],
-        ]);
+        try {
+            $validated = $this->validate([
+                'fullName' => ['required', 'string', 'max:120'],
+                'address' => ['required', 'string', 'max:500'],
+                'accessInstructions' => ['required', 'string', 'max:1000'],
+                'parking' => ['required', Rule::enum(BookingConfirmationParking::class)],
+                'equipmentPreference' => ['required', Rule::enum(BookingConfirmationEquipment::class)],
+                'notes' => ['nullable', 'string', 'max:1000'],
+                'valuablesSecured' => ['accepted'],
+                'paymentSent' => ['accepted'],
+            ]);
+        } catch (ValidationException $exception) {
+            $this->toastFromValidation(
+                $exception,
+                submitTitle: 'Could not send confirmation',
+            );
+
+            throw $exception;
+        }
 
         $match = $matcher->match($validated['fullName'], $validated['address']);
         $now = now();
@@ -94,6 +110,7 @@ class BookingConfirmationForm extends Component
         $notifications->handle($confirmation);
 
         $this->submitted = true;
+        $this->toastSuccess('Confirmation received', 'We\'ll WhatsApp you shortly.');
     }
 
     public function render()

@@ -1,19 +1,19 @@
 @extends('layouts.public')
 
 @section('content')
-    {{-- Hero — Heartfelt-style: copy left, circular image right --}}
-    <x-public.section spacing="hero" class="relative overflow-hidden bg-gradient-to-br from-brand-50 via-surface-page to-surface-sunken">
-        <x-public.container>
-            <div class="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
-                <div class="relative z-10">
-                    <p class="ng-eyebrow">Home cleaning in Nottingham</p>
-                    <h1 class="ng-display ng-display-hero mt-0 max-w-xl text-brand-950">
+    {{-- Hero — dark statement with a full-height photograph --}}
+    <section class="overflow-hidden bg-surface-ink text-white">
+        <div class="grid lg:min-h-[38rem] lg:grid-cols-2">
+            <div class="order-2 flex flex-col justify-center px-4 py-14 sm:px-8 lg:order-1 lg:px-12 lg:py-20">
+                <div class="ng-hero-rise mx-auto w-full max-w-xl lg:mx-0">
+                    <p class="ng-eyebrow text-brand-100">Home cleaning in Nottingham</p>
+                    <h1 class="ng-display mt-2 max-w-xl text-5xl text-white sm:text-6xl">
                         Professional Home Cleaners in Nottingham
                     </h1>
-                    <p class="mt-4 max-w-xl text-xl font-medium text-brand-900">
+                    <p class="mt-5 max-w-xl text-xl font-medium text-white/90">
                         {{ $settings->home_hero_title ?? 'There are better uses for a Saturday morning.' }}
                     </p>
-                    <p class="ng-body-lg mt-[18px] max-w-lg text-ink-muted">
+                    <p class="ng-body-lg mt-4 max-w-lg text-white/75">
                         {{ $settings->home_hero_subtitle ?? 'Your home cleaned by a vetted, DBS-checked cleaner working to a written standard, with a fixed price agreed before we start.' }}
                     </p>
                     <div class="mt-8 flex flex-wrap items-center gap-3">
@@ -30,7 +30,7 @@
                         <x-public.estimate-cta
                             label="Free quote"
                             size="lg"
-                            variant="outline"
+                            variant="inverse"
                             class="rounded-full"
                             location="home_hero"
                         />
@@ -42,40 +42,31 @@
                         />
                     </div>
                     @if ($settings->guarantee_statement)
-                        <p class="mt-5 max-w-xl text-sm text-ink-muted">{{ $settings->guarantee_statement }}</p>
+                        <p class="mt-5 max-w-xl text-sm text-white/70">{{ $settings->guarantee_statement }}</p>
                     @endif
                     <div class="mt-6">
                         <x-public.trust-strip />
                     </div>
                 </div>
-
-                <div class="relative mx-auto w-full max-w-md lg:max-w-none">
-                    <div class="relative aspect-square w-full max-w-[28rem] justify-self-end lg:ml-auto">
-                        {{-- Brand arc --}}
-                        <div class="pointer-events-none absolute inset-[-0.35rem] rounded-full border-[6px] border-brand-600/90" aria-hidden="true"></div>
-                        <div class="pointer-events-none absolute -bottom-2 -left-2 size-[42%] rounded-full border-[5px] border-brand-600/40" aria-hidden="true"></div>
-                        <div class="relative size-full overflow-hidden rounded-full bg-brand-100 shadow-[var(--shadow-elevated)] ring-4 ring-white">
-                            @if ($settings->home_hero_image)
-                                <img
-                                    src="{{ \App\Support\Media::url($settings->home_hero_image) }}"
-                                    alt="{{ $settings->home_hero_image_alt ?: 'NG Home Cleaners preparing for a home clean in Nottingham' }}"
-                                    class="size-full object-cover"
-                                    width="640"
-                                    height="640"
-                                    fetchpriority="high"
-                                >
-                            @else
-                                <div class="flex size-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-brand-100 to-brand-50 p-8 text-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-14 text-brand-700" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z"/></svg>
-                                    <p class="text-sm font-medium text-brand-900">Upload a hero photo in Site settings → Homepage</p>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
             </div>
-        </x-public.container>
-    </x-public.section>
+            <div class="ng-hero-sheen order-1 min-h-[18rem] lg:order-2 lg:min-h-full">
+                @if ($settings->home_hero_image)
+                    <img
+                        src="{{ \App\Support\Media::url($settings->home_hero_image) }}"
+                        alt="{{ $settings->home_hero_image_alt ?: 'NG Home Cleaners preparing for a home clean in Nottingham' }}"
+                        class="ng-hero-pan absolute inset-0 size-full object-cover"
+                        width="960"
+                        height="1100"
+                        fetchpriority="high"
+                    >
+                @else
+                    <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-brand-800 to-brand-200 p-8 text-center">
+                        <p class="text-sm font-medium text-white">Upload a hero photo in Site settings → Homepage</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </section>
 
     {{-- Services --}}
     <x-public.section variant="sunken">
@@ -173,11 +164,7 @@
         <x-public.section variant="sunken">
             <x-public.container>
                 <x-public.heading eyebrow="What customers say" title="Reviews from local customers" align="center" class="mx-auto" />
-                <div class="mt-10 grid gap-6 md:grid-cols-3">
-                    @foreach ($testimonials as $testimonial)
-                        <x-public.testimonial-card :testimonial="$testimonial" />
-                    @endforeach
-                </div>
+                <x-public.review-carousel :testimonials="$testimonials" />
                 @if ($settings->google_business_url)
                     <p class="mt-8 text-center">
                         <a href="{{ $settings->google_business_url }}" target="_blank" rel="noopener noreferrer" class="ng-link">Read more reviews on Google</a>

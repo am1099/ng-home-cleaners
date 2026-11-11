@@ -111,7 +111,7 @@ class BookingsTable
                 ->url(fn (Booking $record): string => BookingResource::getUrl('view', ['record' => $record])),
             TextColumn::make('customer.first_name')
                 ->label('Customer')
-                ->formatStateUsing(fn ($state, Booking $record): string => $record->customer?->fullName() ?? '—')
+                ->formatStateUsing(fn ($state, Booking $record): string => $record->customer?->fullName() ?? '')
                 ->searchable(['customers.first_name', 'customers.last_name', 'customers.email']),
             TextColumn::make('service.name')->label('Service')->sortable(),
             TextColumn::make('booking_date')->date('d M Y')->sortable(),
@@ -158,9 +158,9 @@ class BookingsTable
                 ]),
                 TextColumn::make('customer.first_name')
                     ->label('Customer')
-                    ->formatStateUsing(fn ($state, Booking $record): string => $record->customer?->fullName() ?? '—')
+                    ->formatStateUsing(fn ($state, Booking $record): string => $record->customer?->fullName() ?? '')
                     ->weight(FontWeight::SemiBold)
-                    ->description(fn (Booking $record): string => $record->service?->name ?? '—'),
+                    ->description(fn (Booking $record): string => $record->service?->name ?? ''),
                 TextColumn::make('booking_date')
                     ->date('l j F Y')
                     ->weight(FontWeight::Medium)

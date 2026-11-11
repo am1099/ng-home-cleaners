@@ -30,9 +30,17 @@ class NewQuoteRequestNotification extends Notification implements ShouldQueue
      */
     public function toDatabase(object $notifiable): array
     {
+        $body = collect([
+            $this->quoteRequest->displayName(),
+            $this->quoteRequest->service?->name,
+            $this->quoteRequest->homeSummary() ?: null,
+            $this->quoteRequest->guide_estimate_headline,
+            $this->quoteRequest->source->label(),
+        ])->filter()->implode(' · ');
+
         return FilamentNotification::make()
             ->title('New estimate request '.$this->quoteRequest->reference)
-            ->body($this->quoteRequest->fullName().' · '.$this->quoteRequest->service?->name.' · '.$this->quoteRequest->source->label())
+            ->body($body)
             ->icon('heroicon-o-inbox')
             ->actions([
                 Action::make('view')

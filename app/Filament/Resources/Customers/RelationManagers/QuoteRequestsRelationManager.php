@@ -32,10 +32,10 @@ class QuoteRequestsRelationManager extends RelationManager
                     ->badge()
                     ->formatStateUsing(fn (QuoteRequestStatus $state): string => $state->label())
                     ->color(fn (QuoteRequestStatus $state): string => $state->color()),
-                TextColumn::make('guide_estimate_headline')->label('Guide')->placeholder('—'),
+                TextColumn::make('guide_estimate_headline')->label('Guide'),
                 TextColumn::make('final_quote_amount_pence')
                     ->label('Final quote')
-                    ->formatStateUsing(fn (?int $state): string => $state !== null ? Money::formatPence($state) : '—'),
+                    ->formatStateUsing(fn (?int $state): string => $state !== null ? Money::formatPence($state) : ''),
             ])
             ->recordActions([
                 ViewAction::make()

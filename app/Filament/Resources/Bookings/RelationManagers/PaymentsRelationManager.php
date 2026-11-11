@@ -71,7 +71,7 @@ class PaymentsRelationManager extends RelationManager
                     ->label('Amount')
                     ->formatStateUsing(fn (int $state): string => Money::formatPence($state))
                     ->alignEnd(),
-                TextColumn::make('reference')->placeholder('—'),
+                TextColumn::make('reference'),
             ])
             ->headerActions([
                 CreateAction::make()

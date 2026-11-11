@@ -2,6 +2,7 @@ import './bootstrap';
 import './analytics';
 import { initMobileNav } from './mobile-nav';
 import { initImageLightbox } from './lightbox';
+import { initToasts } from './toast';
 import { ngDatePicker } from './date-picker';
 import { ngGalleryCarousel } from './gallery-carousel';
 import { Alpine, Livewire } from '../../vendor/livewire/livewire/dist/livewire.esm';
@@ -59,4 +60,5 @@ if (document.readyState === 'loading') {
 document.addEventListener('DOMContentLoaded', () => {
     initMobileNav();
     initImageLightbox();
+    initToasts();
 });

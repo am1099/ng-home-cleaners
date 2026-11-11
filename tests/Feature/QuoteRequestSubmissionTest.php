@@ -47,7 +47,6 @@ class QuoteRequestSubmissionTest extends TestCase
 
         Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $regular->id)
-            ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
             ->set('bedrooms', 1)
             ->set('floors', 1)
@@ -74,6 +73,7 @@ class QuoteRequestSubmissionTest extends TestCase
         $this->assertNull($quoteRequest->whatsapp_initiated_at);
         $this->assertSame('Alex', $quoteRequest->first_name);
         $this->assertSame('alex@example.com', $quoteRequest->email);
+        $this->assertSame(CleaningFrequency::OneOff->value, $quoteRequest->frequency);
 
         $expected = app(PricingEngine::class)->calculate(
             EstimateInputFactory::make(
@@ -86,7 +86,7 @@ class QuoteRequestSubmissionTest extends TestCase
                 receptionRooms: 1,
                 floors: 1,
                 extraRoomSlugs: [],
-                frequency: CleaningFrequency::Weekly,
+                frequency: CleaningFrequency::OneOff,
                 propertyStatus: null,
                 conditionFlagValues: [],
                 addonIds: [],
@@ -134,6 +134,7 @@ class QuoteRequestSubmissionTest extends TestCase
             ->set('city', 'Nottingham')
             ->call('submitViaWhatsApp')
             ->assertDispatched('open-whatsapp')
+            ->assertDispatched('toast')
             ->assertSet('whatsappNotice', 'Your request was saved and WhatsApp was opened.')
             ->assertSet('savedReference', 'NG-1001');
 
@@ -145,7 +146,7 @@ class QuoteRequestSubmissionTest extends TestCase
         $whatsappUrl = app(QuoteRequestService::class)->whatsappUrl($quoteRequest);
 
         $this->assertStringContainsString('wa.me', $whatsappUrl);
-        $this->assertStringContainsString(rawurlencode($quoteRequest->reference), $whatsappUrl);
+        $this->assertStringContainsString(rawurlencode("I'd like to BOOK:"), $whatsappUrl);
         $this->assertStringContainsString('text=', $whatsappUrl);
 
         Mail::assertSent(InternalQuoteRequestMail::class);

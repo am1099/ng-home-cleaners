@@ -29,7 +29,9 @@ use App\Rules\NotAPhoneNumber;
 use App\Rules\UkNgPostcode;
 use App\Rules\UkPhoneNumber;
 use App\Services\QuoteRequestService;
+use App\Livewire\Concerns\FlashesToasts;
 use App\Support\Analytics\Analytics;
+use App\Support\Toast;
 use App\Support\UkContactNormalizer;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
@@ -45,6 +47,7 @@ use Livewire\WithFileUploads;
 #[Layout('layouts.quote')]
 class EstimateWizard extends Component
 {
+    use FlashesToasts;
     use WithFileUploads;
 
     /** @var list<TemporaryUploadedFile|null> */
@@ -52,7 +55,8 @@ class EstimateWizard extends Component
 
     public ?int $serviceId = null;
 
-    public ?string $frequency = 'fortnightly';
+    /** Fixed to one-off for regular cleans — public form no longer offers frequency discounts. */
+    public ?string $frequency = 'one_off';
 
     public ?string $propertyType = 'house';
 
@@ -157,13 +161,10 @@ class EstimateWizard extends Component
         unset($this->availableAddons);
 
         $this->addonIds = [];
-        $this->frequency = $this->selectedService()?->isRegularClean() ? 'fortnightly' : null;
+        $this->frequency = $this->selectedService()?->isRegularClean()
+            ? CleaningFrequency::OneOff->value
+            : null;
         $this->propertyStatus = null;
-    }
-
-    public function updatedFrequency(): void
-    {
-        $this->forgetEstimateCaches();
     }
 
     public function updatedPropertyType(): void
@@ -310,7 +311,7 @@ class EstimateWizard extends Component
     public function visibleSections(): array
     {
         if (! $this->detailed) {
-            $sections = ['clean', 'home', 'contact'];
+            $sections = ['clean', 'home'];
 
             if (! $this->selectedService()?->requiresManualQuote()) {
                 $sections[] = 'extras';
@@ -345,72 +346,6 @@ class EstimateWizard extends Component
         }
 
         return $service->inclusions()->orderBy('sort_order')->get();
-    }
-
-    /**
-     * Live guide price for each regular-clean frequency, using the current home and extras.
-     *
-     * @return array<string, string>
-     */
-    #[Computed]
-    public function frequencyPrices(): array
-    {
-        if (! $this->selectedService()?->isRegularClean()) {
-            return [];
-        }
-
-        $prices = [];
-
-        foreach (CleaningFrequency::cases() as $frequency) {
-            $input = $this->estimateInputFor($frequency);
-
-            if (! $input) {
-                continue;
-            }
-
-            try {
-                $result = app(PricingEngine::class)->calculate($input);
-                $prices[$frequency->value] = $result->finalSinglePricePence !== null
-                    ? Money::formatPence($result->finalSinglePricePence)
-                    : $result->displayHeadline;
-            } catch (\Throwable) {
-                continue;
-            }
-        }
-
-        return $prices;
-    }
-
-    protected function estimateInputFor(CleaningFrequency $frequency): ?EstimateInput
-    {
-        $service = $this->selectedService();
-        $propertyType = PropertyType::tryFrom($this->propertyType ?? '');
-
-        if (! $service || ! $propertyType || $this->bedrooms < 0) {
-            return null;
-        }
-
-        return EstimateInputFactory::make(
-            service: $service,
-            propertyType: $propertyType,
-            bedrooms: $this->bedrooms,
-            bathrooms: $this->bathrooms,
-            wcs: $this->wcs,
-            kitchens: $this->kitchens,
-            receptionRooms: $this->receptionRooms,
-            floors: $this->floors,
-            extraRoomSlugs: $this->extraRooms,
-            frequency: $frequency,
-            propertyStatus: $this->propertyStatus ? PropertyStatus::tryFrom($this->propertyStatus) : null,
-            conditionFlagValues: $this->conditionFlags,
-            addonIds: $this->addonIds,
-            postcode: $this->postcode,
-            preferredDate: $this->preferredDate,
-            conditionNotes: $this->conditionNotes,
-            parkingNotes: $this->resolvedParkingNotes(),
-            accessNotes: $this->resolvedAccessNotes(),
-            arrivalWindow: $this->arrivalWindow ? ArrivalWindow::tryFrom($this->arrivalWindow) : null,
-        );
     }
 
     public function priceFigure(): ?string
@@ -565,16 +500,25 @@ class EstimateWizard extends Component
                 'channel' => 'web',
             ]));
 
+            Toast::success('Request received', 'We\'ll be in touch shortly.');
+
             $this->redirect(route('quote.confirmation', $quoteRequest->reference));
         } catch (ValidationException $exception) {
+            $this->toastFromValidation(
+                $exception,
+                submitTitle: 'Could not send request',
+            );
             $this->dispatch('estimate-validation-failed');
 
             throw $exception;
         } catch (\Throwable $exception) {
             report($exception);
 
+            $message = 'We could not send your estimate request just now. Please try again, or contact us by phone or WhatsApp.';
+            $this->toastError('Could not send request', $message);
+
             throw ValidationException::withMessages([
-                'submit' => 'We could not send your estimate request just now. Please try again, or contact us by phone or WhatsApp.',
+                'submit' => $message,
             ]);
         } finally {
             $this->submitting = false;
@@ -588,7 +532,7 @@ class EstimateWizard extends Component
         }
 
         if ($this->isHoneypotTriggered()) {
-            $this->whatsappNotice = 'Your request was saved and WhatsApp was opened.';
+            $this->flashWhatsAppToast();
 
             return;
         }
@@ -629,14 +573,21 @@ class EstimateWizard extends Component
 
             $this->openWhatsAppFor($quoteRequest);
         } catch (ValidationException $exception) {
+            $this->toastFromValidation(
+                $exception,
+                submitTitle: 'Could not send request',
+            );
             $this->dispatch('estimate-validation-failed');
 
             throw $exception;
         } catch (\Throwable $exception) {
             report($exception);
 
+            $message = 'We could not save your request just now. Please try again, or message us on WhatsApp directly.';
+            $this->toastError('Could not send request', $message);
+
             throw ValidationException::withMessages([
-                'submit' => 'We could not save your request just now. Please try again, or message us on WhatsApp directly.',
+                'submit' => $message,
             ]);
         } finally {
             $this->submitting = false;
@@ -682,24 +633,11 @@ class EstimateWizard extends Component
         return filled($this->website);
     }
 
-    protected function ensureWithinQuoteRateLimit(): void
-    {
-        $key = 'quote-submit:'.request()->ip();
-
-        if (RateLimiter::tooManyAttempts($key, 5)) {
-            throw ValidationException::withMessages([
-                'submit' => 'Too many estimate requests from this connection. Please wait a few minutes and try again.',
-            ]);
-        }
-
-        RateLimiter::hit($key, 60);
-    }
-
     protected function validateAllSections(): void
     {
-        if (! $this->selectedService()?->isRegularClean()) {
-            $this->frequency = null;
-        }
+        $this->frequency = $this->selectedService()?->isRegularClean()
+            ? CleaningFrequency::OneOff->value
+            : null;
 
         $rules = [];
 
@@ -726,8 +664,30 @@ class EstimateWizard extends Component
     {
         $url = app(QuoteRequestService::class)->whatsappUrl($quoteRequest);
 
-        $this->whatsappNotice = 'Your request was saved and WhatsApp was opened.';
+        $this->flashWhatsAppToast();
         $this->dispatch('open-whatsapp', url: $url);
+    }
+
+    protected function flashWhatsAppToast(): void
+    {
+        $this->whatsappNotice = 'Your request was saved and WhatsApp was opened.';
+        $this->toastSuccess('Request saved', 'WhatsApp was opened.');
+    }
+
+    protected function ensureWithinQuoteRateLimit(): void
+    {
+        $key = 'quote-submit:'.request()->ip();
+
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $message = 'Too many estimate requests from this connection. Please wait a few minutes and try again.';
+            $this->toastError('Could not send request', $message);
+
+            throw ValidationException::withMessages([
+                'submit' => $message,
+            ]);
+        }
+
+        RateLimiter::hit($key, 60);
     }
 
     /**
@@ -743,7 +703,6 @@ class EstimateWizard extends Component
                     Rule::in($this->services->pluck('id')->all()),
                 ],
                 'frequency' => [
-                    Rule::requiredIf(fn () => $this->selectedService()?->isRegularClean()),
                     'nullable',
                     Rule::in(array_column(CleaningFrequency::cases(), 'value')),
                 ],
@@ -867,7 +826,6 @@ class EstimateWizard extends Component
         unset($this->availableAddons);
         unset($this->estimateInput);
         unset($this->calculation);
-        unset($this->frequencyPrices);
         unset($this->inclusions);
     }
 

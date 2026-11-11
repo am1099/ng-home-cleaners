@@ -49,6 +49,7 @@
     @endunless
 
     <x-public.cookie-consent />
+    <x-public.toast-boot />
 
     @stack('scripts')
 </body>

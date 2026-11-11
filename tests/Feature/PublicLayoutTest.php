@@ -33,6 +33,7 @@ class PublicLayoutTest extends TestCase
         $response->assertSee('ng-mobile-nav__drawer', false);
         $response->assertSee('data-open="false"', false);
         $response->assertSee('Get a free estimate', false);
+        $response->assertDontSee('New landing page', false);
         $response->assertSee($settings->phoneDisplay(), false);
         $response->assertSee($settings->email, false);
     }

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Enums\CleaningFrequency;
 use App\Enums\PropertyType;
 use App\Enums\QuoteRequestSource;
 use App\Enums\QuoteRequestStatus;
@@ -39,7 +38,6 @@ class CrmLeadsCustomersTest extends TestCase
 
         Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $regular->id)
-            ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
             ->set('bedrooms', 1)
             ->set('floors', 1)
@@ -71,7 +69,43 @@ class CrmLeadsCustomersTest extends TestCase
             ->get(route('filament.admin.resources.quote-requests.view', ['record' => $lead]))
             ->assertOk()
             ->assertSee($lead->guide_estimate_headline, false)
-            ->assertSee('Submitted estimate breakdown', false);
+            ->assertSee('Submitted estimate breakdown', false)
+            ->assertSee('Single website price (beds & baths)');
+    }
+
+    public function test_short_whatsapp_lead_without_contact_details_shows_clearly_in_crm(): void
+    {
+        $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
+
+        Livewire::test(EstimateWizard::class)
+            ->set('serviceId', $regular->id)
+            ->set('bedrooms', 2)
+            ->set('bathrooms', 1)
+            ->call('submitViaWhatsApp')
+            ->assertHasNoErrors();
+
+        $lead = QuoteRequest::query()->firstOrFail();
+
+        $this->assertNull($lead->first_name);
+        $this->assertNull($lead->phone);
+        $this->assertNull($lead->postcode);
+        $this->assertSame('WhatsApp lead', $lead->displayName());
+        $this->assertSame('2 bed, 1 bath', $lead->homeSummary());
+
+        $this->actingAs($this->admin)
+            ->get('/admin/quote-requests')
+            ->assertOk()
+            ->assertSee($lead->reference, false)
+            ->assertSee('WhatsApp lead', false)
+            ->assertSee('Details via WhatsApp', false)
+            ->assertSee('2 bed, 1 bath', false);
+
+        $this->actingAs($this->admin)
+            ->get(route('filament.admin.resources.quote-requests.view', ['record' => $lead]))
+            ->assertOk()
+            ->assertSee('WhatsApp lead', false)
+            ->assertSee('fill these in after WhatsApp', false)
+            ->assertSee($lead->guide_estimate_headline, false);
     }
 
     public function test_admin_can_update_status_and_final_quote(): void
@@ -242,7 +276,6 @@ class CrmLeadsCustomersTest extends TestCase
 
         Livewire::test(EstimateWizard::class)->set('detailed', true)
             ->set('serviceId', $regular->id)
-            ->set('frequency', CleaningFrequency::Weekly->value)
             ->set('propertyType', PropertyType::Flat->value)
             ->set('bedrooms', 1)
             ->set('floors', 1)

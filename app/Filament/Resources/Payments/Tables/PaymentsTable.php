@@ -55,7 +55,7 @@ class PaymentsTable
                 ->url(fn (Payment $record): string => BookingResource::getUrl('view', ['record' => $record->booking_id])),
             TextColumn::make('booking.customer.first_name')
                 ->label('Customer')
-                ->formatStateUsing(fn ($state, Payment $record): string => $record->booking?->customer?->fullName() ?? '—'),
+                ->formatStateUsing(fn ($state, Payment $record): string => $record->booking?->customer?->fullName() ?? ''),
             TextColumn::make('type')
                 ->badge()
                 ->formatStateUsing(fn (PaymentType $state): string => $state->label()),
@@ -66,7 +66,7 @@ class PaymentsTable
                 ->formatStateUsing(fn (int $state): string => Money::formatPence($state))
                 ->alignEnd()
                 ->sortable(),
-            TextColumn::make('reference')->placeholder('—')->toggleable(),
+            TextColumn::make('reference')->toggleable(),
         ];
     }
 
@@ -89,7 +89,7 @@ class PaymentsTable
                         ->grow(false),
                 ]),
                 TextColumn::make('booking.customer.first_name')
-                    ->formatStateUsing(fn ($state, Payment $record): string => $record->booking?->customer?->fullName() ?? '—')
+                    ->formatStateUsing(fn ($state, Payment $record): string => $record->booking?->customer?->fullName() ?? '')
                     ->weight(FontWeight::SemiBold)
                     ->description(fn (Payment $record): string => collect([
                         $record->booking?->reference,

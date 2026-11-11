@@ -322,7 +322,7 @@ class BookingCalendar extends Page
 
     public function postcodePill(Booking $booking): string
     {
-        return UkPostcode::district($booking->postcode) ?? '—';
+        return UkPostcode::district($booking->postcode) ?? '';
     }
 
     private function applyMonth(Carbon $date): void

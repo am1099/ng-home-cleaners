@@ -4,7 +4,6 @@
     $isRegular = (bool) $service?->isRegularClean();
     $isCommercial = (bool) $service?->requiresManualQuote();
     $cardClass = 'flex cursor-pointer flex-col justify-center rounded-[var(--radius-md)] border border-border bg-white px-3 py-2.5 text-left transition has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand-600 sm:min-h-[4.75rem] sm:px-4 sm:py-3';
-    $chipClass = 'flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-md)] border border-border bg-white px-3 py-2.5 text-center transition has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand-600';
     $area = trim((string) \Illuminate\Support\Str::before((string) $settings->service_area_summary, '('));
 @endphp
 
@@ -70,24 +69,6 @@
 
     <x-public.section spacing="follow" class="!pt-4 lg:!pt-6">
         <x-public.container>
-            @if ($whatsappNotice)
-                <x-public.alert variant="success" title="Request saved" class="mb-6" role="status">
-                    {{ $whatsappNotice }}
-                </x-public.alert>
-            @endif
-
-            @error('submit')
-                <x-public.alert variant="error" title="Could not send request" class="mb-6" role="alert">
-                    {{ $message }}
-                </x-public.alert>
-            @enderror
-
-            @if ($errors->any() && ! $errors->has('submit'))
-                <div class="mb-6 rounded-[var(--radius-md)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">
-                    <p class="font-semibold">Please check the highlighted fields.</p>
-                </div>
-            @endif
-
             <div class="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
                 <label for="website">Website</label>
                 <input id="website" type="text" name="website" wire:model="website" tabindex="-1" autocomplete="off">
@@ -147,28 +128,6 @@
                             </div>
                         @endif
 
-                        @if ($isRegular)
-                            <div class="mt-5">
-                                <p class="text-sm font-semibold text-ink">How often?</p>
-                                <div class="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                                    @foreach ([
-                                        \App\Enums\CleaningFrequency::Weekly,
-                                        \App\Enums\CleaningFrequency::Fortnightly,
-                                        \App\Enums\CleaningFrequency::Monthly,
-                                        \App\Enums\CleaningFrequency::OneOff,
-                                    ] as $option)
-                                        <label class="{{ $chipClass }}" wire:key="frequency-{{ $option->value }}">
-                                            <input type="radio" name="frequency" wire:model.live="frequency" value="{{ $option->value }}" class="sr-only">
-                                            <span class="text-sm font-semibold text-ink">{{ $option->label() }}</span>
-                                            @if (filled($this->frequencyPrices[$option->value] ?? null))
-                                                <span class="mt-0.5 text-xs font-medium text-ink-muted">{{ $this->frequencyPrices[$option->value] }}</span>
-                                            @endif
-                                        </label>
-                                    @endforeach
-                                </div>
-                                @error('frequency') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-                            </div>
-                        @endif
                     </section>
 
                     <section class="rounded-[var(--radius-card)] border border-border bg-surface-card p-5 shadow-[var(--shadow-card)] sm:p-6" aria-labelledby="step-home">
@@ -235,29 +194,6 @@
                             Not been cleaned in a while? Just mention it in the chat — we'll confirm your price from a quick photo before you book.
                         </p>
                     </section>
-
-                    <section class="rounded-[var(--radius-card)] border border-border bg-surface-card p-5 shadow-[var(--shadow-card)] sm:p-6" aria-labelledby="step-details">
-                        <h2 id="step-details" class="ng-display text-xl">Your details</h2>
-                        <p class="mt-2 text-sm text-ink-muted">Phone is optional if you'd rather carry on by WhatsApp.</p>
-
-                        <div class="mt-5 grid gap-4 sm:grid-cols-2">
-                            <div class="sm:col-span-2">
-                                <label class="text-sm font-semibold text-ink" for="fullName">Full name</label>
-                                <input id="fullName" type="text" wire:model.blur="firstName" autocomplete="name" class="ng-field" placeholder="Jane Smith" @error('firstName') aria-invalid="true" @enderror>
-                                @error('firstName') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-                            </div>
-                            <div>
-                                <label class="text-sm font-semibold text-ink" for="phone">Phone <span class="font-normal text-ink-muted">(optional)</span></label>
-                                <input id="phone" type="tel" wire:model.blur="phone" autocomplete="tel" class="ng-field" placeholder="07…" @error('phone') aria-invalid="true" @enderror>
-                                @error('phone') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-                            </div>
-                            <div>
-                                <label class="text-sm font-semibold text-ink" for="postcode">Postcode</label>
-                                <input id="postcode" type="text" wire:model.blur="postcode" autocomplete="postal-code" class="ng-field" placeholder="NG1 1AA" @error('postcode') aria-invalid="true" @enderror>
-                                @error('postcode') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
-                            </div>
-                        </div>
-                    </section>
                 </div>
 
                 <div class="lg:self-stretch">
@@ -280,9 +216,6 @@
                                 <dt class="text-white/60">Clean</dt>
                                 <dd class="text-right font-semibold">
                                     {{ $service?->name ?? 'Choose a clean' }}
-                                    @if ($isRegular && $frequency)
-                                        · {{ \Illuminate\Support\Str::lower(\App\Enums\CleaningFrequency::from($frequency)->label()) }}
-                                    @endif
                                 </dd>
                             </div>
                             <div class="flex items-baseline justify-between gap-4">
@@ -314,7 +247,7 @@
                             wire:click.prevent="submitViaWhatsApp"
                             wire:loading.attr="disabled"
                             @disabled($submitting)
-                            class="mt-4 hidden min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 text-sm font-semibold text-white shadow-md shadow-[#25D366]/30 transition hover:bg-[#1ebe5d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366] disabled:cursor-wait disabled:opacity-50 lg:inline-flex"
+                            class="mt-4 inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 text-sm font-semibold text-white shadow-md shadow-[#25D366]/30 transition hover:bg-[#1ebe5d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366] disabled:cursor-wait disabled:opacity-50"
                         >
                             <span wire:loading.remove wire:target="submitViaWhatsApp">Book via WhatsApp</span>
                             <span wire:loading wire:target="submitViaWhatsApp">Saving…</span>
@@ -368,7 +301,7 @@
                 @disabled($submitting)
                 class="inline-flex h-12 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#25D366] px-5 text-sm font-semibold text-white shadow-md shadow-[#25D366]/35 transition hover:bg-[#1ebe5d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366] disabled:cursor-wait disabled:opacity-50"
             >
-                <span wire:loading.remove wire:target="submitViaWhatsApp">WhatsApp us</span>
+                <span wire:loading.remove wire:target="submitViaWhatsApp">Book via WhatsApp</span>
                 <span wire:loading wire:target="submitViaWhatsApp">Saving…</span>
             </button>
         </div>

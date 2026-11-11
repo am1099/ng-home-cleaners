@@ -28,6 +28,11 @@ class PaymentResource extends Resource
 
     protected static ?string $navigationLabel = 'Payments';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     protected static ?string $modelLabel = 'payment';
 
     protected static ?string $pluralModelLabel = 'payments';

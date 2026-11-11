@@ -29,14 +29,14 @@ class EmailTemplateForm
                             : (string) $state),
                     Placeholder::make('description')
                         ->label('When it sends')
-                        ->content(fn (?EmailTemplate $record): string => $record?->description ?? '—'),
+                        ->content(fn (?EmailTemplate $record): string => $record?->description ?? ''),
                     Placeholder::make('placeholders')
                         ->label('Available placeholders')
                         ->content(function (?EmailTemplate $record): string {
                             $key = $record?->key;
 
                             if (! $key instanceof EmailTemplateKey) {
-                                return '—';
+                                return '';
                             }
 
                             return collect($key->placeholders())

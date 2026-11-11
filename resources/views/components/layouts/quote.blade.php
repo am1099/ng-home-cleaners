@@ -35,5 +35,6 @@
     <x-public.footer :show-gallery-nav="$showGalleryNav ?? false" />
 
     <x-public.cookie-consent />
+    <x-public.toast-boot />
 </body>
 </html>

@@ -23,9 +23,9 @@ class QuoteWhatsAppMessageTest extends TestCase
         $this->seed(CmsSeeder::class);
     }
 
-    public function test_whatsapp_message_asks_for_a_walkthrough_video(): void
+    public function test_whatsapp_message_is_a_short_booking_intro(): void
     {
-        $service = Service::query()->where('slug', 'regular-clean')->firstOrFail();
+        $service = Service::query()->where('slug', 'deep-clean')->firstOrFail();
         $customer = Customer::query()->create([
             'first_name' => 'Alex',
             'last_name' => 'Taylor',
@@ -49,12 +49,15 @@ class QuoteWhatsAppMessageTest extends TestCase
             'city' => 'Nottingham',
             'preferred_date' => now()->addWeek()->toDateString(),
             'arrival_window' => 'flexible',
-            'property_type' => 'flat',
-            'bedrooms' => 1,
-            'floors' => 1,
+            'property_type' => 'house',
+            'bedrooms' => 2,
+            'bathrooms' => 1,
+            'floors' => 2,
             'selections_snapshot' => [],
             'pricing_snapshot' => [],
-            'guide_estimate_headline' => 'From £95',
+            'guide_estimate_headline' => '£225',
+            'guide_single_price_pence' => 22500,
+            'is_numeric_estimate' => true,
             'submitted_at' => now(),
         ]);
 
@@ -62,31 +65,21 @@ class QuoteWhatsAppMessageTest extends TestCase
         $message = $quoteService->whatsappMessage($lead);
         $url = $quoteService->whatsappUrl($lead);
 
-        $this->assertStringContainsString('walkthrough video', $message);
-        $this->assertStringContainsString('kitchen, bathrooms and main rooms', $message);
-        $this->assertStringContainsString("I'd like a quote and to book a clean", $message);
-        $this->assertStringContainsString('regular clean', $message);
-        $this->assertStringContainsString('NG1 1AA', $message);
-        $this->assertStringContainsString("I'm Alex Taylor", $message);
-        $this->assertStringNotContainsString('already saved', $message);
-        $this->assertStringContainsString('NG-TEST-WA', $url);
-        $this->assertStringContainsString(rawurlencode('walkthrough video'), $url);
+        $this->assertSame(
+            "Hi NG Home Cleaners— I'd like to BOOK: Deep clean — 2 bed, 1 bath (£225, about 2½ hrs). When are you next available?",
+            $message,
+        );
+        $this->assertStringNotContainsString('walkthrough video', $message);
+        $this->assertStringNotContainsString('NG-TEST-WA', $message);
+        $this->assertStringContainsString(rawurlencode("I'd like to BOOK: Deep clean"), $url);
     }
 
-    public function test_whatsapp_message_mentions_saved_photos_when_present(): void
+    public function test_whatsapp_message_works_without_a_numeric_price(): void
     {
-        $service = Service::query()->where('slug', 'regular-clean')->firstOrFail();
-        $customer = Customer::query()->create([
-            'first_name' => 'Alex',
-            'last_name' => 'Taylor',
-            'phone_normalized' => '07503651476',
-            'phone_display' => '07503 651476',
-            'email' => 'alex.photos@example.com',
-        ]);
+        $service = Service::query()->where('slug', 'office-commercial')->firstOrFail();
 
         $lead = QuoteRequest::query()->create([
             'reference' => 'NG-TEST-PH',
-            'customer_id' => $customer->id,
             'service_id' => $service->id,
             'source' => QuoteRequestSource::Web,
             'status' => QuoteRequestStatus::New,
@@ -95,22 +88,21 @@ class QuoteWhatsAppMessageTest extends TestCase
             'phone' => '07503651476',
             'email' => 'alex.photos@example.com',
             'postcode' => 'NG1 1AA',
-            'address_line1' => '1 Test Street',
-            'city' => 'Nottingham',
-            'preferred_date' => now()->addWeek()->toDateString(),
-            'arrival_window' => 'flexible',
-            'property_type' => 'flat',
-            'bedrooms' => 1,
-            'floors' => 1,
+            'property_type' => 'house',
+            'bedrooms' => 2,
+            'bathrooms' => 1,
+            'floors' => 2,
             'selections_snapshot' => [],
             'pricing_snapshot' => [],
-            'guide_estimate_headline' => 'From £95',
-            'property_photo_paths' => ['quote-requests/NG-TEST-PH/one.jpg'],
+            'guide_estimate_headline' => 'Priced per visit',
             'submitted_at' => now(),
         ]);
 
         $message = app(QuoteRequestService::class)->whatsappMessage($lead);
 
-        $this->assertStringContainsString("I've also added photos of the home.", $message);
+        $this->assertSame(
+            "Hi NG Home Cleaners— I'd like to BOOK: Office & commercial — 2 bed, 1 bath. When are you next available?",
+            $message,
+        );
     }
 }

@@ -35,12 +35,6 @@
                         Your booking is only confirmed once payment has been received.
                     </x-public.alert>
 
-                    @error('submit')
-                        <x-public.alert variant="error" title="Could not send confirmation" class="mt-6" role="alert">
-                            {{ $message }}
-                        </x-public.alert>
-                    @enderror
-
                     <form
                         wire:submit="submit"
                         class="ng-booking-confirm-form mt-10 rounded-[var(--radius-card)] border border-border bg-surface-card p-8 shadow-[var(--shadow-card)] sm:p-10 lg:p-12"

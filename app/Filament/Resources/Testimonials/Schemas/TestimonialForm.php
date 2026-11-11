@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Testimonials\Schemas;
 
+use Asignua\FilamentRating\Components\Rating;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -21,10 +22,10 @@ class TestimonialForm
                     TextInput::make('customer_name')
                         ->required()
                         ->columnSpan(2),
-                    TextInput::make('rating')
-                        ->numeric()
-                        ->minValue(1)
-                        ->maxValue(5)
+                    Rating::make('rating')
+                        ->stars(5)
+                        ->color('warning')
+                        ->size('lg')
                         ->required(),
                     Textarea::make('review')
                         ->required()

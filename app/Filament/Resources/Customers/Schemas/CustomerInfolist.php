@@ -18,11 +18,11 @@ class CustomerInfolist
                         ->label('Name')
                         ->state(fn ($record) => $record->fullName()),
                     TextEntry::make('phone_display')->label('Phone')->copyable(),
-                    TextEntry::make('email')->copyable()->placeholder('—'),
-                    TextEntry::make('postcode')->placeholder('—'),
+                    TextEntry::make('email')->copyable(),
+                    TextEntry::make('postcode'),
                     TextEntry::make('full_address')
                         ->label('Address')
-                        ->state(fn ($record) => $record->fullAddress() ?: '—')
+                        ->state(fn ($record) => $record->fullAddress() ?: '')
                         ->columnSpanFull(),
                     TextEntry::make('notes')->placeholder('No notes.')->columnSpanFull(),
                     TextEntry::make('created_at')->dateTime('d M Y H:i'),

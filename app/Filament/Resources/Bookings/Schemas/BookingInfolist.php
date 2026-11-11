@@ -29,13 +29,13 @@ class BookingInfolist
                     TextEntry::make('service.name')->label('Service'),
                     TextEntry::make('customer.full_name')
                         ->label('Customer')
-                        ->state(fn (Booking $record): string => $record->customer?->fullName() ?? '—')
+                        ->state(fn (Booking $record): string => $record->customer?->fullName() ?? '')
                         ->url(fn (Booking $record): ?string => $record->customer_id
                             ? CustomerResource::getUrl('view', ['record' => $record->customer_id])
                             : null),
                     TextEntry::make('quoteRequest.reference')
                         ->label('Source lead')
-                        ->placeholder('—')
+
                         ->url(fn (Booking $record): ?string => $record->quote_request_id
                             ? QuoteRequestResource::getUrl('view', ['record' => $record->quote_request_id])
                             : null),
@@ -45,14 +45,14 @@ class BookingInfolist
                         ->formatStateUsing(fn (ArrivalWindow $state): string => $state->label()),
                     TextEntry::make('expected_duration_minutes')
                         ->label('Expected duration')
-                        ->formatStateUsing(fn (?int $state): string => $state ? $state.' minutes' : '—'),
+                        ->formatStateUsing(fn (?int $state): string => $state ? $state.' minutes' : ''),
                     TextEntry::make('full_address')
                         ->label('Address')
                         ->state(fn (Booking $record): string => $record->fullAddress())
                         ->columnSpanFull(),
                     TextEntry::make('internal_notes')
                         ->label('Internal notes')
-                        ->placeholder('—')
+
                         ->columnSpanFull(),
                 ]),
 
@@ -123,7 +123,7 @@ class BookingInfolist
                         }),
                     TextEntry::make('active_invoice_total')
                         ->label('Invoice total')
-                        ->state(fn (Booking $record): string => $record->activeInvoice()?->totalDisplay() ?? '—'),
+                        ->state(fn (Booking $record): string => $record->activeInvoice()?->totalDisplay() ?? ''),
                 ]),
         ]);
     }

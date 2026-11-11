@@ -48,6 +48,10 @@ class Addon extends Model
             if (blank($addon->slug) && filled($addon->name)) {
                 $addon->slug = Str::slug($addon->name);
             }
+
+            if ($addon->price_pence !== null) {
+                $addon->price_max_pence = $addon->price_pence;
+            }
         });
     }
 

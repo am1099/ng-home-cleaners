@@ -236,7 +236,7 @@ Guide prices shown to customers use the **lower** end of the calculated range as
 
 | Group | Resource |
 |-------|----------|
-| CRM | Leads (`/admin/quote-requests`), Bookings (`/admin/bookings`), Booking confirmations (`/admin/booking-confirmations`), Calendar (`/admin/booking-calendar`), Invoices (`/admin/invoices`), Payments (`/admin/payments`), Customers (`/admin/customers`) |
+| CRM | Leads (`/admin/quote-requests`), Bookings (`/admin/bookings`), Booking confirmations (`/admin/booking-confirmations`), Calendar (`/admin/booking-calendar`), Invoices (`/admin/invoices`, payments are recorded on the invoice), Customers (`/admin/customers`) |
 
 ## CRM Leads & Customers (Phase 8)
 
@@ -287,11 +287,13 @@ Fields: customer, source lead, service, address, postcode, booking date, arrival
 
 ### Payments
 
-Manual records: booking, signed `amount_pence`, type (Deposit / Balance / Full / Adjustment / Refund), method, paid date, reference, notes. Refunds stored negative. Booking shows Agreed / Paid / Outstanding; overpayment warns but does not hard-block.
+Manual records: booking, signed `amount_pence`, type (Deposit / Balance / Full / Adjustment / Refund), method, paid date, reference, notes. Refunds stored negative. Booking shows Agreed / Paid / Outstanding; overpayment warns but does not hard-block. Payments are not a separate menu item. Staff record them on the invoice, which lists that booking’s payments. Lead notification addresses are Site settings → Contact → Lead notification emails. Pricing asks for one amount per row and stores it as both the minimum and maximum so the public guide price stays a single figure.
 
 ### Revenue
 
 `RevenueCalculator` sums payment `amount_pence` only. Quotes, guide estimates, unpaid booking totals, and issued invoice totals are never revenue.
+
+Reviews stay manual. If `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set, Reviews gains Connect Google and Sync. Sync adds or updates Google reviews and does not change whether an existing review is published.
 
 ## Invoices
 

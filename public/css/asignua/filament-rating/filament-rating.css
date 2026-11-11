@@ -1,0 +1,120 @@
+/*
+ * Rating: stars for the form field, the table column and the infolist entry.
+ *
+ * Plain, namespaced CSS (no cascade layers, no Tailwind classes): the panel theme does not have to compile anything.
+ * The colour arrives as `--color-400/500/600` set inline from the Filament colour (see `color()`); gray comes from
+ * Filament's own palette, so dark mode follows the panel.
+ */
+.fi-rating {
+    --fi-rating-size: 1.5rem;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+.fi-rating-size-xs { --fi-rating-size: 0.75rem; }
+.fi-rating-size-sm { --fi-rating-size: 1rem; }
+.fi-rating-size-md { --fi-rating-size: 1.5rem; }
+.fi-rating-size-lg { --fi-rating-size: 2rem; }
+.fi-rating-size-xl { --fi-rating-size: 2.5rem; }
+
+.fi-rating-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.125rem;
+    border-radius: 0.375rem;
+}
+
+.fi-rating-stars:focus-visible {
+    outline: 2px solid var(--color-600, var(--primary-600));
+    outline-offset: 2px;
+}
+
+.dark .fi-rating-stars:focus-visible {
+    outline-color: var(--color-400, var(--primary-400));
+}
+
+.fi-rating-star {
+    position: relative;
+    display: inline-block;
+    flex: none;
+    width: var(--fi-rating-size);
+    height: var(--fi-rating-size);
+    color: var(--gray-300);
+}
+
+.dark .fi-rating-star {
+    color: var(--gray-600);
+}
+
+.fi-rating-empty,
+.fi-rating-zero {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.fi-rating-star svg,
+.fi-rating-star img,
+.fi-rating-zero svg,
+.fi-rating-zero img {
+    display: block;
+    width: var(--fi-rating-size);
+    height: var(--fi-rating-size);
+    max-width: none;
+    object-fit: contain;
+}
+
+/* The filled copy is clipped to the filled fraction; logical properties mirror it in RTL. */
+.fi-rating-fill {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    overflow: hidden;
+    color: var(--color-500, var(--primary-500));
+}
+
+.dark .fi-rating-fill {
+    color: var(--color-400, var(--primary-400));
+}
+
+.fi-rating-interactive .fi-rating-star {
+    cursor: pointer;
+}
+
+.fi-rating-zero {
+    flex: none;
+    width: var(--fi-rating-size);
+    height: var(--fi-rating-size);
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--gray-300);
+    cursor: default;
+}
+
+.dark .fi-rating-zero {
+    color: var(--gray-600);
+}
+
+.fi-rating-interactive .fi-rating-zero {
+    cursor: pointer;
+}
+
+.fi-rating-zero.fi-active {
+    color: var(--danger-500);
+}
+
+.fi-rating-value {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.25rem;
+}
+
+.dark .fi-rating-value {
+    color: var(--gray-400);
+}

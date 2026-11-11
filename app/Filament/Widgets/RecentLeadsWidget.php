@@ -38,8 +38,7 @@ class RecentLeadsWidget extends TableWidget
                     ->label('Customer')
                     ->state(fn (QuoteRequest $record): string => $record->fullName()),
                 TextColumn::make('service.name')
-                    ->label('Service')
-                    ->placeholder('—'),
+                    ->label('Service'),
                 TextColumn::make('status')
                     ->badge()
                     ->formatStateUsing(fn (QuoteRequestStatus $state): string => $state->label())

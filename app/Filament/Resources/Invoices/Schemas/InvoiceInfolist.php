@@ -38,31 +38,28 @@ class InvoiceInfolist
                         ->badge()
                         ->formatStateUsing(fn ($state, Invoice $record): string => $record->isOverdue()
                             ? 'Overdue'
-                            : ($record->status instanceof InvoiceStatus ? $record->status->label() : '—'))
+                            : ($record->status instanceof InvoiceStatus ? $record->status->label() : ''))
                         ->color(fn ($state, Invoice $record): string => $record->isOverdue()
                             ? 'danger'
                             : ($record->status instanceof InvoiceStatus ? $record->status->color() : 'gray')),
                     TextEntry::make('issue_date')
                         ->label('Issued')
-                        ->date('d M Y')
-                        ->placeholder('—'),
+                        ->date('d M Y'),
                     TextEntry::make('due_date')
                         ->label('Due')
                         ->date('d M Y')
-                        ->placeholder('—')
+
                         ->color(fn (Invoice $record): string => $record->isOverdue() ? 'danger' : 'gray'),
                     TextEntry::make('booking_reference')
                         ->label('Booking')
                         ->url(fn (Invoice $record): ?string => $record->booking_id
                             ? BookingResource::getUrl('view', ['record' => $record->booking_id])
-                            : null)
-                        ->placeholder('—'),
+                            : null),
                     TextEntry::make('service_name')
-                        ->label('Service')
-                        ->placeholder('—'),
+                        ->label('Service'),
                     TextEntry::make('void_reason')
                         ->label('Void reason')
-                        ->placeholder('—')
+
                         ->visible(fn (Invoice $record): bool => $record->isVoid())
                         ->columnSpanFull(),
                 ]),
@@ -77,14 +74,13 @@ class InvoiceInfolist
                             : null),
                     TextEntry::make('customer_email')
                         ->label('Email')
-                        ->placeholder('—')
+
                         ->copyable(),
                     TextEntry::make('customer_phone')
-                        ->label('Phone')
-                        ->placeholder('—'),
+                        ->label('Phone'),
                     TextEntry::make('billing_address')
                         ->label('Address')
-                        ->state(fn (Invoice $record): string => $record->billingAddressDisplay() ?: '—')
+                        ->state(fn (Invoice $record): string => $record->billingAddressDisplay() ?: '')
                         ->columnSpanFull(),
                 ]),
 
@@ -166,7 +162,7 @@ class InvoiceInfolist
                                 ->columnSpan(2),
                             TextEntry::make('reference')
                                 ->label('Reference')
-                                ->placeholder('—')
+
                                 ->columnSpan(4),
                         ])
                         ->columns(12)
@@ -196,11 +192,11 @@ class InvoiceInfolist
                             TextEntry::make('sent_at')
                                 ->label('Sent')
                                 ->dateTime('d M Y H:i')
-                                ->placeholder('—')
+
                                 ->columnSpan(3),
                             TextEntry::make('error_summary')
                                 ->label('Error')
-                                ->placeholder('—')
+
                                 ->visible(fn (InvoiceDelivery $record): bool => $record->status === InvoiceDeliveryStatus::Failed)
                                 ->columnSpanFull(),
                         ])
@@ -223,15 +219,15 @@ class InvoiceInfolist
                 ->schema([
                     TextEntry::make('payment_terms')
                         ->label('Terms')
-                        ->placeholder('—')
+
                         ->prose(),
                     TextEntry::make('payment_instructions')
                         ->label('Payment info')
-                        ->placeholder('—')
+
                         ->prose(),
                     TextEntry::make('notes')
                         ->label('Notes')
-                        ->placeholder('—')
+
                         ->prose(),
                 ]),
         ]);

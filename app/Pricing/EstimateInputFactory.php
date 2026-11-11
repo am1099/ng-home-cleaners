@@ -62,7 +62,7 @@ final class EstimateInputFactory
             receptionRooms: $receptionRooms,
             floors: $floors,
             extraRoomSlugs: $extraRoomSlugs,
-            frequency: $service->isRegularClean() ? ($frequency ?? CleaningFrequency::Fortnightly) : null,
+            frequency: $service->isRegularClean() ? ($frequency ?? CleaningFrequency::OneOff) : null,
             propertyStatus: $service->appliesPropertyStatusMultipliers() ? $propertyStatus : null,
             conditionFlags: $flags,
             addonIds: $addonIds,

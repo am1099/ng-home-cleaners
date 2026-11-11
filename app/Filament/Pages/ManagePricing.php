@@ -128,7 +128,7 @@ class ManagePricing extends Page
                         Tab::make('Frequency')
                             ->schema([
                                 Section::make('Regular clean discounts')
-                                    ->description('Applied only to Regular Cleaning. Shown as plain percentages.')
+                                    ->description('Website quotes now use one price by bedrooms and bathrooms. These discounts are no longer offered on the public form, but remain available if you set frequency on a lead in admin.')
                                     ->columns(3)
                                     ->schema([
                                         TextInput::make('weekly_discount_percent')
@@ -215,8 +215,7 @@ class ManagePricing extends Page
             $fields = [];
             foreach ([PropertyType::Flat, PropertyType::House, PropertyType::Bungalow] as $type) {
                 $key = $service->id.'_'.$type->value;
-                $fields[] = MoneyInput::make("starting.{$key}_min", $type->label().' — from');
-                $fields[] = MoneyInput::make("starting.{$key}_max", $type->label().' — to');
+                $fields[] = MoneyInput::make("starting.{$key}", $type->label());
             }
 
             $tabs[] = Tab::make($service->name)
@@ -249,8 +248,7 @@ class ManagePricing extends Page
                                 ->minValue(0)
                                 ->maxValue(5)
                                 ->required(),
-                            MoneyInput::make("bedrooms.{$service->id}_extra_min", 'Each extra bedroom — from'),
-                            MoneyInput::make("bedrooms.{$service->id}_extra_max", 'Each extra bedroom — to'),
+                            MoneyInput::make("bedrooms.{$service->id}_extra", 'Each extra bedroom'),
                         ]),
                 ]);
         }
@@ -269,8 +267,7 @@ class ManagePricing extends Page
             $fields = [];
             foreach (RoomModifierType::cases() as $room) {
                 $key = $service->id.'_'.$room->value;
-                $fields[] = MoneyInput::make("rooms.{$key}_min", $room->label().' — from');
-                $fields[] = MoneyInput::make("rooms.{$key}_max", $room->label().' — to');
+                $fields[] = MoneyInput::make("rooms.{$key}", $room->label());
             }
 
             $tabs[] = Tab::make($service->name)
@@ -295,8 +292,7 @@ class ManagePricing extends Page
             $fields = [];
             foreach (ConditionFlag::cases() as $flag) {
                 $key = $service->id.'_'.$flag->value;
-                $fields[] = MoneyInput::make("conditions.{$key}_min", $flag->label().' — from');
-                $fields[] = MoneyInput::make("conditions.{$key}_max", $flag->label().' — to');
+                $fields[] = MoneyInput::make("conditions.{$key}", $flag->label());
             }
 
             $tabs[] = Tab::make($service->name)
@@ -333,26 +329,22 @@ class ManagePricing extends Page
 
         foreach (PricingStartingPrice::query()->get() as $row) {
             $key = $row->service_id.'_'.$row->property_type->value;
-            $state['starting'][$key.'_min'] = $row->min_pence;
-            $state['starting'][$key.'_max'] = $row->max_pence;
+            $state['starting'][$key] = $row->min_pence;
         }
 
         foreach (PricingBedroomRule::query()->get() as $row) {
             $state['bedrooms'][$row->service_id.'_included'] = $row->bedrooms_included;
-            $state['bedrooms'][$row->service_id.'_extra_min'] = $row->extra_min_pence;
-            $state['bedrooms'][$row->service_id.'_extra_max'] = $row->extra_max_pence;
+            $state['bedrooms'][$row->service_id.'_extra'] = $row->extra_min_pence;
         }
 
         foreach (PricingExtraRoom::query()->get() as $row) {
             $key = $row->service_id.'_'.$row->room_type->value;
-            $state['rooms'][$key.'_min'] = $row->min_pence;
-            $state['rooms'][$key.'_max'] = $row->max_pence;
+            $state['rooms'][$key] = $row->min_pence;
         }
 
         foreach (PricingCondition::query()->get() as $row) {
             $key = $row->service_id.'_'.$row->condition_flag->value;
-            $state['conditions'][$key.'_min'] = $row->min_pence;
-            $state['conditions'][$key.'_max'] = $row->max_pence;
+            $state['conditions'][$key] = $row->min_pence;
         }
 
         return $state;
@@ -383,8 +375,8 @@ class ManagePricing extends Page
                 PricingStartingPrice::query()->updateOrCreate(
                     ['service_id' => $service->id, 'property_type' => $type],
                     [
-                        'min_pence' => $data['starting'][$key.'_min'],
-                        'max_pence' => $data['starting'][$key.'_max'],
+                        'min_pence' => $data['starting'][$key],
+                        'max_pence' => $data['starting'][$key],
                     ],
                 );
             }
@@ -393,8 +385,8 @@ class ManagePricing extends Page
                 ['service_id' => $service->id],
                 [
                     'bedrooms_included' => $data['bedrooms'][$service->id.'_included'],
-                    'extra_min_pence' => $data['bedrooms'][$service->id.'_extra_min'],
-                    'extra_max_pence' => $data['bedrooms'][$service->id.'_extra_max'],
+                    'extra_min_pence' => $data['bedrooms'][$service->id.'_extra'],
+                    'extra_max_pence' => $data['bedrooms'][$service->id.'_extra'],
                 ],
             );
 
@@ -404,8 +396,8 @@ class ManagePricing extends Page
                     ['service_id' => $service->id, 'room_type' => $room],
                     [
                         'label' => $room->label(),
-                        'min_pence' => $data['rooms'][$key.'_min'],
-                        'max_pence' => $data['rooms'][$key.'_max'],
+                        'min_pence' => $data['rooms'][$key],
+                        'max_pence' => $data['rooms'][$key],
                         'sort_order' => array_search($room, RoomModifierType::cases(), true) + 1,
                     ],
                 );
@@ -416,8 +408,8 @@ class ManagePricing extends Page
                 PricingCondition::query()->updateOrCreate(
                     ['service_id' => $service->id, 'condition_flag' => $flag],
                     [
-                        'min_pence' => $data['conditions'][$key.'_min'],
-                        'max_pence' => $data['conditions'][$key.'_max'],
+                        'min_pence' => $data['conditions'][$key],
+                        'max_pence' => $data['conditions'][$key],
                     ],
                 );
             }

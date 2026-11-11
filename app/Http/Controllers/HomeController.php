@@ -10,6 +10,7 @@ use App\Models\ServiceArea;
 use App\Models\Testimonial;
 use App\Services\SeoService;
 use App\Services\SiteSettingsService;
+use App\Support\Seo\SeoPage;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
 
@@ -17,11 +18,18 @@ class HomeController extends Controller
 {
     public function __invoke(SiteSettingsService $settings, SeoService $seo): View
     {
+        return view('home', $this->pageData($settings, $seo, $seo->forHome()));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function pageData(SiteSettingsService $settings, SeoService $seo, SeoPage $pageSeo): array
+    {
         $site = $settings->get();
-        $pageSeo = $seo->forHome();
         $faqs = Faq::query()->published()->get();
 
-        return view('home', [
+        return [
             'settings' => $site,
             'seo' => $pageSeo,
             'jsonLd' => array_values(array_filter([
@@ -36,7 +44,7 @@ class HomeController extends Controller
             'areas' => ServiceArea::query()->active()->orderBy('sort_order')->get(),
             'testimonials' => $this->publishedTestimonials(),
             'faqs' => $faqs,
-        ]);
+        ];
     }
 
     /**
@@ -53,6 +61,6 @@ class HomeController extends Controller
             ->with(['service:id,name,slug,is_active'])
             ->orderBy('sort_order');
 
-        return $query->limit(3)->get();
+        return $query->get();
     }
 }

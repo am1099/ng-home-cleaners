@@ -25,7 +25,7 @@ final readonly class EstimateInput
         public int $receptionRooms = 1,
         public int $floors = 2,
         public array $extraRoomSlugs = [],
-        public ?CleaningFrequency $frequency = CleaningFrequency::Fortnightly,
+        public ?CleaningFrequency $frequency = CleaningFrequency::OneOff,
         public ?PropertyStatus $propertyStatus = null,
         public array $conditionFlags = [],
         public array $addonIds = [],

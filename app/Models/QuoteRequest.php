@@ -121,7 +121,50 @@ class QuoteRequest extends Model
 
     public function fullName(): string
     {
-        return trim($this->first_name.' '.$this->last_name);
+        return trim(($this->first_name ?? '').' '.($this->last_name ?? ''));
+    }
+
+    /**
+     * CRM / notification label when the short WhatsApp form saved no contact name.
+     */
+    public function displayName(): string
+    {
+        $name = $this->fullName();
+
+        if ($name !== '') {
+            return $name;
+        }
+
+        return match ($this->source) {
+            QuoteRequestSource::Whatsapp => 'WhatsApp lead',
+            QuoteRequestSource::Web => 'Website lead',
+            default => 'Lead',
+        };
+    }
+
+    public function homeSummary(): string
+    {
+        if ($this->bedrooms === null && $this->bathrooms === null) {
+            return '';
+        }
+
+        $beds = $this->bedrooms === null
+            ? null
+            : ($this->bedrooms === 0 ? 'Studio' : $this->bedrooms.' bed');
+
+        $baths = $this->bathrooms === null
+            ? null
+            : $this->bathrooms.' bath';
+
+        return collect([$beds, $baths])->filter()->implode(', ');
+    }
+
+    public function hasContactDetails(): bool
+    {
+        return $this->fullName() !== ''
+            || filled($this->phone)
+            || filled($this->email)
+            || filled($this->postcode);
     }
 
     public function finalQuoteDisplay(): ?string

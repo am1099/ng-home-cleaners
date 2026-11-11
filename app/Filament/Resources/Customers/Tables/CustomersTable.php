@@ -54,11 +54,9 @@ class CustomersTable
                 ->label('Phone')
                 ->searchable(['phone_display', 'phone_normalized']),
             TextColumn::make('email')
-                ->searchable()
-                ->placeholder('—'),
+                ->searchable(),
             TextColumn::make('postcode')
-                ->searchable()
-                ->placeholder('—'),
+                ->searchable(),
             TextColumn::make('quote_requests_count')
                 ->counts('quoteRequests')
                 ->label('Leads'),

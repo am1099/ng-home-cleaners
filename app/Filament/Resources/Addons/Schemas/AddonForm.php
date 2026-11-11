@@ -49,12 +49,9 @@ class AddonForm
                         ->columnSpan(3),
                 ]),
             Section::make('Pricing')
-                ->columns(2)
                 ->schema([
-                    MoneyInput::make('price_pence', 'Guide minimum price')
-                        ->helperText('Lower bound used in estimates and shown to customers.'),
-                    MoneyInput::make('price_max_pence', 'Guide maximum price')
-                        ->helperText('Upper bound used in estimates. Must match the minimum for a fixed-price extra.'),
+                    MoneyInput::make('price_pence', 'Price')
+                        ->helperText('The price customers see and the estimator uses.'),
                 ]),
             Section::make('Visibility')
                 ->columns(2)

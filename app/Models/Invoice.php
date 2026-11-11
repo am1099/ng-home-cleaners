@@ -82,6 +82,11 @@ class Invoice extends Model
         return $this->belongsTo(Booking::class);
     }
 
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'booking_id', 'booking_id');
+    }
+
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
