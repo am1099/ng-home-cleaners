@@ -127,7 +127,7 @@ class PublicWebsiteTest extends TestCase
     {
         $this->get('/get-a-quote')
             ->assertOk()
-            ->assertSee('instant estimate', false)
+            ->assertSee('Your price in seconds, then book on WhatsApp.', false)
             ->assertSeeLivewire(EstimateWizard::class);
     }
 }

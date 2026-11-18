@@ -5,6 +5,11 @@
     $isCommercial = (bool) $service?->requiresManualQuote();
     $cardClass = 'flex cursor-pointer flex-col justify-center rounded-[var(--radius-md)] border border-border bg-white px-3 py-2.5 text-left transition has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand-600 sm:min-h-[4.75rem] sm:px-4 sm:py-3';
     $area = trim((string) \Illuminate\Support\Str::before((string) $settings->service_area_summary, '('));
+    $googleReviewsUrl = filled($settings->google_business_url)
+        ? $settings->google_business_url
+        : 'https://g.page/r/CQuoL3vUxt6mEAE';
+    $fromPrice = $this->regularCleanFromPrice();
+    $discountBadge = $this->selectedFrequencyDiscountBadge();
 @endphp
 
 <div>
@@ -12,60 +17,81 @@
         <x-public.container>
             <div class="mx-auto max-w-6xl">
                 <p class="ng-eyebrow">{{ $area !== '' ? $area : 'Nottingham and surrounding areas' }}</p>
-                <h1 class="ng-display ng-display-hero mt-3 text-balance">
-                    @if ($this->regularCleanFromPrice())
-                        House cleaning in Nottingham from {{ $this->regularCleanFromPrice() }}
+                <h1 class="ng-display ng-display-hero mt-3 w-full text-balance text-left">
+                    @if ($fromPrice)
+                        House cleaning in Nottingham from
+                        <span class="ng-price-emphasis">
+                            {{ $fromPrice }}
+                            <svg class="ng-price-emphasis__swoosh" viewBox="0 0 140 18" preserveAspectRatio="none" aria-hidden="true">
+                                <path d="M3 12c12-5 22-8 34-7.2 9 .6 16 3.8 24 4.6 10 1 18-3.4 28-3.8 11-.5 22 3.2 34 6.2 5 1.4 11 2.8 17 2.4" />
+                                <path d="M6 14.2c14-3.8 28-6 42-4.8 11 1 19 4.2 30 3.6 12-.7 22-4.6 36-3.2 8 .8 16 2.6 22 3.4" />
+                            </svg>
+                        </span>
                     @else
                         House cleaning in Nottingham
                     @endif
                 </h1>
-                <p class="ng-body-lg mt-4 max-w-2xl text-ink-muted">
+                <p class="ng-body-lg mt-4 max-w-2xl text-left text-ink-muted">
                     Your price in seconds, then book on WhatsApp.
                 </p>
             </div>
 
-            @php
-                $googleReviewsUrl = filled($settings->google_business_url)
-                    ? $settings->google_business_url
-                    : 'https://g.page/r/CQuoL3vUxt6mEAE';
-            @endphp
-
             <div class="mx-auto mt-8 max-w-6xl">
-                <ul class="flex flex-wrap items-center gap-x-8 gap-y-3 rounded-[var(--radius-card)] border border-border bg-surface-card px-6 py-4 text-sm text-ink shadow-[var(--shadow-card)]">
-                    @if ($settings->show_google_reviews)
-                        <li>
-                            <a href="{{ $googleReviewsUrl }}" class="inline-flex items-center gap-2 font-semibold text-brand-800 underline-offset-4 hover:underline" target="_blank" rel="noopener noreferrer">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4 shrink-0" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 21c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 21 12 21z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 1.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                                Read our Google reviews
-                            </a>
+                <ul class="grid rounded-2xl bg-[#f3f6f5] sm:grid-cols-2 lg:flex lg:divide-x lg:divide-[#e3e8e6]">
+                    @if ($settings->show_dbs_statement)
+                        <li class="flex flex-1 items-center gap-3 px-4 py-4 sm:px-5">
+                            <span class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-[#1f8f78] text-white" aria-hidden="true">
+                                {{-- Shield with check — vetted / DBS --}}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="size-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 12 2.25c2.43 0 4.717.67 6.686 1.837A11.96 11.96 0 0 1 21.75 12c0 5.334-3.482 9.86-8.25 11.213A11.96 11.96 0 0 1 2.25 12c0-2.43.67-4.717 1.837-6.686A11.96 11.96 0 0 1 12 2.25Z" /></svg>
+                            </span>
+                            <span class="min-w-0 text-left">
+                                <span class="block text-sm font-semibold text-ink">DBS-checked cleaners</span>
+                                <span class="mt-0.5 block text-xs text-ink-muted">Trusted and vetted</span>
+                            </span>
                         </li>
                     @endif
                     @if ($settings->show_insurance_statement && filled($settings->insurance_amount))
-                        <li class="inline-flex items-center gap-2">
-                            <span class="text-brand-700" aria-hidden="true">&#10003;</span>
-                            {{ $settings->insurance_amount }} public liability insured
+                        <li class="flex flex-1 items-center gap-3 border-t border-[#e3e8e6] px-4 py-4 sm:border-t-0 sm:px-5 lg:border-t-0">
+                            <span class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-[#1f8f78] text-white" aria-hidden="true">
+                                {{-- Umbrella — public liability insurance --}}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="size-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5A9 9 0 0 1 12 4.5a9 9 0 0 1 9 9H3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 13.5V20a1.5 1.5 0 0 0 3 0" /></svg>
+                            </span>
+                            <span class="min-w-0 text-left">
+                                <span class="block text-sm font-semibold text-ink">{{ $settings->insurance_amount }} insured</span>
+                                <span class="mt-0.5 block text-xs text-ink-muted">Public liability cover</span>
+                            </span>
                         </li>
                     @endif
-                    <li class="inline-flex items-center gap-2">
-                        <span class="text-brand-700" aria-hidden="true">&#10003;</span>
-                        Fixed price agreed before we start
+                    <li class="flex flex-1 items-center gap-3 border-t border-[#e3e8e6] px-4 py-4 sm:px-5 lg:border-t-0">
+                        <span class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-[#1f8f78] text-white" aria-hidden="true">
+                            {{-- Price tag — fixed price --}}
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="size-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" /></svg>
+                        </span>
+                        <span class="min-w-0 text-left">
+                            <span class="block text-sm font-semibold text-ink">Fixed price agreed</span>
+                            <span class="mt-0.5 block text-xs text-ink-muted">Before we start</span>
+                        </span>
                     </li>
-                    @if (filled($settings->hoursSummary()))
-                        <li class="inline-flex items-center gap-2">
-                            <span class="text-brand-700" aria-hidden="true">&#10003;</span>
-                            {{ $settings->hoursSummary() }}
+                    @if ($settings->show_google_reviews)
+                        <li class="flex flex-1 border-t border-[#e3e8e6] lg:border-t-0">
+                            <a
+                                href="{{ $googleReviewsUrl }}"
+                                class="flex min-h-full w-full items-center gap-3 rounded-b-[var(--radius-card)] px-4 py-4 text-sm font-semibold text-brand-800 transition-colors hover:bg-[#0e3b36] hover:text-white focus-visible:bg-[#0e3b36] focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand-600 active:bg-[#0c322e] active:text-white lg:rounded-bl-none lg:rounded-br-[var(--radius-card)] sm:px-5"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <span class="inline-flex size-5 shrink-0 items-center justify-center overflow-visible" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20" height="20" class="block overflow-visible">
+                                        <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+                                        <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+                                        <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+                                        <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+                                    </svg>
+                                </span>
+                                <span>Read our Google reviews</span>
+                            </a>
                         </li>
                     @endif
-                    @if ($settings->show_dbs_statement)
-                        <li class="inline-flex items-center gap-2">
-                            <span class="text-brand-700" aria-hidden="true">&#10003;</span>
-                            DBS-checked cleaners
-                        </li>
-                    @endif
-                    <li class="inline-flex items-center gap-2">
-                        <span class="text-brand-700" aria-hidden="true">&#10003;</span>
-                        Free re-clean if you're not happy
-                    </li>
                 </ul>
             </div>
         </x-public.container>
@@ -92,7 +118,7 @@
                                     <input type="radio" name="serviceId" wire:model.live="serviceId" value="{{ $option->id }}" class="sr-only">
                                     <span class="text-sm font-semibold leading-snug text-ink sm:text-base">{{ filled($option->card_title) ? $option->card_title : $option->name }}</span>
                                     @if (filled($option->estimate_description))
-                                        <span class="mt-1 text-xs font-normal leading-snug text-ink-muted sm:text-sm">{{ $option->estimate_description }}</span>
+                                        <span class="mt-1 text-xs font-normal leading-snug text-ink-muted sm:text-sm">{{ \Illuminate\Support\Str::limit($option->estimate_description, 42) }}</span>
                                     @endif
                                 </label>
                             @endforeach
@@ -109,17 +135,25 @@
                         </p>
 
                         @if ($isRegular)
+                            {{-- Mobbin: Sketch / Recraft / Luma — equal cards with percentage-only savings badges --}}
                             <div class="mt-5" wire:key="frequency-options">
-                                <p class="text-sm font-semibold text-ink">How often?</p>
-                                {{-- Mobbin: Sweatpals / Care.com segmented frequency control — one track, clear selected fill --}}
+                                <div class="flex flex-wrap items-baseline justify-between gap-2">
+                                    <p class="text-sm font-semibold text-ink">How often?</p>
+                                    <p class="text-xs font-medium text-brand-700">Save more with a regular clean</p>
+                                </div>
                                 <div
-                                    class="mt-2 grid grid-cols-2 gap-1 rounded-[var(--radius-md)] border border-border bg-brand-50/40 p-1 sm:grid-cols-4"
+                                    class="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3"
                                     role="radiogroup"
                                     aria-label="Cleaning frequency"
                                 >
                                     @foreach (\App\Enums\CleaningFrequency::cases() as $option)
+                                        @php
+                                            $selected = $frequency === $option->value;
+                                            $badge = $this->frequencyDiscountBadge($option);
+                                            $saveLabel = $badge ? 'Save '.\Illuminate\Support\Str::before($badge, '%').'%' : null;
+                                        @endphp
                                         <label
-                                            class="flex min-h-11 cursor-pointer items-center justify-center rounded-[calc(var(--radius-md)-2px)] px-2 py-2 text-center text-sm font-semibold transition has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand-600 {{ $frequency === $option->value ? 'bg-brand-700 text-white shadow-sm' : 'text-ink hover:bg-white/80' }}"
+                                            class="flex min-h-[3.25rem] cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 text-left transition has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand-600 {{ $selected ? 'border-[#0e3b36] bg-[#0e3b36] text-white shadow-sm' : 'border-border bg-white text-ink hover:border-brand-200' }}"
                                             wire:key="frequency-{{ $option->value }}"
                                         >
                                             <input
@@ -129,7 +163,17 @@
                                                 value="{{ $option->value }}"
                                                 class="sr-only"
                                             >
-                                            {{ $option->label() }}
+                                            <span class="inline-flex size-4 shrink-0 items-center justify-center rounded-full border {{ $selected ? 'border-white' : 'border-neutral-300' }}" aria-hidden="true">
+                                                @if ($selected)
+                                                    <span class="size-2 rounded-full bg-white"></span>
+                                                @endif
+                                            </span>
+                                            <span class="min-w-0 flex flex-1 flex-col gap-1.5">
+                                                <span class="text-sm font-semibold leading-none">{{ $option->label() }}</span>
+                                                @if ($saveLabel)
+                                                    <span class="inline-flex w-fit max-w-full truncate rounded-md bg-[#d8f3e8] px-1.5 py-0.5 text-[0.625rem] font-semibold leading-none text-[#157a5b]">{{ $saveLabel }}</span>
+                                                @endif
+                                            </span>
                                         </label>
                                     @endforeach
                                 </div>
@@ -223,124 +267,152 @@
                             </div>
                         @endif
 
-                        <p class="mt-4 text-sm leading-relaxed text-ink-muted">
-                            Not been cleaned in a while? Just mention it in the chat — we'll confirm your price from a quick photo before you book.
+                        <p class="mt-4 text-sm leading-snug text-ink-muted">
+                            Longer gap between cleans? Send a quick photo on WhatsApp.
                         </p>
                     </section>
                 </div>
 
                 <div class="lg:self-stretch">
-                    <div class="ng-sticky-estimate-desktop flex flex-col gap-3">
-                    <aside class="rounded-[1.25rem] bg-[#10211e] p-6 text-white shadow-[var(--shadow-card)]" aria-label="Your price">
-                        <p class="text-xs font-semibold uppercase tracking-[0.16em] text-brand-100">Your price</p>
-                        @if ($isCommercial)
-                            <p class="ng-display mt-3 text-3xl leading-tight text-white">Quoted on WhatsApp</p>
-                        @elseif ($this->priceFigure())
-                            <p class="ng-display mt-2 text-5xl leading-none tracking-tight text-white">{{ $this->priceFigure() }}</p>
-                            @if ($isRegular)
-                                <p class="mt-2 text-sm text-white/70">per visit</p>
-                            @endif
-                        @else
-                            <p class="ng-display mt-3 text-3xl text-white">—</p>
-                        @endif
+                    <div class="ng-sticky-estimate-desktop flex flex-col gap-4">
+                        {{-- Mobbin: Open / Pitch / X — rounded dark summary, % badge, high-contrast CTA --}}
+                        <aside class="overflow-hidden rounded-2xl bg-[#0e3b36] p-6 text-white shadow-[var(--shadow-card)]" aria-label="Your guide price">
+                            <p class="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-white/70">Your guide price</p>
 
-                        <dl class="mt-4 space-y-2 border-t border-white/15 pt-3 text-sm">
-                            <div class="flex items-baseline justify-between gap-4">
-                                <dt class="text-white/60">Clean</dt>
-                                <dd class="text-right font-semibold">
-                                    {{ $service?->name ?? 'Choose a clean' }}
-                                </dd>
-                            </div>
-                            @if ($isRegular && $this->frequencyLabel())
-                                <div class="flex items-baseline justify-between gap-4">
-                                    <dt class="text-white/60">Frequency</dt>
-                                    <dd class="text-right font-semibold">{{ $this->frequencyLabel() }}</dd>
-                                </div>
+                            @if ($isCommercial)
+                                <p class="ng-display mt-3 text-3xl leading-tight text-white">Quoted on WhatsApp</p>
+                            @elseif ($this->priceFigure())
+                                <p class="ng-display mt-2 text-5xl leading-none tracking-tight text-white">{{ $this->priceFigure() }}</p>
+                                @if ($isRegular)
+                                    <p class="mt-1.5 text-sm text-white/70">per visit</p>
+                                @endif
+                            @else
+                                <p class="ng-display mt-3 text-3xl text-white">—</p>
                             @endif
-                            <div class="flex items-baseline justify-between gap-4">
-                                <dt class="text-white/60">Home</dt>
-                                <dd class="text-right font-semibold">{{ $this->homeSummary() }}</dd>
-                            </div>
-                            @if ($this->guideDurationLabel())
-                                <div class="flex items-baseline justify-between gap-4">
-                                    <dt class="text-white/60">Time</dt>
-                                    <dd class="text-right font-semibold">{{ $this->guideDurationLabel() }}</dd>
-                                </div>
-                            @endif
-                            @if ($addonIds !== [])
-                                <div class="flex items-baseline justify-between gap-4">
-                                    <dt class="text-white/60">Extras</dt>
-                                    <dd class="text-right font-semibold">
-                                        {{ $this->availableAddons->whereIn('id', array_map('intval', $addonIds))->pluck('label')->join(', ') }}
-                                    </dd>
-                                </div>
-                            @endif
-                        </dl>
 
-                        <p class="mt-3 text-sm leading-relaxed text-white/75">
-                            Guide price — confirmed from a quick photo on WhatsApp. It only changes if the photo shows something extra, and you'll know before you book.
-                        </p>
-
-                        {{-- Mobbin: GetYourGuide / Copilot — compact reviews directly above the primary CTA --}}
-                        @if ($this->quoteTestimonials->isNotEmpty())
-                            <div class="mt-4 space-y-2" aria-label="Customer reviews">
-                                @foreach ($this->quoteTestimonials as $testimonial)
-                                    <figure wire:key="quote-review-{{ $testimonial->id }}" class="rounded-[var(--radius-md)] bg-white/5 px-3 py-2.5 text-sm leading-snug text-white/90">
-                                        <div class="flex items-center gap-2">
-                                            @if (filled($testimonial->rating))
-                                                <p class="text-[0.7rem] font-semibold tracking-wide text-brand-100" aria-label="{{ $testimonial->rating }} out of 5 stars">
-                                                    {{ str_repeat('★', max(0, min(5, (int) $testimonial->rating))) }}
-                                                </p>
+                            <dl class="mt-5 space-y-3 border-t border-white/15 pt-4 text-sm">
+                                <div class="flex items-center justify-between gap-4">
+                                    <dt class="inline-flex items-center gap-2 text-white/70">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0 text-white/50" aria-hidden="true"><path d="M7.5 2.5A1.5 1.5 0 0 0 6 4v12.5a.75.75 0 0 0 1.28.53L10 14.56l2.72 2.47A.75.75 0 0 0 14 16.5V4a1.5 1.5 0 0 0-1.5-1.5h-5Z" /></svg>
+                                        Clean
+                                    </dt>
+                                    <dd class="text-right font-semibold">{{ $service?->name ?? 'Choose a clean' }}</dd>
+                                </div>
+                                @if ($isRegular && $this->frequencyLabel())
+                                    <div class="flex items-center justify-between gap-4">
+                                        <dt class="inline-flex items-center gap-2 text-white/70">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0 text-white/50" aria-hidden="true"><path fill-rule="evenodd" d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.414 0-.75.336-.75.75v6.25c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25V8.25a.75.75 0 0 0-.75-.75H4.75Z" clip-rule="evenodd" /></svg>
+                                            Frequency
+                                        </dt>
+                                        <dd class="text-right font-semibold">
+                                            @if ($discountBadge)
+                                                <span class="inline-flex rounded-full bg-[#d8f3e8] px-2.5 py-1 text-xs font-semibold text-[#146c52]">{{ $this->frequencyLabel() }} ({{ $discountBadge }})</span>
+                                            @else
+                                                {{ $this->frequencyLabel() }}
                                             @endif
-                                            <figcaption class="min-w-0 truncate text-xs text-white/55">
-                                                <span class="font-semibold text-white/75">{{ $testimonial->customer_name }}</span>
+                                        </dd>
+                                    </div>
+                                @endif
+                                <div class="flex items-center justify-between gap-4">
+                                    <dt class="inline-flex items-center gap-2 text-white/70">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0 text-white/50" aria-hidden="true"><path fill-rule="evenodd" d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2.5a.5.5 0 0 1-.5-.5V14a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v3.5a.5.5 0 0 1-.5.5H4a1 1 0 0 1-1-1v-6H2a1 1 0 0 1-.707-1.707l7-7Z" clip-rule="evenodd" /></svg>
+                                        Home
+                                    </dt>
+                                    <dd class="text-right font-semibold">{{ $this->homeSummary() }}</dd>
+                                </div>
+                                @if ($this->guideDurationLabel())
+                                    <div class="flex items-center justify-between gap-4">
+                                        <dt class="inline-flex items-center gap-2 text-white/70">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0 text-white/50" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z" clip-rule="evenodd" /></svg>
+                                            Time
+                                        </dt>
+                                        <dd class="text-right font-semibold">{{ \Illuminate\Support\Str::ucfirst($this->guideDurationLabel()) }}</dd>
+                                    </div>
+                                @endif
+                                @if ($addonIds !== [])
+                                    <div class="flex items-center justify-between gap-4">
+                                        <dt class="text-white/70">Extras</dt>
+                                        <dd class="text-right font-semibold">
+                                            {{ $this->availableAddons->whereIn('id', array_map('intval', $addonIds))->pluck('label')->join(', ') }}
+                                        </dd>
+                                    </div>
+                                @endif
+                            </dl>
+
+                            <button
+                                type="button"
+                                wire:click.prevent="submitViaWhatsApp"
+                                wire:loading.attr="disabled"
+                                @disabled($submitting)
+                                class="mt-5 inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 text-sm font-semibold text-white transition hover:bg-[#1ebe5d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366] disabled:cursor-wait disabled:opacity-50"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 shrink-0" aria-hidden="true"><path d="M12.04 2C6.58 2 2.15 6.4 2.15 11.83c0 1.74.46 3.44 1.34 4.94L2 22l5.39-1.41a10.1 10.1 0 0 0 4.65 1.12h.01c5.46 0 9.89-4.4 9.89-9.83C21.94 6.4 17.5 2 12.04 2Zm5.76 13.92c-.24.68-1.4 1.3-1.94 1.38-.5.08-1.12.11-1.81-.11-.42-.14-.95-.31-1.64-.61-2.89-1.25-4.77-4.16-4.91-4.35-.14-.19-1.16-1.54-1.16-2.94 0-1.4.73-2.09 1-2.37.26-.28.57-.35.76-.35h.55c.17 0 .41-.06.64.49.24.57.81 1.97.88 2.11.07.15.12.32.02.51-.1.19-.15.31-.29.48-.14.17-.3.37-.43.5-.14.14-.29.29-.12.56.17.28.74 1.22 1.59 1.98 1.09.97 2.01 1.27 2.29 1.41.28.14.44.12.6-.07.17-.19.68-.79.86-1.06.18-.27.36-.22.6-.13.24.09 1.54.73 1.8.86.26.13.44.2.5.31.07.11.07.64-.17 1.32Z" /></svg>
+                                <span wire:loading.remove wire:target="submitViaWhatsApp">Book via WhatsApp</span>
+                                <span wire:loading wire:target="submitViaWhatsApp">Saving…</span>
+                            </button>
+
+                            @if (filled($settings->phone))
+                                <a href="{{ $settings->phoneTel() }}" class="mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/25 px-4 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0" aria-hidden="true"><path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 0 1 3.5 2h1.148a1.5 1.5 0 0 1 1.465 1.175l.716 3.223a1.5 1.5 0 0 1-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 0 0 6.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 0 1 1.767-1.052l3.223.716A1.5 1.5 0 0 1 18 15.352V16.5a1.5 1.5 0 0 1-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 0 1 2.43 8.326 13.019 13.019 0 0 1 2 5V3.5Z" clip-rule="evenodd" /></svg>
+                                    Call {{ $settings->phoneDisplay() }}
+                                </a>
+                            @endif
+
+                            <p class="mt-4 flex items-start gap-2 text-xs leading-snug text-white/65">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="mt-0.5 size-3.5 shrink-0 text-white/50" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clip-rule="evenodd" /></svg>
+                                Guide price — confirmed before we start.
+                            </p>
+                        </aside>
+
+                        {{-- Mobbin: Me+ / Liven — compact reviews beside the booking decision --}}
+                        @if ($this->quoteTestimonials->isNotEmpty())
+                            <section class="rounded-[var(--radius-card)] border border-border bg-surface-card p-4 shadow-[var(--shadow-card)] sm:p-5" aria-labelledby="quote-reviews-heading">
+                                <div class="flex items-baseline justify-between gap-3">
+                                    <h2 id="quote-reviews-heading" class="text-sm font-semibold text-ink">What our customers say</h2>
+                                    @if ($settings->show_google_reviews)
+                                        <a href="{{ $googleReviewsUrl }}" class="shrink-0 rounded-md px-2 py-1 text-xs font-semibold text-brand-700 transition-colors hover:bg-[#0e3b36] hover:text-white focus-visible:bg-[#0e3b36] focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600" target="_blank" rel="noopener noreferrer">
+                                            Read all Google reviews
+                                        </a>
+                                    @endif
+                                </div>
+                                <div class="mt-3 grid gap-3 sm:grid-cols-1">
+                                    @foreach ($this->quoteTestimonials->take(3) as $testimonial)
+                                        <figure wire:key="quote-review-{{ $testimonial->id }}" class="rounded-[var(--radius-md)] border border-border/80 bg-white px-3.5 py-3">
+                                            <div class="flex items-center justify-between gap-2">
+                                                @if (filled($testimonial->rating))
+                                                    <p class="text-xs font-semibold tracking-wide text-accent-brass" aria-label="{{ $testimonial->rating }} out of 5 stars">
+                                                        {{ str_repeat('★', max(0, min(5, (int) $testimonial->rating))) }}
+                                                    </p>
+                                                @endif
+                                                @if ($settings->show_google_reviews)
+                                                    <span class="text-[0.65rem] font-medium uppercase tracking-wide text-ink-muted">Google</span>
+                                                @endif
+                                            </div>
+                                            @if (filled($testimonial->review))
+                                                <blockquote class="mt-1.5 text-sm leading-snug text-ink">&ldquo;{{ \Illuminate\Support\Str::limit($testimonial->review, 110) }}&rdquo;</blockquote>
+                                            @endif
+                                            <figcaption class="mt-2 text-xs text-ink-muted">
+                                                <span class="font-semibold text-ink">{{ $testimonial->customer_name }}</span>
                                                 @if (filled($testimonial->location))
                                                     <span aria-hidden="true"> · </span>{{ $testimonial->location }}
                                                 @endif
                                             </figcaption>
-                                        </div>
-                                        @if (filled($testimonial->review))
-                                            <blockquote class="mt-1.5 line-clamp-2 text-white/85">&ldquo;{{ $testimonial->review }}&rdquo;</blockquote>
-                                        @endif
-                                    </figure>
-                                @endforeach
-                                @if ($settings->show_google_reviews)
-                                    <a href="{{ $googleReviewsUrl }}" class="inline-flex pt-0.5 text-xs font-semibold text-brand-100 underline-offset-2 hover:underline" target="_blank" rel="noopener noreferrer">
-                                        Read more on Google
-                                    </a>
-                                @endif
-                            </div>
+                                        </figure>
+                                    @endforeach
+                                </div>
+                            </section>
                         @endif
 
-                        <button
-                            type="button"
-                            wire:click.prevent="submitViaWhatsApp"
-                            wire:loading.attr="disabled"
-                            @disabled($submitting)
-                            class="mt-4 inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 text-sm font-semibold text-white shadow-md shadow-[#25D366]/30 transition hover:bg-[#1ebe5d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366] disabled:cursor-wait disabled:opacity-50"
-                        >
-                            <span wire:loading.remove wire:target="submitViaWhatsApp">Book via WhatsApp</span>
-                            <span wire:loading wire:target="submitViaWhatsApp">Saving…</span>
-                        </button>
-                        <p class="mt-3 text-center text-xs text-white/60">Local Nottingham team · no obligation</p>
+                        <p class="text-center text-sm text-ink-muted">
+                            Landlord, agency or a big job?
+                            <a href="{{ route('quote.detailed') }}" class="mt-1 block font-semibold text-brand-800 underline underline-offset-4">Send full details instead</a>
+                        </p>
 
-                        @if (filled($settings->phone))
-                            <a href="{{ $settings->phoneTel() }}" class="mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/25 px-4 text-sm font-semibold text-white hover:bg-white/10">
-                                Call {{ $settings->phoneDisplay() }}
-                            </a>
-                        @endif
-                    </aside>
-
-                    <p class="text-center text-sm text-ink-muted">
-                        Landlord, agency or a big job?
-                        <a href="{{ route('quote.detailed') }}" class="mt-1 block font-semibold text-brand-800 underline underline-offset-4">Send full details instead</a>
-                    </p>
-
-                    <ul class="space-y-2 rounded-[var(--radius-card)] border border-border bg-surface-card p-4 text-sm leading-snug text-ink shadow-[var(--shadow-card)]">
-                        <li class="flex gap-2"><span class="text-brand-700" aria-hidden="true">&#10003;</span><span>We bring all cleaning products — you provide a vacuum and mop</span></li>
-                        <li class="flex gap-2"><span class="text-brand-700" aria-hidden="true">&#10003;</span><span>Not happy? Tell us within 48 hours and we'll re-clean free</span></li>
-                        <li class="flex gap-2"><span class="text-brand-700" aria-hidden="true">&#10003;</span><span>No contract — cancel or reschedule free with 24 hours' notice</span></li>
-                    </ul>
+                        <ul class="space-y-2 rounded-[var(--radius-card)] border border-border bg-surface-card p-4 text-sm leading-snug text-ink shadow-[var(--shadow-card)]">
+                            <li class="flex gap-2"><span class="text-brand-700" aria-hidden="true">&#10003;</span><span>We bring all cleaning products — you provide a vacuum and mop</span></li>
+                            <li class="flex gap-2"><span class="text-brand-700" aria-hidden="true">&#10003;</span><span>Not happy? Tell us within 48 hours and we'll re-clean free</span></li>
+                            <li class="flex gap-2"><span class="text-brand-700" aria-hidden="true">&#10003;</span><span>No contract — cancel or reschedule free with 24 hours' notice</span></li>
+                        </ul>
                     </div>
                 </div>
             </div>

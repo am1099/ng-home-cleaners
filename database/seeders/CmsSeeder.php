@@ -244,6 +244,9 @@ class CmsSeeder extends Seeder
         PricingSetting::instance()->update([
             'regular_min_pence' => 6000,
             'regular_min_max_pence' => 6500,
+            'weekly_discount_percent' => 10,
+            'fortnightly_discount_percent' => 7.5,
+            'monthly_discount_percent' => 5,
         ]);
 
         $starting = [

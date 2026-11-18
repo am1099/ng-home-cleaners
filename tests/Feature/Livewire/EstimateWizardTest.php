@@ -444,7 +444,7 @@ class EstimateWizardTest extends TestCase
             ->assertSet('detailed', false)
             ->assertDontSee('Your details', false)
             ->assertDontSee('Full name', false)
-            ->assertSee('about 2 hrs', false)
+            ->assertSee('About 2 hrs', false)
             ->assertSee('Includes the kitchen and living room.', false)
             ->assertSee('Book via WhatsApp', false)
             ->assertSee('How often?', false)

@@ -15,6 +15,7 @@ use App\Enums\PropertyType;
 use App\Enums\QuoteRequestSource;
 use App\Livewire\Concerns\FlashesToasts;
 use App\Models\Addon;
+use App\Models\PricingSetting;
 use App\Models\QuoteRequest;
 use App\Models\Service;
 use App\Models\ServiceInclusion;
@@ -442,6 +443,44 @@ class EstimateWizard extends Component
         }
 
         return CleaningFrequency::tryFrom($this->frequency)?->label();
+    }
+
+    /**
+     * Percentage badge for a frequency option (e.g. "10% off").
+     * Uses the CRM-configured schedule discount only — never invents percentages.
+     */
+    public function frequencyDiscountBadge(CleaningFrequency $frequency): ?string
+    {
+        $percent = $this->configuredFrequencyDiscountPercent($frequency);
+
+        if ($percent === null) {
+            return null;
+        }
+
+        $label = rtrim(rtrim(number_format($percent, 2, '.', ''), '0'), '.');
+
+        return $label.'% off';
+    }
+
+    public function selectedFrequencyDiscountBadge(): ?string
+    {
+        $frequency = CleaningFrequency::tryFrom($this->frequency ?? '');
+
+        return $frequency ? $this->frequencyDiscountBadge($frequency) : null;
+    }
+
+    protected function configuredFrequencyDiscountPercent(CleaningFrequency $frequency): ?float
+    {
+        $settings = PricingSetting::instance();
+
+        $percent = match ($frequency) {
+            CleaningFrequency::Weekly => (float) $settings->weekly_discount_percent,
+            CleaningFrequency::Fortnightly => (float) $settings->fortnightly_discount_percent,
+            CleaningFrequency::Monthly => (float) $settings->monthly_discount_percent,
+            CleaningFrequency::OneOff => 0.0,
+        };
+
+        return $percent > 0 ? $percent : null;
     }
 
     #[Computed]

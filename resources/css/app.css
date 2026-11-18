@@ -208,6 +208,37 @@
         @apply text-[clamp(1.875rem,4.6vw,3rem)] leading-[1.05];
     }
 
+    .ng-price-emphasis {
+        color: var(--color-accent-brass);
+        display: inline-block;
+        position: relative;
+        padding-bottom: 0.38em;
+    }
+
+    .ng-price-emphasis__swoosh {
+        position: absolute;
+        left: -0.08em;
+        right: -0.08em;
+        bottom: -0.1em;
+        width: calc(100% + 0.16em);
+        height: 0.45em;
+        overflow: visible;
+        pointer-events: none;
+    }
+
+    .ng-price-emphasis__swoosh path {
+        fill: none;
+        stroke: var(--color-accent-brass);
+        stroke-width: 2.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .ng-price-emphasis__swoosh path:last-child {
+        stroke-width: 1.6;
+        opacity: 0.55;
+    }
+
     .ng-display-section {
         @apply text-[clamp(1.5rem,3vw,2rem)] leading-[1.15];
     }

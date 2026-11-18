@@ -226,4 +226,64 @@ class QuotePageClientFixesTest extends TestCase
         $this->assertStringContainsString('data-google-ads-whatsapp-send-to', $html);
         $this->assertStringContainsString('data-google-ads-phone-send-to', $html);
     }
+
+    public function test_quote_page_shows_percentage_frequency_badges_without_strikethrough_savings(): void
+    {
+        PricingSetting::instance()->update([
+            'weekly_discount_percent' => 10,
+            'fortnightly_discount_percent' => 7.5,
+            'monthly_discount_percent' => 5,
+            'regular_min_pence' => 6000,
+        ]);
+        PricingConfiguration::forget();
+
+        $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
+
+        $html = Livewire::test(EstimateWizard::class)
+            ->set('serviceId', $regular->id)
+            ->set('bedrooms', 2)
+            ->set('bathrooms', 1)
+            ->assertSee('How often?', false)
+            ->assertSee('Save 10%', false)
+            ->assertSee('Save 7.5%', false)
+            ->assertSee('Save 5%', false)
+            ->assertSee('Your guide price', false)
+            ->assertSee('DBS-checked cleaners', false)
+            ->assertDontSee('line-through', false)
+            ->assertDontSee('Save £', false)
+            ->html();
+
+        $this->assertStringNotContainsString('<s>', $html);
+        $this->assertStringNotContainsString('<del>', $html);
+
+        Livewire::test(EstimateWizard::class)
+            ->set('serviceId', $regular->id)
+            ->set('bedrooms', 2)
+            ->set('bathrooms', 1)
+            ->set('frequency', CleaningFrequency::Weekly->value)
+            ->assertSee('10% off', false);
+    }
+
+    public function test_frequency_discount_badges_show_configured_percent_even_at_minimum_price(): void
+    {
+        PricingSetting::instance()->update([
+            'weekly_discount_percent' => 10,
+            'fortnightly_discount_percent' => 7.5,
+            'monthly_discount_percent' => 5,
+            'regular_min_pence' => 6000,
+        ]);
+        PricingConfiguration::forget();
+
+        $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
+
+        Livewire::test(EstimateWizard::class)
+            ->set('serviceId', $regular->id)
+            ->set('bedrooms', 1)
+            ->set('bathrooms', 1)
+            ->assertSee('Save 10%', false)
+            ->assertSee('Save 7.5%', false)
+            ->assertSee('Save 5%', false)
+            ->set('frequency', CleaningFrequency::Weekly->value)
+            ->assertSee('Weekly (10% off)', false);
+    }
 }

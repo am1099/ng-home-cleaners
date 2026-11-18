@@ -128,7 +128,7 @@ class ManagePricing extends Page
                         Tab::make('Frequency')
                             ->schema([
                                 Section::make('Regular clean discounts')
-                                    ->description('Website quotes now use one price by bedrooms and bathrooms. These discounts are no longer offered on the public form, but remain available if you set frequency on a lead in admin.')
+                                    ->description('Shown on the public regular-clean quote form as percentage badges (for example “10% off”). The guide price always comes from the pricing engine.')
                                     ->columns(3)
                                     ->schema([
                                         TextInput::make('weekly_discount_percent')
