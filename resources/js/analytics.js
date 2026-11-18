@@ -1,5 +1,6 @@
 /**
- * Provider-agnostic analytics queue with optional Plausible after consent.
+ * Provider-agnostic analytics queue with optional Plausible after consent,
+ * plus consent-aware Google Ads conversion helpers.
  */
 (function () {
     const CONSENT_KEY = 'ng-cookie-consent';
@@ -9,6 +10,17 @@
     const enabled = root.dataset.analyticsEnabled === '1';
     const plausibleDomain = root.dataset.plausibleDomain || '';
     const plausibleSrc = root.dataset.plausibleSrc || 'https://plausible.io/js/script.js';
+    const whatsappSendTo = root.dataset.googleAdsWhatsappSendTo || '';
+    const phoneSendTo = root.dataset.googleAdsPhoneSendTo || '';
+    const conversionDedupeMs = 2500;
+    const lastConversionAt = Object.create(null);
+
+    const adsEventMap = {
+        whatsapp_clicked: 'whatsapp',
+        quote_whatsapp_clicked: 'whatsapp',
+        whatsapp_quote: 'whatsapp',
+        phone_clicked: 'phone',
+    };
 
     function consentValue() {
         try {
@@ -32,6 +44,19 @@
         root.dataset.analyticsConsent = value;
         window.dispatchEvent(new CustomEvent('ng:consent', { detail: { value } }));
         updateGoogleConsent(value === 'accepted');
+    }
+
+    function clearConsentChoice() {
+        try {
+            window.localStorage.removeItem(CONSENT_KEY);
+        } catch {
+            // Ignore storage failures (private mode).
+        }
+
+        root.dataset.analyticsConsent = '';
+        updateGoogleConsent(false);
+        window.dispatchEvent(new CustomEvent('ng:consent', { detail: { value: null } }));
+        window.dispatchEvent(new CustomEvent('ng:consent-reopen'));
     }
 
     function updateGoogleConsent(granted) {
@@ -84,6 +109,39 @@
         document.head.appendChild(script);
     }
 
+    function isWhatsAppHref(href) {
+        if (!href) {
+            return false;
+        }
+
+        return /(?:^https?:\/\/)?(?:wa\.me\/|api\.whatsapp\.com\/)/i.test(href)
+            || href.toLowerCase().includes('whatsapp.com/send');
+    }
+
+    function fireGoogleAdsConversion(kind) {
+        if (!hasConsent() || typeof window.gtag !== 'function') {
+            return false;
+        }
+
+        const sendTo = kind === 'phone' ? phoneSendTo : whatsappSendTo;
+
+        if (!sendTo) {
+            return false;
+        }
+
+        const now = Date.now();
+        const previous = lastConversionAt[kind] || 0;
+
+        if (now - previous < conversionDedupeMs) {
+            return false;
+        }
+
+        lastConversionAt[kind] = now;
+        window.gtag('event', 'conversion', { send_to: sendTo });
+
+        return true;
+    }
+
     window.ngTrack = function ngTrack(event, payload = {}) {
         if (!event) {
             return;
@@ -98,6 +156,12 @@
         queue.push(entry);
         window.dispatchEvent(new CustomEvent('ng:analytics', { detail: entry }));
         sendToDriver(entry.event, entry.payload);
+
+        const conversionKind = adsEventMap[entry.event];
+
+        if (conversionKind) {
+            fireGoogleAdsConversion(conversionKind);
+        }
     };
 
     window.ngCookieConsent = function ngCookieConsent() {
@@ -113,8 +177,51 @@
                 setConsent('declined');
                 this.visible = false;
             },
+            reopen() {
+                clearConsentChoice();
+                this.visible = true;
+            },
+            init() {
+                window.addEventListener('ng:consent-reopen', () => {
+                    this.visible = true;
+                });
+            },
         };
     };
+
+    window.ngReopenCookieConsent = function ngReopenCookieConsent() {
+        clearConsentChoice();
+
+        document.querySelectorAll('[aria-labelledby="cookie-consent-title"]').forEach((el) => {
+            const data = el._x_dataStack && el._x_dataStack[0];
+
+            if (data) {
+                data.visible = true;
+            }
+        });
+    };
+
+    document.addEventListener('click', (event) => {
+        const anchor = event.target instanceof Element
+            ? event.target.closest('a[href]')
+            : null;
+
+        if (!anchor) {
+            return;
+        }
+
+        const href = anchor.getAttribute('href') || '';
+
+        if (href.startsWith('tel:')) {
+            window.ngTrack('phone_clicked', { location: 'tel_link' });
+
+            return;
+        }
+
+        if (isWhatsAppHref(href)) {
+            window.ngTrack('whatsapp_clicked', { location: 'whatsapp_link' });
+        }
+    }, true);
 
     if (hasConsent()) {
         root.dataset.analyticsConsent = 'accepted';

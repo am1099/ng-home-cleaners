@@ -77,6 +77,15 @@
                     {{ $settings->hoursSummary() }}
                 </p>
                 <ul class="mt-6 space-y-2 text-sm">
+                    <li>
+                        <button
+                            type="button"
+                            class="cursor-pointer text-left text-ink-inverse-muted hover:text-ink-inverse"
+                            onclick="window.ngReopenCookieConsent && window.ngReopenCookieConsent()"
+                        >
+                            Cookie preferences
+                        </button>
+                    </li>
                     <li><a href="{{ route('legal.privacy') }}" class="text-ink-inverse-muted hover:text-ink-inverse">Privacy policy</a></li>
                     <li><a href="{{ route('legal.terms') }}" class="text-ink-inverse-muted hover:text-ink-inverse">Terms of service</a></li>
                     <li><a href="{{ route('legal.cookies') }}" class="text-ink-inverse-muted hover:text-ink-inverse">Cookie policy</a></li>

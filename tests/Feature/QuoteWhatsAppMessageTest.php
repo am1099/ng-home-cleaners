@@ -66,7 +66,7 @@ class QuoteWhatsAppMessageTest extends TestCase
         $url = $quoteService->whatsappUrl($lead);
 
         $this->assertSame(
-            "Hi NG Home Cleaners— I'd like to BOOK: Deep clean — 2 bed, 1 bath (£225, about 2½ hrs). When are you next available?",
+            "Hi NG Home Cleaners — I'd like to BOOK: Deep clean, 2 bed, 1 bath (£225, about 2½ hrs). When are you next available?",
             $message,
         );
         $this->assertStringNotContainsString('walkthrough video', $message);
@@ -101,7 +101,7 @@ class QuoteWhatsAppMessageTest extends TestCase
         $message = app(QuoteRequestService::class)->whatsappMessage($lead);
 
         $this->assertSame(
-            "Hi NG Home Cleaners— I'd like to BOOK: Office & commercial — 2 bed, 1 bath. When are you next available?",
+            "Hi NG Home Cleaners — I'd like to BOOK: Office & commercial, 2 bed, 1 bath. When are you next available?",
             $message,
         );
     }

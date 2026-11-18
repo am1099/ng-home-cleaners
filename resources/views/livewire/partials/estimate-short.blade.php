@@ -12,11 +12,15 @@
         <x-public.container>
             <div class="mx-auto max-w-6xl">
                 <p class="ng-eyebrow">{{ $area !== '' ? $area : 'Nottingham and surrounding areas' }}</p>
-                <h1 class="ng-display ng-display-hero mt-3">
-                    Your cleaning price, <em class="italic text-brand-800">in seconds.</em>
+                <h1 class="ng-display ng-display-hero mt-3 text-balance">
+                    @if ($this->regularCleanFromPrice())
+                        House cleaning in Nottingham from {{ $this->regularCleanFromPrice() }}
+                    @else
+                        House cleaning in Nottingham
+                    @endif
                 </h1>
                 <p class="ng-body-lg mt-4 max-w-2xl text-ink-muted">
-                    A few taps for your price. Happy with it? Message us on WhatsApp and we'll sort the rest there.
+                    Your price in seconds, then book on WhatsApp.
                 </p>
             </div>
 
@@ -103,6 +107,35 @@
                                 Includes the kitchen and living room.
                             @endif
                         </p>
+
+                        @if ($isRegular)
+                            <div class="mt-5" wire:key="frequency-options">
+                                <p class="text-sm font-semibold text-ink">How often?</p>
+                                {{-- Mobbin: Sweatpals / Care.com segmented frequency control — one track, clear selected fill --}}
+                                <div
+                                    class="mt-2 grid grid-cols-2 gap-1 rounded-[var(--radius-md)] border border-border bg-brand-50/40 p-1 sm:grid-cols-4"
+                                    role="radiogroup"
+                                    aria-label="Cleaning frequency"
+                                >
+                                    @foreach (\App\Enums\CleaningFrequency::cases() as $option)
+                                        <label
+                                            class="flex min-h-11 cursor-pointer items-center justify-center rounded-[calc(var(--radius-md)-2px)] px-2 py-2 text-center text-sm font-semibold transition has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand-600 {{ $frequency === $option->value ? 'bg-brand-700 text-white shadow-sm' : 'text-ink hover:bg-white/80' }}"
+                                            wire:key="frequency-{{ $option->value }}"
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="frequency"
+                                                wire:model.live="frequency"
+                                                value="{{ $option->value }}"
+                                                class="sr-only"
+                                            >
+                                            {{ $option->label() }}
+                                        </label>
+                                    @endforeach
+                                </div>
+                                @error('frequency') <p class="mt-2 text-sm text-red-700">{{ $message }}</p> @enderror
+                            </div>
+                        @endif
 
                         @if ($this->inclusions->isNotEmpty())
                             <div class="mt-4 rounded-[var(--radius-md)] border border-border">
@@ -218,6 +251,12 @@
                                     {{ $service?->name ?? 'Choose a clean' }}
                                 </dd>
                             </div>
+                            @if ($isRegular && $this->frequencyLabel())
+                                <div class="flex items-baseline justify-between gap-4">
+                                    <dt class="text-white/60">Frequency</dt>
+                                    <dd class="text-right font-semibold">{{ $this->frequencyLabel() }}</dd>
+                                </div>
+                            @endif
                             <div class="flex items-baseline justify-between gap-4">
                                 <dt class="text-white/60">Home</dt>
                                 <dd class="text-right font-semibold">{{ $this->homeSummary() }}</dd>
@@ -241,6 +280,37 @@
                         <p class="mt-3 text-sm leading-relaxed text-white/75">
                             Guide price — confirmed from a quick photo on WhatsApp. It only changes if the photo shows something extra, and you'll know before you book.
                         </p>
+
+                        {{-- Mobbin: GetYourGuide / Copilot — compact reviews directly above the primary CTA --}}
+                        @if ($this->quoteTestimonials->isNotEmpty())
+                            <div class="mt-4 space-y-2" aria-label="Customer reviews">
+                                @foreach ($this->quoteTestimonials as $testimonial)
+                                    <figure wire:key="quote-review-{{ $testimonial->id }}" class="rounded-[var(--radius-md)] bg-white/5 px-3 py-2.5 text-sm leading-snug text-white/90">
+                                        <div class="flex items-center gap-2">
+                                            @if (filled($testimonial->rating))
+                                                <p class="text-[0.7rem] font-semibold tracking-wide text-brand-100" aria-label="{{ $testimonial->rating }} out of 5 stars">
+                                                    {{ str_repeat('★', max(0, min(5, (int) $testimonial->rating))) }}
+                                                </p>
+                                            @endif
+                                            <figcaption class="min-w-0 truncate text-xs text-white/55">
+                                                <span class="font-semibold text-white/75">{{ $testimonial->customer_name }}</span>
+                                                @if (filled($testimonial->location))
+                                                    <span aria-hidden="true"> · </span>{{ $testimonial->location }}
+                                                @endif
+                                            </figcaption>
+                                        </div>
+                                        @if (filled($testimonial->review))
+                                            <blockquote class="mt-1.5 line-clamp-2 text-white/85">&ldquo;{{ $testimonial->review }}&rdquo;</blockquote>
+                                        @endif
+                                    </figure>
+                                @endforeach
+                                @if ($settings->show_google_reviews)
+                                    <a href="{{ $googleReviewsUrl }}" class="inline-flex pt-0.5 text-xs font-semibold text-brand-100 underline-offset-2 hover:underline" target="_blank" rel="noopener noreferrer">
+                                        Read more on Google
+                                    </a>
+                                @endif
+                            </div>
+                        @endif
 
                         <button
                             type="button"

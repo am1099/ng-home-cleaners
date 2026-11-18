@@ -73,7 +73,7 @@ class PublicLayoutTest extends TestCase
     {
         $html = $this->get('/get-a-quote')
             ->assertOk()
-            ->assertSee('Your price', false)
+            ->assertSee('House cleaning in Nottingham from £60', false)
             ->assertSee('ng-sticky-estimate-desktop', false)
             ->assertSee('window.livewireScriptConfig', false)
             ->getContent();

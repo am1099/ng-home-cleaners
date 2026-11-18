@@ -26,8 +26,9 @@ class EstimateWizardTest extends TestCase
     {
         $this->get(route('quote'))
             ->assertOk()
-            ->assertSee('Your cleaning price', false)
-            ->assertSee('in seconds', false)
+            ->assertSee('House cleaning in Nottingham from £60', false)
+            ->assertSee('Your price in seconds, then book on WhatsApp.', false)
+            ->assertSee('House Cleaning Nottingham from £60', false)
             ->assertSee('Read our Google reviews', false)
             ->assertSeeLivewire(EstimateWizard::class);
     }
@@ -361,13 +362,18 @@ class EstimateWizardTest extends TestCase
             ->assertHasErrors(['propertyStatus']);
     }
 
-    public function test_short_form_hides_how_often_and_defaults_regular_to_one_off(): void
+    public function test_short_form_shows_how_often_for_regular_and_defaults_to_one_off(): void
     {
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
 
         Livewire::test(EstimateWizard::class)
             ->assertSet('detailed', false)
-            ->assertDontSee('How often?', false)
+            ->assertSet('bedrooms', 1)
+            ->assertSet('bathrooms', 1)
+            ->assertSee('How often?', false)
+            ->assertSee('Weekly', false)
+            ->assertSee('Fortnightly', false)
+            ->assertSee('Monthly', false)
             ->set('serviceId', $regular->id)
             ->assertSet('frequency', CleaningFrequency::OneOff->value);
     }
@@ -438,10 +444,10 @@ class EstimateWizardTest extends TestCase
             ->assertSet('detailed', false)
             ->assertDontSee('Your details', false)
             ->assertDontSee('Full name', false)
-            ->assertSee('about 2½ hrs', false)
+            ->assertSee('about 2 hrs', false)
             ->assertSee('Includes the kitchen and living room.', false)
             ->assertSee('Book via WhatsApp', false)
-            ->assertDontSee('How often?', false)
+            ->assertSee('How often?', false)
             ->assertDontSee('Add extras', false)
             ->set('serviceId', $regular->id)
             ->set('bedrooms', 2)

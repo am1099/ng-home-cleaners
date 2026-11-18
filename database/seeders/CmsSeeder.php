@@ -241,11 +241,16 @@ class CmsSeeder extends Seeder
             return;
         }
 
+        PricingSetting::instance()->update([
+            'regular_min_pence' => 6000,
+            'regular_min_max_pence' => 6500,
+        ]);
+
         $starting = [
             $regular->id => [
-                PropertyType::Flat->value => [7500, 8500],
-                PropertyType::House->value => [7500, 9000],
-                PropertyType::Bungalow->value => [7500, 9000],
+                PropertyType::Flat->value => [6000, 7000],
+                PropertyType::House->value => [6000, 7000],
+                PropertyType::Bungalow->value => [6000, 7000],
             ],
             $deep->id => [
                 PropertyType::Flat->value => [15500, 18000],

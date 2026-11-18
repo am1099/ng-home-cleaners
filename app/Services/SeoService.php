@@ -7,6 +7,7 @@ use App\Models\LegalPage;
 use App\Models\Service;
 use App\Models\ServiceArea;
 use App\Models\SiteSetting;
+use App\Pricing\RegularCleanGuidePrice;
 use App\Support\Media;
 use App\Support\Seo\SeoPage;
 use Illuminate\Support\Facades\Cache;
@@ -162,18 +163,24 @@ final class SeoService
     public function forQuote(): SeoPage
     {
         $site = $this->site();
+        $fromPrice = app(RegularCleanGuidePrice::class)->formatted();
+        $pageTitle = $fromPrice
+            ? 'House Cleaning Nottingham from '.$fromPrice
+            : 'House Cleaning Nottingham';
 
         return new SeoPage(
-            title: $this->brandedTitle('Your cleaning price', $site),
+            title: $this->brandedTitle($pageTitle, $site),
             description: $this->description(
                 null,
-                'See a guide price for cleaning in Nottingham in a few taps, then book on WhatsApp. Your fixed price is confirmed before we start.',
+                $fromPrice
+                    ? 'House cleaning in Nottingham from '.$fromPrice.'. See your guide price in seconds, then book on WhatsApp. Your fixed price is confirmed before we start.'
+                    : 'See a guide price for cleaning in Nottingham in a few taps, then book on WhatsApp. Your fixed price is confirmed before we start.',
             ),
             canonical: $this->absoluteRoute('quote'),
             ogImage: $this->defaultOgImage($site),
             breadcrumbs: [
                 ['name' => 'Home', 'url' => $this->absoluteRoute('home')],
-                ['name' => 'Your cleaning price', 'url' => $this->absoluteRoute('quote')],
+                ['name' => 'Get a quote', 'url' => $this->absoluteRoute('quote')],
             ],
         );
     }

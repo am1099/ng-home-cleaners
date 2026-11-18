@@ -37,8 +37,8 @@ class PricingEngineTest extends TestCase
     public function test_starting_prices_for_residential_services(): void
     {
         $cases = [
-            ['regular-clean', PropertyType::Flat, 7500, 8500],
-            ['regular-clean', PropertyType::House, 7500, 9000],
+            ['regular-clean', PropertyType::Flat, 6000, 7000],
+            ['regular-clean', PropertyType::House, 6000, 7000],
             ['deep-clean', PropertyType::Flat, 15500, 18000],
             ['deep-clean', PropertyType::House, 17000, 20000],
             ['end-of-tenancy', PropertyType::Flat, 20500, 23500],
@@ -92,8 +92,8 @@ class PricingEngineTest extends TestCase
         $extraMin = 2 * $rule->extra_min_pence;
         $extraMax = 2 * $rule->extra_max_pence;
 
-        $this->assertSame(7500 + $extraMin, $result->calculatedSubtotal->minPence);
-        $this->assertSame(9000 + $extraMax, $result->calculatedSubtotal->maxPence);
+        $this->assertSame(6000 + $extraMin, $result->calculatedSubtotal->minPence);
+        $this->assertSame(7000 + $extraMax, $result->calculatedSubtotal->maxPence);
         $this->assertTrue(collect($result->lineItems)->contains(fn ($item) => $item->key === 'extra_bedrooms'));
     }
 
@@ -117,7 +117,7 @@ class PricingEngineTest extends TestCase
             extraRoomSlugs: ['office'],
         ));
 
-        $expectedMin = 7500
+        $expectedMin = 6000
             + $bathroom->min_pence
             + 600 // wc
             + 1200 // kitchen
@@ -150,19 +150,19 @@ class PricingEngineTest extends TestCase
         $weekly = $this->engine->calculate(new EstimateInput(
             service: $service,
             propertyType: PropertyType::Flat,
-            bedrooms: 1,
+            bedrooms: 2,
             frequency: CleaningFrequency::Weekly,
         ));
         $fortnightly = $this->engine->calculate(new EstimateInput(
             service: $service,
             propertyType: PropertyType::Flat,
-            bedrooms: 1,
+            bedrooms: 2,
             frequency: CleaningFrequency::Fortnightly,
         ));
         $oneOff = $this->engine->calculate(new EstimateInput(
             service: $service,
             propertyType: PropertyType::Flat,
-            bedrooms: 1,
+            bedrooms: 2,
             frequency: CleaningFrequency::OneOff,
         ));
 

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Data\WizardSubmissionData;
+use App\Enums\CleaningFrequency;
 use App\Enums\QuoteRequestSource;
 use App\Enums\QuoteRequestStatus;
 use App\Models\Customer;
@@ -326,6 +327,8 @@ class QuoteRequestService
     public function whatsappMessage(QuoteRequest $quoteRequest): string
     {
         $serviceName = $quoteRequest->service?->name ?? 'Clean';
+        $isRegular = (bool) $quoteRequest->service?->isRegularClean();
+        $frequency = CleaningFrequency::tryFrom((string) $quoteRequest->frequency);
 
         $parts = [];
 
@@ -339,15 +342,20 @@ class QuoteRequestService
             $parts[] = $quoteRequest->bathrooms.' bath';
         }
 
+        if ($isRegular && $frequency && $frequency !== CleaningFrequency::OneOff) {
+            $parts[] = strtolower($frequency->label());
+        }
+
         $meta = [];
 
         if ($quoteRequest->is_numeric_estimate && $quoteRequest->guide_single_price_pence !== null) {
-            $meta[] = Money::formatPence((int) $quoteRequest->guide_single_price_pence);
+            $price = Money::formatPence((int) $quoteRequest->guide_single_price_pence);
+            $meta[] = $isRegular ? $price.' per visit' : $price;
         }
 
         $duration = $this->guideDurationLabel($quoteRequest);
 
-        if ($duration !== null) {
+        if ($duration !== null && ! $isRegular) {
             $meta[] = $duration;
         }
 
@@ -360,10 +368,10 @@ class QuoteRequestService
         $book = "I'd like to BOOK: {$serviceName}";
 
         if ($detail !== '') {
-            $book .= ' — '.$detail;
+            $book .= ', '.$detail;
         }
 
-        return "Hi NG Home Cleaners— {$book}. When are you next available?";
+        return "Hi NG Home Cleaners — {$book}. When are you next available?";
     }
 
     /**

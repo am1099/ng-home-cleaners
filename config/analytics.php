@@ -30,4 +30,18 @@ return [
     */
     'google_ads_id' => env('GOOGLE_ADS_ID', 'AW-18369596770'),
 
+    /*
+    | Google Ads conversion send_to values (AW-ID/label). Fired once per genuine
+    | user-initiated WhatsApp or phone action after advertising consent is granted.
+    */
+    'google_ads_whatsapp_send_to' => env(
+        'GOOGLE_ADS_WHATSAPP_SEND_TO',
+        'AW-18369596770/J-GNCIHs8LgdEOKap7dE',
+    ),
+
+    'google_ads_phone_send_to' => env(
+        'GOOGLE_ADS_PHONE_SEND_TO',
+        'AW-18369596770/GafGCITs8LgdEOKap7dE',
+    ),
+
 ];

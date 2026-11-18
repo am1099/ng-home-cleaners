@@ -5,6 +5,8 @@
     data-analytics-driver="{{ config('analytics.driver') ?? '' }}"
     data-plausible-domain="{{ config('analytics.plausible.domain') ?? '' }}"
     data-plausible-src="{{ config('analytics.plausible.script_url') ?? '' }}"
+    data-google-ads-whatsapp-send-to="{{ config('analytics.google_ads_whatsapp_send_to') ?? '' }}"
+    data-google-ads-phone-send-to="{{ config('analytics.google_ads_phone_send_to') ?? '' }}"
 >
 <head>
     <meta charset="utf-8">

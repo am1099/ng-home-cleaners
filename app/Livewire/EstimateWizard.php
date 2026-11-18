@@ -13,23 +13,26 @@ use App\Enums\ParkingOption;
 use App\Enums\PropertyStatus;
 use App\Enums\PropertyType;
 use App\Enums\QuoteRequestSource;
+use App\Livewire\Concerns\FlashesToasts;
 use App\Models\Addon;
 use App\Models\QuoteRequest;
 use App\Models\Service;
 use App\Models\ServiceInclusion;
 use App\Models\SiteSetting;
+use App\Models\Testimonial;
 use App\Pricing\AddonPriceFormatter;
 use App\Pricing\Data\CalculationResult;
 use App\Pricing\Data\EstimateInput;
 use App\Pricing\EstimateInputFactory;
 use App\Pricing\Money;
 use App\Pricing\PricingEngine;
+use App\Pricing\RegularCleanGuidePrice;
 use App\Rules\NotAnEmailAddress;
 use App\Rules\NotAPhoneNumber;
 use App\Rules\UkNgPostcode;
 use App\Rules\UkPhoneNumber;
 use App\Services\QuoteRequestService;
-use App\Livewire\Concerns\FlashesToasts;
+use App\Services\SeoService;
 use App\Support\Analytics\Analytics;
 use App\Support\Toast;
 use App\Support\UkContactNormalizer;
@@ -55,12 +58,11 @@ class EstimateWizard extends Component
 
     public ?int $serviceId = null;
 
-    /** Fixed to one-off for regular cleans — public form no longer offers frequency discounts. */
     public ?string $frequency = 'one_off';
 
     public ?string $propertyType = 'house';
 
-    public int $bedrooms = 2;
+    public int $bedrooms = 1;
 
     public bool $splitLevelFlat = false;
 
@@ -159,12 +161,22 @@ class EstimateWizard extends Component
     {
         $this->forgetEstimateCaches();
         unset($this->availableAddons);
+        unset($this->quoteTestimonials);
 
         $this->addonIds = [];
         $this->frequency = $this->selectedService()?->isRegularClean()
             ? CleaningFrequency::OneOff->value
             : null;
         $this->propertyStatus = null;
+    }
+
+    public function updatedFrequency(): void
+    {
+        if (! $this->selectedService()?->isRegularClean()) {
+            $this->frequency = null;
+        }
+
+        $this->forgetEstimateCaches();
     }
 
     public function updatedPropertyType(): void
@@ -405,6 +417,33 @@ class EstimateWizard extends Component
         return $service->addons()->active()->orderBy('sort_order')->get();
     }
 
+    /**
+     * @return Collection<int, Testimonial>
+     */
+    #[Computed]
+    public function quoteTestimonials(): Collection
+    {
+        return Testimonial::query()
+            ->publishedForProduction()
+            ->orderBy('sort_order')
+            ->limit(3)
+            ->get();
+    }
+
+    public function regularCleanFromPrice(): ?string
+    {
+        return app(RegularCleanGuidePrice::class)->formatted();
+    }
+
+    public function frequencyLabel(): ?string
+    {
+        if (! $this->selectedService()?->isRegularClean() || ! $this->frequency) {
+            return null;
+        }
+
+        return CleaningFrequency::tryFrom($this->frequency)?->label();
+    }
+
     #[Computed]
     public function estimateInput(): ?EstimateInput
     {
@@ -635,9 +674,11 @@ class EstimateWizard extends Component
 
     protected function validateAllSections(): void
     {
-        $this->frequency = $this->selectedService()?->isRegularClean()
-            ? CleaningFrequency::OneOff->value
-            : null;
+        if (! $this->selectedService()?->isRegularClean()) {
+            $this->frequency = null;
+        } elseif (! CleaningFrequency::tryFrom($this->frequency ?? '')) {
+            $this->frequency = CleaningFrequency::OneOff->value;
+        }
 
         $rules = [];
 
@@ -703,6 +744,7 @@ class EstimateWizard extends Component
                     Rule::in($this->services->pluck('id')->all()),
                 ],
                 'frequency' => [
+                    Rule::requiredIf(fn () => (bool) $this->selectedService()?->isRegularClean()),
                     'nullable',
                     Rule::in(array_column(CleaningFrequency::cases(), 'value')),
                 ],
@@ -827,11 +869,15 @@ class EstimateWizard extends Component
         unset($this->estimateInput);
         unset($this->calculation);
         unset($this->inclusions);
+        unset($this->quoteTestimonials);
     }
 
     public function render()
     {
-        return view('livewire.estimate-wizard')
-            ->title($this->detailed ? 'Get a free estimate' : 'Your cleaning price');
+        $title = $this->detailed
+            ? 'Get a free estimate'
+            : app(SeoService::class)->forQuote()->title;
+
+        return view('livewire.estimate-wizard')->title($title);
     }
 }
