@@ -2,11 +2,11 @@
  * Full-size image lightbox with optional gallery carousel (swipe / arrows / wrap).
  */
 export function initImageLightbox() {
-    const triggers = Array.from(document.querySelectorAll('[data-lightbox-src]'));
-
-    if (! triggers.length) {
+    if (window.__ngLightboxReady) {
         return;
     }
+
+    window.__ngLightboxReady = true;
 
     let dialog = document.getElementById('ng-image-lightbox');
 
@@ -178,48 +178,76 @@ export function initImageLightbox() {
         showItem(delta > 0 ? index - 1 : index + 1);
     }, { passive: true });
 
-    triggers.forEach((trigger) => {
-        if (trigger.dataset.lightboxBound === '1') {
+    const announce = (open) => {
+        document.dispatchEvent(new CustomEvent('ng-lightbox-toggle', { detail: { open } }));
+    };
+
+    const present = (nextItems, startIndex) => {
+        items = nextItems.filter((item) => item.src);
+
+        if (! items.length || ! image) {
             return;
         }
 
-        trigger.dataset.lightboxBound = '1';
-        trigger.addEventListener('click', (event) => {
-            event.preventDefault();
+        const start = Number.isFinite(startIndex) ? startIndex : 0;
+        showItem(start);
 
-            const src = trigger.getAttribute('data-lightbox-src');
-
-            if (! src || ! image) {
-                return;
-            }
-
-            const group = trigger.getAttribute('data-lightbox-group');
-
-            if (group) {
-                items = triggers
-                    .filter((candidate) => candidate.getAttribute('data-lightbox-group') === group)
-                    .map((candidate) => ({
-                        src: candidate.getAttribute('data-lightbox-src') || '',
-                        alt: candidate.getAttribute('data-lightbox-alt') || '',
-                        caption: candidate.getAttribute('data-lightbox-caption') || '',
-                    }))
-                    .filter((item) => item.src);
-
-                const start = Number.parseInt(trigger.getAttribute('data-lightbox-index') || '0', 10);
-                showItem(Number.isFinite(start) ? start : 0);
-            } else {
-                items = [{
-                    src,
-                    alt: trigger.getAttribute('data-lightbox-alt') || '',
-                    caption: trigger.getAttribute('data-lightbox-caption') || '',
-                }];
-                showItem(0);
-            }
-
+        if (! dialog.open) {
             dialog.showModal();
-            window.requestAnimationFrame(() => {
-                dialog.querySelector('.ng-lightbox__close')?.focus();
-            });
+            announce(true);
+        }
+
+        window.requestAnimationFrame(() => {
+            dialog.querySelector('.ng-lightbox__close')?.focus();
         });
+    };
+
+    dialog.addEventListener('close', () => announce(false));
+
+    document.addEventListener('click', (event) => {
+        const trigger = event.target instanceof Element
+            ? event.target.closest('[data-lightbox-src]')
+            : null;
+
+        if (! trigger || dialog.contains(trigger)) {
+            return;
+        }
+
+        const src = trigger.getAttribute('data-lightbox-src');
+
+        if (! src) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const group = trigger.getAttribute('data-lightbox-group');
+
+        if (group) {
+            const grouped = Array.from(document.querySelectorAll('[data-lightbox-src]'))
+                .filter((candidate) => candidate.getAttribute('data-lightbox-group') === group)
+                .map((candidate) => ({
+                    src: candidate.getAttribute('data-lightbox-src') || '',
+                    alt: candidate.getAttribute('data-lightbox-alt') || '',
+                    caption: candidate.getAttribute('data-lightbox-caption') || '',
+                }));
+
+            const start = Number.parseInt(trigger.getAttribute('data-lightbox-index') || '0', 10);
+            present(grouped, start);
+        } else {
+            present([{
+                src,
+                alt: trigger.getAttribute('data-lightbox-alt') || '',
+                caption: trigger.getAttribute('data-lightbox-caption') || '',
+            }], 0);
+        }
+    });
+
+    document.addEventListener('ng-lightbox-open', (event) => {
+        const detail = event.detail || {};
+        const nextItems = Array.isArray(detail.items) ? detail.items : [];
+        const start = Number.parseInt(detail.index ?? '0', 10);
+
+        present(nextItems, start);
     });
 }

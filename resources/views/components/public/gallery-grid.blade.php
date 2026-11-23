@@ -1,36 +1,36 @@
 @props(['items'])
 
 @if ($items->isNotEmpty())
-    <div {{ $attributes->class(['mx-auto flex max-w-7xl flex-wrap justify-center gap-8']) }}>
-        @foreach ($items as $item)
+    <div {{ $attributes->class(['ng-gallery-grid grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4']) }}>
+        @foreach ($items as $index => $item)
             @php
                 $src = \App\Support\Media::url($item->image_path);
-                $label = filled($item->caption) ? $item->caption : $item->alt_text;
+                $alt = filled($item->alt_text) ? $item->alt_text : '';
+                $caption = filled($item->caption) ? $item->caption : '';
+                $label = $alt !== ''
+                    ? 'View photo: '.$alt
+                    : 'View full-size photo '.($index + 1).' of '.$items->count();
             @endphp
-            <figure class="w-full overflow-hidden rounded-[var(--radius-card)] bg-surface-card shadow-[var(--shadow-card)] sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] lg:max-w-md">
+            <figure class="overflow-hidden rounded-[var(--radius-card)] bg-surface-sunken">
                 <button
                     type="button"
                     class="group relative block w-full cursor-zoom-in text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+                    data-lightbox-group="home-gallery"
+                    data-lightbox-index="{{ $index }}"
                     data-lightbox-src="{{ $src }}"
-                    data-lightbox-alt="{{ $item->alt_text }}"
-                    data-lightbox-caption="{{ $item->caption }}"
-                    aria-label="View full-size image{{ $label ? ': '.$label : '' }}"
+                    data-lightbox-alt="{{ $alt }}"
+                    @if ($caption !== '') data-lightbox-caption="{{ $caption }}" @endif
+                    aria-label="{{ $label }}"
                 >
                     <x-public.img
                         :src="$src"
-                        :alt="$item->alt_text"
+                        :alt="$alt"
                         :width="800"
                         :height="600"
-                        class="aspect-[4/3] w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                        sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                        class="aspect-[4/3] w-full object-cover transition duration-300 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                         :lazy="true"
                     />
-                    @if (filled($label))
-                        <span class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-5 pb-5 pt-20">
-                            <span class="line-clamp-2 text-sm font-medium leading-snug text-white drop-shadow-sm sm:text-base">
-                                {{ $label }}
-                            </span>
-                        </span>
-                    @endif
                 </button>
             </figure>
         @endforeach

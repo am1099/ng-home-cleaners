@@ -80,11 +80,41 @@ class HomeLogoAndGalleryTest extends TestCase
 
         $response->assertOk()
             ->assertSee('id="gallery"', false)
-            ->assertSee('ng-gallery-carousel', false)
+            ->assertSee('ng-gallery-grid', false)
+            ->assertSee('lg:grid-cols-4', false)
+            ->assertDontSee('ng-gallery-carousel', false)
+            ->assertDontSee('Swipe through recent jobs', false)
+            ->assertDontSee('from-black/80', false)
             ->assertSee('data-lightbox-group="home-gallery"', false)
-            ->assertSee('Sparkling kitchen sink', false)
+            ->assertSee('data-lightbox-caption="Sparkling kitchen sink"', false)
+            ->assertSee('alt="Clean kitchen after visit"', false)
             ->assertSee('#gallery', false)
-            ->assertSee('Gallery', false);
+            ->assertSee('Gallery', false)
+            ->assertSee('items-start', false);
+    }
+
+    public function test_gallery_alt_text_is_optional_and_not_shown_on_the_photo(): void
+    {
+        GalleryItem::factory()->create([
+            'image_path' => 'gallery/plain-room.jpg',
+            'alt_text' => null,
+            'caption' => null,
+            'is_published' => true,
+            'published_at' => now(),
+        ]);
+
+        $this->assertDatabaseHas('gallery_items', [
+            'image_path' => 'gallery/plain-room.jpg',
+            'alt_text' => null,
+        ]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('ng-gallery-grid', false)
+            ->assertSee('alt=""', false)
+            ->assertSee('View full-size photo 1 of 1', false)
+            ->assertDontSee('from-black/80', false)
+            ->assertDontSee('Cleaning photo', false);
     }
 
     public function test_unpublished_gallery_items_are_hidden(): void

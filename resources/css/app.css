@@ -436,6 +436,7 @@
 
     .ng-review-marquee__track {
         display: flex;
+        align-items: flex-start;
         width: max-content;
         animation: ng-review-marquee linear infinite;
         animation-duration: calc(var(--review-count, 4) * 8s);

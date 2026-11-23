@@ -5,6 +5,7 @@ namespace Tests\Feature\Livewire;
 use App\Enums\CleaningFrequency;
 use App\Enums\PropertyType;
 use App\Livewire\EstimateWizard;
+use App\Models\GalleryItem;
 use App\Models\Service;
 use Database\Seeders\CmsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -30,7 +31,58 @@ class EstimateWizardTest extends TestCase
             ->assertSee('Your price in seconds, then book on WhatsApp.', false)
             ->assertSee('House Cleaning Nottingham from £60', false)
             ->assertSee('Read our Google reviews', false)
-            ->assertSeeLivewire(EstimateWizard::class);
+            ->assertSeeLivewire(EstimateWizard::class)
+            ->assertDontSee('data-quote-recent-work', false);
+    }
+
+    public function test_quote_recent_work_gallery_renders_under_the_calculator(): void
+    {
+        foreach (range(1, 7) as $index) {
+            GalleryItem::factory()->create([
+                'image_path' => "gallery/job-{$index}.jpg",
+                'alt_text' => $index === 7 ? null : "Finished room {$index}",
+                'caption' => "Caption {$index}",
+                'sort_order' => $index,
+                'is_published' => true,
+                'published_at' => now(),
+            ]);
+        }
+
+        $html = $this->get(route('quote'))->assertOk()->getContent();
+
+        $step = strpos($html, 'id="step-home"');
+        $gallery = strpos($html, 'data-quote-recent-work');
+        $price = strpos($html, 'Your guide price');
+
+        $this->assertNotFalse($step);
+        $this->assertNotFalse($gallery);
+        $this->assertNotFalse($price);
+        $this->assertLessThan($gallery, $step);
+        $this->assertLessThan($price, $gallery);
+        $this->assertSame(6, substr_count($html, 'quote-recent-work__tile'));
+        $this->assertStringContainsString('Recent work', $html);
+        $this->assertStringContainsString("A look at homes we've cleaned around Nottingham.", $html);
+        $this->assertStringContainsString('aria-label="Previous photos"', $html);
+        $this->assertStringContainsString('job-7.jpg', $html);
+        $this->assertStringNotContainsString('from-black/80', $html);
+    }
+
+    public function test_quote_recent_work_does_not_rotate_controls_for_fewer_than_six_photos(): void
+    {
+        foreach (range(1, 4) as $index) {
+            GalleryItem::factory()->create([
+                'image_path' => "gallery/few-{$index}.jpg",
+                'sort_order' => $index,
+                'is_published' => true,
+                'published_at' => now(),
+            ]);
+        }
+
+        $html = $this->get(route('quote'))->assertOk()->getContent();
+
+        $this->assertSame(4, substr_count($html, 'quote-recent-work__tile'));
+        $this->assertStringNotContainsString('aria-label="Previous photos"', $html);
+        $this->assertStringNotContainsString('aria-label="Next photos"', $html);
     }
 
     public function test_switching_service_updates_estimate_description(): void

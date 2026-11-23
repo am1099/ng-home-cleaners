@@ -1,0 +1,31 @@
+---
+alwaysApply: true
+---
+---
+description: UI styling, layout, and component standards for TALL stack (Tailwind CSS v4, Alpine.js, Laravel, Livewire)
+globs: ["resources/views/**/*.blade.php", "resources/css/**/*.css", "resources/js/**/*.js"]
+alwaysApply: true
+---
+
+# TALL Stack & Tailwind CSS v4 Styling Rules
+
+## 1. Stack Boundaries (Strictly Enforced)
+- Output **Laravel Blade**, **Livewire**, and **Alpine.js** only. Never generate React, Vue, JSX, or TSX.
+- Use Alpine.js (`x-data`, `x-show`, `x-transition`, `@click.outside`) for UI interactivity (modals, dropdowns, tabs, drawers).
+- Use `wire:loading`, `wire:target`, and skeleton placeholders for Livewire async states.
+
+## 2. Tailwind CSS v4 & Custom Design Tokens
+- **Never hardcode raw colors or arbitrary values** (no `bg-[#...]`, `text-gray-700`, or `shadow-[...]`). Always inspect `resources/css/app.css` first and use the project's `@theme` semantic tokens (e.g., `bg-surface`, `bg-surface-muted`, `text-foreground`, `text-muted`, `border-border`, `bg-primary`).
+- Follow Tailwind v4 syntax: use `@import "tailwindcss";` and `@theme` variables; do not reference `tailwind.config.js` or deprecated v3 utilities (`shadow-sm` -> `shadow-xs`, `outline-none` -> `outline-hidden`).
+
+## 3. Modern Layout & Visual Hierarchy (Anti-"Old Style" Rules)
+- **Spacing & Rhythm**: Use generous, consistent spacing (`gap-6`, `p-6`, `space-y-6`). Avoid cramped `p-2` cards or inconsistent margins.
+- **Surfaces & Borders**: Prefer clean 1px subtle borders (`border border-border`) and layered surface tones over heavy drop shadows (`shadow-lg`/`shadow-xl`) or dated gradients.
+- **Typography**: Establish crisp contrast between headings (`font-semibold tracking-tight text-foreground`), body text (`text-sm leading-relaxed`), and metadata (`text-xs text-muted`). Use `tabular-nums` for numbers, prices, and tables.
+- **Forms & Controls**: Match input, select, and button heights consistently (`h-9` or `h-10`), use clear focus rings (`focus-visible:ring-2 focus-visible:ring-ring`), and pair labels/errors cleanly.
+- **Responsive by Default**: Build mobile-first (`grid-cols-1 md:grid-cols-2 lg:grid-cols-3`) and prevent horizontal overflow (`min-w-0`, `truncate`, `overflow-x-auto` on tables).
+
+## 4. Workflow with Mobbin & Playwright MCPs
+- Before building a new view, check `resources/css/app.css` for available design tokens and existing Blade components in `resources/views/components/`.
+- When referencing Mobbin layouts, adapt the visual hierarchy and spacing proportions to our custom tokens rather than copying raw colors.
+- After implementing or editing UI, use **Playwright MCP** to open the local URL (`http://localhost:8000` or `.test` domain), inspect both desktop (`1440x900`) and mobile (`390x844`) viewports, and fix any alignment, wrapping, or contrast issues before finishing.

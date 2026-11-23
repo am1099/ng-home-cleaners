@@ -5,6 +5,7 @@ import { initImageLightbox } from './lightbox';
 import { initToasts } from './toast';
 import { ngDatePicker } from './date-picker';
 import { ngGalleryCarousel } from './gallery-carousel';
+import { ngQuoteGallery } from './quote-gallery';
 import { Alpine, Livewire } from '../../vendor/livewire/livewire/dist/livewire.esm';
 
 /**
@@ -15,6 +16,7 @@ import { Alpine, Livewire } from '../../vendor/livewire/livewire/dist/livewire.e
  */
 Alpine.data('ngDatePicker', ngDatePicker);
 Alpine.data('ngGalleryCarousel', ngGalleryCarousel);
+Alpine.data('ngQuoteGallery', ngQuoteGallery);
 Alpine.data('ngStickyEstimateBar', () => ({
     hide: false,
     init() {

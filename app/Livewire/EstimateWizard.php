@@ -15,6 +15,7 @@ use App\Enums\PropertyType;
 use App\Enums\QuoteRequestSource;
 use App\Livewire\Concerns\FlashesToasts;
 use App\Models\Addon;
+use App\Models\GalleryItem;
 use App\Models\PricingSetting;
 use App\Models\QuoteRequest;
 use App\Models\Service;
@@ -35,6 +36,7 @@ use App\Rules\UkPhoneNumber;
 use App\Services\QuoteRequestService;
 use App\Services\SeoService;
 use App\Support\Analytics\Analytics;
+use App\Support\Media;
 use App\Support\Toast;
 use App\Support\UkContactNormalizer;
 use Illuminate\Http\UploadedFile;
@@ -429,6 +431,37 @@ class EstimateWizard extends Component
             ->orderBy('sort_order')
             ->limit(3)
             ->get();
+    }
+
+    /**
+     * Published gallery photos for the quote-page recent-work strip.
+     *
+     * @return list<array{src: string, alt: string, caption: string}>
+     */
+    #[Computed]
+    public function quoteGalleryPhotos(): array
+    {
+        return GalleryItem::query()
+            ->published()
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get()
+            ->map(function (GalleryItem $item): ?array {
+                $src = Media::url($item->image_path);
+
+                if (! filled($src)) {
+                    return null;
+                }
+
+                return [
+                    'src' => $src,
+                    'alt' => filled($item->alt_text) ? $item->alt_text : '',
+                    'caption' => filled($item->caption) ? $item->caption : '',
+                ];
+            })
+            ->filter()
+            ->values()
+            ->all();
     }
 
     public function regularCleanFromPrice(): ?string
@@ -909,6 +942,7 @@ class EstimateWizard extends Component
         unset($this->calculation);
         unset($this->inclusions);
         unset($this->quoteTestimonials);
+        unset($this->quoteGalleryPhotos);
     }
 
     public function render()

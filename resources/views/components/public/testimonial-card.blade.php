@@ -1,6 +1,6 @@
 @props(['testimonial'])
 
-<x-public.card variant="flat" class="h-full">
+<x-public.card variant="flat">
     <div class="flex items-start justify-between gap-3">
         <div>
             <p class="text-2xl font-semibold leading-none text-ink">{{ $testimonial->rating }}</p>

@@ -16,7 +16,7 @@
             >Pause</button>
         </div>
         <div class="ng-review-marquee__window">
-            <div class="ng-review-marquee__track gap-6">
+            <div class="ng-review-marquee__track items-start gap-6">
                 @foreach ($testimonials as $testimonial)
                     <div class="w-80 shrink-0" wire:key="review-{{ $testimonial->id }}">
                         <x-public.testimonial-card :testimonial="$testimonial" />
@@ -31,7 +31,7 @@
         </div>
     </div>
 @else
-    <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+    <div class="mt-10 grid items-start gap-6 md:grid-cols-2 xl:grid-cols-3">
         @foreach ($testimonials as $testimonial)
             <x-public.testimonial-card :testimonial="$testimonial" wire:key="review-{{ $testimonial->id }}" />
         @endforeach

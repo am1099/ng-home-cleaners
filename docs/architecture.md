@@ -49,7 +49,7 @@ pricing_settings            Frequency discounts, floors baseline, rounding, furn
 service_areas               Area pages with SEO fields
 service_area_faqs           FAQ per area
 service_area_service        Services available in each area
-gallery_items               Single-image gallery (admin; homepage uses Recent Work)
+gallery_items               Single-image gallery (homepage 4×3 grid; quote page 3×2 rotator)
 recent_works                Before/after homepage showcase
 testimonials                Reviews with publishing, ordering, is_demo flag
 site_settings               Singleton business/contact/trust/SEO + homepage/about content

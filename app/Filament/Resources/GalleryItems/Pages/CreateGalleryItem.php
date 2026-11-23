@@ -62,7 +62,7 @@ class CreateGalleryItem extends CreateRecord
         foreach ($paths as $index => $path) {
             $item = GalleryItem::query()->create([
                 'image_path' => $path,
-                'alt_text' => 'Cleaning photo',
+                'alt_text' => null,
                 'caption' => null,
                 'sort_order' => $baseSort + $index + 1,
                 'is_published' => $published,

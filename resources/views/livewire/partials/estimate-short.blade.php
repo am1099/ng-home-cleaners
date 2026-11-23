@@ -271,6 +271,10 @@
                             Longer gap between cleans? Send a quick photo on WhatsApp.
                         </p>
                     </section>
+
+                    @if ($this->quoteGalleryPhotos !== [])
+                        <x-public.quote-recent-work :photos="$this->quoteGalleryPhotos" />
+                    @endif
                 </div>
 
                 <div class="lg:self-stretch">

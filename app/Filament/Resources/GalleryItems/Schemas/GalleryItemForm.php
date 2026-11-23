@@ -4,7 +4,6 @@ namespace App\Filament\Resources\GalleryItems\Schemas;
 
 use App\Filament\Support\SecureImageUpload;
 use App\Filament\Support\ServiceAreaSelect;
-use App\Models\GalleryItem;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -27,8 +26,8 @@ class GalleryItemForm
                     TextInput::make('alt_text')
                         ->label('Alt text')
                         ->maxLength(255)
-                        ->helperText('Short description for accessibility and SEO. Required before publishing if you leave this blank after a bulk upload.')
-                        ->required(fn (?GalleryItem $record): bool => $record !== null),
+                        ->nullable()
+                        ->helperText('Optional. Add a short description for screen readers and search when the photo shows something meaningful. Leave blank for decorative photos.'),
                     Textarea::make('caption')
                         ->rows(2)
                         ->columnSpanFull(),
