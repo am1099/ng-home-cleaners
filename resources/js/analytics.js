@@ -1,6 +1,8 @@
 /**
  * Provider-agnostic analytics queue with optional Plausible after consent,
- * plus consent-aware Google Ads conversion helpers.
+ * plus Google Ads conversions. Consent Mode v2 (default denied) decides
+ * whether a conversion is cookieless or stored. Do not also gate the
+ * gtag conversion call on the banner, or Google never receives the ping.
  */
 (function () {
     const CONSENT_KEY = 'ng-cookie-consent';
@@ -42,6 +44,7 @@
         }
 
         root.dataset.analyticsConsent = value;
+        writeConsentCookie(value);
         window.dispatchEvent(new CustomEvent('ng:consent', { detail: { value } }));
         updateGoogleConsent(value === 'accepted');
     }
@@ -54,6 +57,8 @@
         }
 
         root.dataset.analyticsConsent = '';
+        writeConsentCookie('declined');
+        clearAttributionCookie();
         updateGoogleConsent(false);
         window.dispatchEvent(new CustomEvent('ng:consent', { detail: { value: null } }));
         window.dispatchEvent(new CustomEvent('ng:consent-reopen'));
@@ -109,6 +114,15 @@
         document.head.appendChild(script);
     }
 
+    function writeConsentCookie(value) {
+        const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+        document.cookie = `ng_cookie_consent=${value}; Max-Age=31536000; Path=/; SameSite=Lax${secure}`;
+    }
+
+    function clearAttributionCookie() {
+        document.cookie = 'ng_attribution=; Max-Age=0; Path=/; SameSite=Lax';
+    }
+
     function isWhatsAppHref(href) {
         if (!href) {
             return false;
@@ -119,7 +133,7 @@
     }
 
     function fireGoogleAdsConversion(kind) {
-        if (!hasConsent() || typeof window.gtag !== 'function') {
+        if (typeof window.gtag !== 'function') {
             return false;
         }
 
@@ -137,7 +151,10 @@
         }
 
         lastConversionAt[kind] = now;
-        window.gtag('event', 'conversion', { send_to: sendTo });
+        window.gtag('event', 'conversion', {
+            send_to: sendTo,
+            transport_type: 'beacon',
+        });
 
         return true;
     }
@@ -202,6 +219,16 @@
     };
 
     document.addEventListener('click', (event) => {
+        const tracked = event.target instanceof Element
+            ? event.target.closest('[data-ng-track]')
+            : null;
+
+        if (tracked) {
+            window.ngTrack(tracked.getAttribute('data-ng-track'), {
+                location: tracked.getAttribute('data-ng-track-location') || undefined,
+            });
+        }
+
         const anchor = event.target instanceof Element
             ? event.target.closest('a[href]')
             : null;
@@ -225,8 +252,10 @@
 
     if (hasConsent()) {
         root.dataset.analyticsConsent = 'accepted';
+        writeConsentCookie('accepted');
         loadPlausible();
     } else if (consentValue() === 'declined') {
         root.dataset.analyticsConsent = 'declined';
+        writeConsentCookie('declined');
     }
 })();

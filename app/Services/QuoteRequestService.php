@@ -3,14 +3,12 @@
 namespace App\Services;
 
 use App\Data\WizardSubmissionData;
-use App\Enums\CleaningFrequency;
 use App\Enums\QuoteRequestSource;
 use App\Enums\QuoteRequestStatus;
 use App\Models\Customer;
 use App\Models\QuoteRequest;
 use App\Models\Service;
 use App\Models\SiteSetting;
-use App\Pricing\Money;
 use App\Pricing\PricingEngine;
 use App\Support\Media;
 use App\Support\UkContactNormalizer;
@@ -93,6 +91,7 @@ class QuoteRequestService
                 'is_numeric_estimate' => $calculation->isNumericEstimate,
                 'whatsapp_initiated_at' => $whatsappInitiated ? now() : null,
                 'submitted_at' => now(),
+                'ad_attribution' => app(AdAttribution::class)->forQuote(),
             ]);
         });
     }
@@ -326,82 +325,7 @@ class QuoteRequestService
 
     public function whatsappMessage(QuoteRequest $quoteRequest): string
     {
-        $serviceName = $quoteRequest->service?->name ?? 'Clean';
-        $isRegular = (bool) $quoteRequest->service?->isRegularClean();
-        $frequency = CleaningFrequency::tryFrom((string) $quoteRequest->frequency);
-
-        $parts = [];
-
-        if ($quoteRequest->bedrooms !== null) {
-            $parts[] = $quoteRequest->bedrooms === 0
-                ? 'studio'
-                : $quoteRequest->bedrooms.' bed';
-        }
-
-        if ($quoteRequest->bathrooms !== null) {
-            $parts[] = $quoteRequest->bathrooms.' bath';
-        }
-
-        if ($isRegular && $frequency && $frequency !== CleaningFrequency::OneOff) {
-            $parts[] = strtolower($frequency->label());
-        }
-
-        $meta = [];
-
-        if ($quoteRequest->is_numeric_estimate && $quoteRequest->guide_single_price_pence !== null) {
-            $price = Money::formatPence((int) $quoteRequest->guide_single_price_pence);
-            $meta[] = $isRegular ? $price.' per visit' : $price;
-        }
-
-        $duration = $this->guideDurationLabel($quoteRequest);
-
-        if ($duration !== null && ! $isRegular) {
-            $meta[] = $duration;
-        }
-
-        $detail = implode(', ', $parts);
-
-        if ($meta !== []) {
-            $detail = trim($detail.' ('.implode(', ', $meta).')');
-        }
-
-        $book = "I'd like to BOOK: {$serviceName}";
-
-        if ($detail !== '') {
-            $book .= ', '.$detail;
-        }
-
-        return "Hi NG Home Cleaners — {$book}. When are you next available?";
-    }
-
-    /**
-     * Display-only visit length for WhatsApp copy. Matches the short quote form.
-     */
-    protected function guideDurationLabel(QuoteRequest $quoteRequest): ?string
-    {
-        if ($quoteRequest->service?->requiresManualQuote()) {
-            return null;
-        }
-
-        if ($quoteRequest->bedrooms === null || $quoteRequest->bathrooms === null) {
-            return null;
-        }
-
-        $minutes = 120
-            + (max(0, (int) $quoteRequest->bedrooms - 1) * 30)
-            + (max(0, (int) $quoteRequest->bathrooms - 1) * 45);
-
-        $hours = intdiv($minutes, 60);
-        $fraction = match ($minutes % 60) {
-            15 => '¼',
-            30 => '½',
-            45 => '¾',
-            default => '',
-        };
-
-        $amount = $fraction === '' ? (string) $hours : $hours.$fraction;
-
-        return 'about '.$amount.' hr'.($minutes === 60 ? '' : 's');
+        return "Hi NG Home Cleaners, I'm interested in a quote from you.\n\nQuote reference: {$quoteRequest->reference}";
     }
 
     public function whatsappUrl(QuoteRequest $quoteRequest): string

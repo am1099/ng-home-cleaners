@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'completed_at',
     'review_request_sent_at',
     'cancelled_at',
+    'ads_offline_exported_at',
 ])]
 class Booking extends Model
 {
@@ -61,6 +62,7 @@ class Booking extends Model
             'completed_at' => 'datetime',
             'review_request_sent_at' => 'datetime',
             'cancelled_at' => 'datetime',
+            'ads_offline_exported_at' => 'datetime',
         ];
     }
 

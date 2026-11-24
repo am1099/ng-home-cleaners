@@ -66,12 +66,13 @@ class QuoteWhatsAppMessageTest extends TestCase
         $url = $quoteService->whatsappUrl($lead);
 
         $this->assertSame(
-            "Hi NG Home Cleaners — I'd like to BOOK: Deep clean, 2 bed, 1 bath (£225, about 2½ hrs). When are you next available?",
+            "Hi NG Home Cleaners, I'm interested in a quote from you.\n\nQuote reference: NG-TEST-WA",
             $message,
         );
         $this->assertStringNotContainsString('walkthrough video', $message);
-        $this->assertStringNotContainsString('NG-TEST-WA', $message);
-        $this->assertStringContainsString(rawurlencode("I'd like to BOOK: Deep clean"), $url);
+        $this->assertStringNotContainsString('gclid', $message);
+        $this->assertStringContainsString(rawurlencode("I'm interested in a quote from you."), $url);
+        $this->assertStringNotContainsString('1 bed', $url);
     }
 
     public function test_whatsapp_message_works_without_a_numeric_price(): void
@@ -101,7 +102,7 @@ class QuoteWhatsAppMessageTest extends TestCase
         $message = app(QuoteRequestService::class)->whatsappMessage($lead);
 
         $this->assertSame(
-            "Hi NG Home Cleaners — I'd like to BOOK: Office & commercial, 2 bed, 1 bath. When are you next available?",
+            "Hi NG Home Cleaners, I'm interested in a quote from you.\n\nQuote reference: NG-TEST-PH",
             $message,
         );
     }

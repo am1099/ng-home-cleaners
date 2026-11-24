@@ -62,8 +62,8 @@ class PublicLayoutTest extends TestCase
     {
         $snippet = 'https://www.googletagmanager.com/gtag/js?id=AW-18369596770';
 
-        $this->get('/')->assertOk()->assertSee($snippet, false);
-        $this->get('/get-a-quote')->assertOk()->assertSee($snippet, false);
+        $this->get('/')->assertOk()->assertSee($snippet, false)->assertSee('G-D6CEG5ZQRY', false);
+        $this->get('/get-a-quote')->assertOk()->assertSee($snippet, false)->assertSee('G-D6CEG5ZQRY', false);
         $this->get('/confirm')->assertOk()->assertSee($snippet, false);
         $this->get('/cookies')->assertOk()->assertSee('Google Ads', false);
         $this->get('/admin/login')->assertOk()->assertDontSee('googletagmanager.com', false);

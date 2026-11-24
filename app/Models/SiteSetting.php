@@ -109,9 +109,18 @@ class SiteSetting extends Model
         return $this->opening_hours['summary'] ?? '';
     }
 
+    public function whatsappEnquiryMessage(): string
+    {
+        return "Hi NG Home Cleaners, I'm interested in a quote from you.";
+    }
+
     public function whatsappLink(): ?string
     {
-        return $this->whatsapp_url ?: null;
+        if (blank($this->whatsapp_url) && blank($this->whatsapp_number)) {
+            return null;
+        }
+
+        return $this->whatsappUrlWithMessage($this->whatsappEnquiryMessage());
     }
 
     public function whatsappUrlWithMessage(string $message): string
@@ -128,8 +137,24 @@ class SiteSetting extends Model
             $base = 'https://wa.me/'.$digits;
         }
 
-        $separator = str_contains($base, '?') ? '&' : '?';
+        $parts = parse_url($base);
+        $query = [];
 
-        return $base.$separator.'text='.rawurlencode($message);
+        if (isset($parts['query'])) {
+            parse_str($parts['query'], $query);
+        }
+
+        unset($query['text']);
+        $query['text'] = $message;
+
+        $origin = ($parts['scheme'] ?? 'https').'://'.($parts['host'] ?? '');
+
+        if (isset($parts['port'])) {
+            $origin .= ':'.$parts['port'];
+        }
+
+        $path = $parts['path'] ?? '';
+
+        return $origin.$path.'?'.http_build_query($query, '', '&', PHP_QUERY_RFC3986);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Bookings\Pages;
 
 use App\Filament\Concerns\HasToggleableRecordLayout;
 use App\Filament\Resources\Bookings\BookingResource;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -16,6 +17,10 @@ class ListBookings extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('exportGoogleAdsBookings')
+                ->label('Export booked jobs for Google Ads')
+                ->url(fn (): string => route('crm.google-ads-booked-jobs'))
+                ->openUrlInNewTab(),
             CreateAction::make(),
         ];
     }

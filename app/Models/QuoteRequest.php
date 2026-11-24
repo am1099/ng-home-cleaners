@@ -61,6 +61,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'lost_at',
     'submitted_at',
     'follow_up_sent_at',
+    'ad_attribution',
 ])]
 class QuoteRequest extends Model
 {
@@ -96,6 +97,7 @@ class QuoteRequest extends Model
             'submitted_at' => 'datetime',
             'follow_up_sent_at' => 'datetime',
             'property_photo_paths' => 'array',
+            'ad_attribution' => 'array',
         ];
     }
 

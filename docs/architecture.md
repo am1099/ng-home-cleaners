@@ -388,7 +388,7 @@ Skip link, focus styles, reduced-motion CSS, estimate section labels, field `ari
 - Session `secure` cookie defaults on in production
 - Branded `404` / `419` / `500` (minimal layout for 419/500 so DB outages still render)
 - Analytics events are provider-agnostic (`window.ngTrack`); no vendor unless `ANALYTICS_ENABLED` + driver
-- Google Ads tag (`config('analytics.google_ads_id')`) on public and quote layouts only. Consent Mode defaults advertising storage to denied until cookie acceptance.
+- Google tag on public and quote layouts only: Ads (`config('analytics.google_ads_id')`) and GA4 (`config('analytics.google_analytics_id')`). Consent Mode defaults storage to denied. WhatsApp and phone conversions still call `gtag('event','conversion')` so Google can record a cookieless ping; ad cookies are written only after acceptance.
 
 ### Analytics events
 

@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Middleware\CaptureAdAttribution;
 use App\Http\Middleware\ForceCanonicalUrls;
+use App\Services\AdAttribution;
 use App\Services\SeoService;
 use App\Services\SiteSettingsService;
 use Illuminate\Foundation\Application;
@@ -16,8 +18,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->redirectGuestsTo('/admin/login');
         $middleware->trustProxies(at: '*');
+        $middleware->encryptCookies(except: [
+            AdAttribution::CONSENT_COOKIE,
+        ]);
         $middleware->prepend(ForceCanonicalUrls::class);
+        $middleware->web(append: [
+            CaptureAdAttribution::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (NotFoundHttpException $exception, Request $request) {

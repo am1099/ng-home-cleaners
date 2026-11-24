@@ -13,6 +13,11 @@
     $phoneSendTo = is_string($phoneSendTo) && preg_match('/^AW-\d+\/[A-Za-z0-9_-]+$/', $phoneSendTo) === 1
         ? $phoneSendTo
         : null;
+
+    $ga4Id = config('analytics.google_analytics_id');
+    $ga4Id = is_string($ga4Id) && preg_match('/^G-[A-Z0-9]+$/', $ga4Id) === 1
+        ? $ga4Id
+        : null;
 @endphp
 
 @if ($googleAdsId)
@@ -43,8 +48,13 @@
                 });
             }
         })();
+        gtag('set', 'ads_data_redaction', true);
+        gtag('set', 'url_passthrough', true);
         gtag('js', new Date());
         gtag('config', @json($googleAdsId));
+        @if ($ga4Id)
+            gtag('config', @json($ga4Id));
+        @endif
     </script>
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ $googleAdsId }}"></script>
 @endif

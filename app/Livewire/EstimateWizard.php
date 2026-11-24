@@ -133,6 +133,8 @@ class EstimateWizard extends Component
 
     public ?string $whatsappNotice = null;
 
+    public ?string $whatsappFallbackUrl = null;
+
     /** Honeypot — must remain empty. */
     public string $website = '';
 
@@ -675,12 +677,6 @@ class EstimateWizard extends Component
                 'reference' => $quoteRequest->reference,
                 'channel' => 'whatsapp',
             ]));
-            $this->js(Analytics::scriptCall(Analytics::QUOTE_WHATSAPP_CLICKED, [
-                'reference' => $quoteRequest->reference,
-            ]));
-            $this->js(Analytics::scriptCall(Analytics::WHATSAPP_QUOTE, [
-                'reference' => $quoteRequest->reference,
-            ]));
 
             $this->openWhatsAppFor($quoteRequest);
         } catch (ValidationException $exception) {
@@ -777,13 +773,14 @@ class EstimateWizard extends Component
     {
         $url = app(QuoteRequestService::class)->whatsappUrl($quoteRequest);
 
+        $this->whatsappFallbackUrl = $url;
         $this->flashWhatsAppToast();
         $this->dispatch('open-whatsapp', url: $url);
     }
 
     protected function flashWhatsAppToast(): void
     {
-        $this->whatsappNotice = 'Your request was saved and WhatsApp was opened.';
+        $this->whatsappNotice = 'Your request was saved. If WhatsApp did not open, use the link below.';
         $this->toastSuccess('Request saved', 'WhatsApp was opened.');
     }
 

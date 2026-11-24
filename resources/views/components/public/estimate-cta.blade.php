@@ -10,7 +10,8 @@
     :href="$href ?: route('quote')"
     :variant="$variant"
     :size="$size"
-    onclick="window.ngTrack && window.ngTrack('quote_started', { location: @js($location) })"
+    data-ng-track="quote_started"
+    data-ng-track-location="{{ $location }}"
     {{ $attributes }}
 >
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 shrink-0" aria-hidden="true">

@@ -419,6 +419,12 @@
                                 <span wire:loading.remove wire:target="submitViaWhatsApp">Book via WhatsApp</span>
                                 <span wire:loading wire:target="submitViaWhatsApp">Saving…</span>
                             </button>
+                            @if (filled($this->whatsappFallbackUrl))
+                                <p class="basis-full text-sm leading-snug text-ink-muted">
+                                    {{ $this->whatsappNotice }}
+                                    <a href="{{ $this->whatsappFallbackUrl }}" class="font-semibold text-brand-800 underline underline-offset-2">Open WhatsApp</a>
+                                </p>
+                            @endif
                             <button
                                 type="button"
                                 wire:click.prevent="submit"
@@ -483,11 +489,18 @@
     @script
     <script>
         $wire.on('open-whatsapp', (event) => {
-            const url = event?.url;
+            const payload = Array.isArray(event) ? event[0] : event;
+            const url = payload?.url;
 
-            if (url) {
-                window.open(url, '_blank');
+            if (!url) {
+                return;
             }
+
+            if (window.ngTrack) {
+                window.ngTrack('quote_whatsapp_clicked', { location: 'quote_form' });
+            }
+
+            window.location.assign(url);
         });
 
         $wire.on('estimate-validation-failed', () => {

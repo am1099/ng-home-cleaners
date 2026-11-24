@@ -135,7 +135,7 @@ class QuoteRequestSubmissionTest extends TestCase
             ->call('submitViaWhatsApp')
             ->assertDispatched('open-whatsapp')
             ->assertDispatched('toast')
-            ->assertSet('whatsappNotice', 'Your request was saved and WhatsApp was opened.')
+            ->assertSet('whatsappNotice', 'Your request was saved. If WhatsApp did not open, use the link below.')
             ->assertSet('savedReference', 'NG-1001');
 
         $quoteRequest = QuoteRequest::query()->firstOrFail();
@@ -146,7 +146,8 @@ class QuoteRequestSubmissionTest extends TestCase
         $whatsappUrl = app(QuoteRequestService::class)->whatsappUrl($quoteRequest);
 
         $this->assertStringContainsString('wa.me', $whatsappUrl);
-        $this->assertStringContainsString(rawurlencode("I'd like to BOOK:"), $whatsappUrl);
+        $this->assertStringContainsString(rawurlencode("I'm interested in a quote from you."), $whatsappUrl);
+        $this->assertStringNotContainsString('1 bed', $whatsappUrl);
         $this->assertStringContainsString('text=', $whatsappUrl);
 
         Mail::assertSent(InternalQuoteRequestMail::class);

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\GoogleAdsOfflineConversionController;
 use App\Http\Controllers\GoogleReviewOAuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalPageController;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(function () {
     Route::get('/google-reviews/connect', [GoogleReviewOAuthController::class, 'connect'])->name('google-reviews.connect');
     Route::get('/google-reviews/callback', [GoogleReviewOAuthController::class, 'callback'])->name('google-reviews.callback');
+    Route::get('/crm/google-ads-booked-jobs.csv', GoogleAdsOfflineConversionController::class)->name('crm.google-ads-booked-jobs');
 });
 
 Route::get('/', HomeController::class)->name('home');

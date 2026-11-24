@@ -32,7 +32,8 @@ Set in production `.env` (never commit secrets):
 - Resend mail: `MAIL_MAILER=resend`, `RESEND_API_KEY`, and `MAIL_FROM_ADDRESS` on a **verified Resend domain** (e.g. `hello@nghomecleaners.co.uk`). `hello@example.com` will be rejected.
 - `SESSION_SECURE_COOKIE=true` (or leave unset — defaults to secure when `APP_ENV=production`)
 - Optional analytics: `ANALYTICS_ENABLED=true`, `ANALYTICS_DRIVER=plausible`, and `PLAUSIBLE_DOMAIN=your-domain`. The Plausible script loads only after cookie consent.
-- Google Ads: public pages include the Ads tag (`GOOGLE_ADS_ID`, default `AW-18369596770`). Advertising storage stays denied until the visitor accepts the cookie banner. Set `GOOGLE_ADS_ID` empty and recache config to remove it. The tag is not loaded in Filament admin.
+- Google Ads and GA4: public pages load one gtag (`GOOGLE_ADS_ID`, default `AW-18369596770`, and `GOOGLE_ANALYTICS_ID`, default `G-D6CEG5ZQRY`). Consent Mode stays denied until the visitor accepts, so Google can receive cookieless conversion pings, but ad cookies and the 90-day click-ID cookie are written only after acceptance. Set either ID empty and recache config to remove that tag. Neither tag loads in Filament admin.
+- Booked-job export: `GOOGLE_ADS_BOOKED_CONVERSION_NAME` must match the offline conversion action in Google Ads exactly (default `NG - Booked job`). Signed-in staff download it from Bookings, or from `/crm/google-ads-booked-jobs.csv`. The file is not uploaded automatically.
 
 ## Object storage (Laravel Cloud)
 

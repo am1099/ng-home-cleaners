@@ -178,7 +178,8 @@ class QuotePageClientFixesTest extends TestCase
 
             $message = app(QuoteRequestService::class)->whatsappMessage($lead);
 
-            $this->assertStringContainsString("I'd like to BOOK: {$regular->name}", $message);
+            $this->assertStringContainsString("I'm interested in a quote from you.", $message);
+            $this->assertStringNotContainsString('1 bed', $message);
             $this->assertStringContainsString('2 bed, 1 bath', $message);
             $this->assertStringContainsString(Money::formatPence((int) $expected->finalSinglePricePence).' per visit', $message);
 
@@ -210,6 +211,11 @@ class QuotePageClientFixesTest extends TestCase
         $html = $this->get(route('quote'))
             ->assertOk()
             ->assertSee('AW-18369596770', false)
+            ->assertSee('G-D6CEG5ZQRY', false)
+            ->assertSee("gtag('config', \"AW-18369596770\")", false)
+            ->assertSee("gtag('config', \"G-D6CEG5ZQRY\")", false)
+            ->assertSee('ads_data_redaction', false)
+            ->assertSee('url_passthrough', false)
             ->assertSee('AW-18369596770/J-GNCIHs8LgdEOKap7dE', false)
             ->assertSee('AW-18369596770/GafGCITs8LgdEOKap7dE', false)
             ->assertSee('ad_storage', false)

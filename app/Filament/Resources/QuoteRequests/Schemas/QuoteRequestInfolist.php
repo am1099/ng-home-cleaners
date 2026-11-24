@@ -10,7 +10,9 @@ use App\Enums\PropertyType;
 use App\Enums\QuoteRequestSource;
 use App\Enums\QuoteRequestStatus;
 use App\Models\Addon;
+use App\Models\QuoteRequest;
 use App\Pricing\Money;
+use App\Services\AdAttribution;
 use App\Support\ArrayState;
 use App\Support\Media;
 use Filament\Infolists\Components\ImageEntry;
@@ -36,6 +38,10 @@ class QuoteRequestInfolist
                         ->formatStateUsing(fn (QuoteRequestSource $state): string => $state->label())
                         ->color(fn (QuoteRequestSource $state): string => $state->color()),
                     TextEntry::make('submitted_at')->label('Submitted')->dateTime('d M Y H:i'),
+                    TextEntry::make('ad_attribution')
+                        ->label('Ad click')
+                        ->state(fn (QuoteRequest $record): ?string => app(AdAttribution::class)->summary($record->ad_attribution))
+                        ->placeholder('None'),
                     TextEntry::make('service.name')->label('Service'),
                     TextEntry::make('home_summary')
                         ->label('Home')
