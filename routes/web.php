@@ -4,6 +4,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\GoogleAdsOfflineConversionController;
+use App\Http\Controllers\GoogleReportingOAuthController;
 use App\Http\Controllers\GoogleReviewOAuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalPageController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\QuoteConfirmationController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SiteEventController;
 use App\Http\Controllers\SitemapController;
 use App\Livewire\BookingConfirmationForm;
 use App\Livewire\EstimateWizard;
@@ -20,8 +22,14 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(function () {
     Route::get('/google-reviews/connect', [GoogleReviewOAuthController::class, 'connect'])->name('google-reviews.connect');
     Route::get('/google-reviews/callback', [GoogleReviewOAuthController::class, 'callback'])->name('google-reviews.callback');
+    Route::get('/google-reporting/connect', [GoogleReportingOAuthController::class, 'connect'])->name('google-reporting.connect');
+    Route::get('/google-reporting/callback', [GoogleReportingOAuthController::class, 'callback'])->name('google-reporting.callback');
     Route::get('/crm/google-ads-booked-jobs.csv', GoogleAdsOfflineConversionController::class)->name('crm.google-ads-booked-jobs');
 });
+
+Route::post('/analytics/events', SiteEventController::class)
+    ->middleware('throttle:60,1')
+    ->name('analytics.events');
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('/services', [ServiceController::class, 'index'])->name('services');

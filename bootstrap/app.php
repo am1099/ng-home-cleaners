@@ -23,6 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: [
             AdAttribution::CONSENT_COOKIE,
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'analytics/events',
+        ]);
         $middleware->prepend(ForceCanonicalUrls::class);
         $middleware->web(append: [
             CaptureAdAttribution::class,

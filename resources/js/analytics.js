@@ -132,6 +132,53 @@
             || href.toLowerCase().includes('whatsapp.com/send');
     }
 
+    function visitorKey() {
+        if (!hasConsent()) {
+            return null;
+        }
+
+        try {
+            let key = window.localStorage.getItem('ng-visitor');
+
+            if (!key) {
+                key = window.crypto.randomUUID();
+                window.localStorage.setItem('ng-visitor', key);
+            }
+
+            return key;
+        } catch {
+            return null;
+        }
+    }
+
+    function recordEvent(event, extra = {}) {
+        const params = new URLSearchParams(window.location.search);
+        const body = JSON.stringify({
+            event,
+            path: window.location.pathname,
+            referrer: document.referrer || null,
+            utm_source: params.get('utm_source'),
+            utm_medium: params.get('utm_medium'),
+            utm_campaign: params.get('utm_campaign'),
+            ads: params.has('gclid') || params.has('gbraid') || params.has('wbraid'),
+            visitor: visitorKey(),
+            ...extra,
+        });
+
+        if (navigator.sendBeacon) {
+            navigator.sendBeacon('/analytics/events', new Blob([body], { type: 'application/json' }));
+
+            return;
+        }
+
+        fetch('/analytics/events', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body,
+            keepalive: true,
+        }).catch(() => {});
+    }
+
     function fireGoogleAdsConversion(kind) {
         if (typeof window.gtag !== 'function') {
             return false;
@@ -240,15 +287,36 @@
         const href = anchor.getAttribute('href') || '';
 
         if (href.startsWith('tel:')) {
+            recordEvent('phone_clicked');
             window.ngTrack('phone_clicked', { location: 'tel_link' });
 
             return;
         }
 
         if (isWhatsAppHref(href)) {
+            recordEvent('whatsapp_opened');
             window.ngTrack('whatsapp_clicked', { location: 'whatsapp_link' });
         }
     }, true);
+
+    if (hasConsent()) {
+        recordEvent('page_view');
+    }
+
+    let formStarted = false;
+
+    document.addEventListener('focusin', (event) => {
+        if (formStarted || !hasConsent() || !(event.target instanceof Element)) {
+            return;
+        }
+
+        if (!event.target.closest('.ng-estimate-form')) {
+            return;
+        }
+
+        formStarted = true;
+        recordEvent('form_started');
+    });
 
     if (hasConsent()) {
         root.dataset.analyticsConsent = 'accepted';

@@ -500,6 +500,19 @@
                 window.ngTrack('quote_whatsapp_clicked', { location: 'quote_form' });
             }
 
+            if (navigator.sendBeacon) {
+                const params = new URLSearchParams(window.location.search);
+                navigator.sendBeacon('/analytics/events', new Blob([JSON.stringify({
+                    event: 'whatsapp_opened',
+                    path: window.location.pathname,
+                    referrer: document.referrer || null,
+                    utm_source: params.get('utm_source'),
+                    utm_medium: params.get('utm_medium'),
+                    utm_campaign: params.get('utm_campaign'),
+                    ads: params.has('gclid') || params.has('gbraid') || params.has('wbraid'),
+                })], { type: 'application/json' }));
+            }
+
             window.location.assign(url);
         });
 

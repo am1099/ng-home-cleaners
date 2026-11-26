@@ -29,9 +29,13 @@ return [
     ],
 
     'google' => [
+        'project_id' => env('GOOGLE_CLOUD_PROJECT'),
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REVIEW_REDIRECT', rtrim((string) env('APP_URL'), '/').'/google-reviews/callback'),
+        'reporting_redirect' => env('GOOGLE_REPORTING_REDIRECT', rtrim((string) env('APP_URL'), '/').'/google-reporting/callback'),
+        'ads_customer_id' => preg_replace('/\D/', '', (string) env('GOOGLE_ADS_CUSTOMER_ID', '')) ?: null,
+        'analytics_property_id' => preg_replace('/\D/', '', (string) env('GOOGLE_ANALYTICS_PROPERTY_ID', '')) ?: null,
     ],
 
     'slack' => [

@@ -132,6 +132,67 @@ class GoogleReviewClient
     }
 
     /**
+     * Profile views and actions from Google Business Profile.
+     * Age and gender are not available from this connection.
+     *
+     * @return array{available: bool, message: string, metrics: array<string, int>}
+     */
+    public function performanceSince(Carbon $since): array
+    {
+        $connection = GoogleBusinessConnection::current();
+
+        if (! $connection) {
+            return [
+                'available' => false,
+                'message' => 'Connect Google Business Profile from Reviews to pull profile views and calls.',
+                'metrics' => [],
+            ];
+        }
+
+        $accessToken = $this->refreshAccessToken($connection);
+        $location = str_contains($connection->location_resource, 'locations/')
+            ? $connection->location_resource
+            : 'locations/'.$connection->location_resource;
+
+        $metrics = [
+            'Website clicks' => 'WEBSITE_CLICKS',
+            'Calls' => 'CALL_CLICKS',
+            'Direction requests' => 'BUSINESS_DIRECTION_REQUESTS',
+        ];
+        $totals = [];
+
+        foreach ($metrics as $label => $metric) {
+            $response = Http::withToken($accessToken)
+                ->acceptJson()
+                ->get('https://businessprofileperformance.googleapis.com/v1/'.$location.':getDailyMetricsTimeSeries', [
+                    'dailyMetric' => $metric,
+                    'dailyRange.startDate.year' => $since->year,
+                    'dailyRange.startDate.month' => $since->month,
+                    'dailyRange.startDate.day' => $since->day,
+                    'dailyRange.endDate.year' => now()->year,
+                    'dailyRange.endDate.month' => now()->month,
+                    'dailyRange.endDate.day' => now()->day,
+                ])
+                ->throw()
+                ->json();
+
+            $sum = 0;
+
+            foreach ($response['timeSeries']['datedValues'] ?? [] as $point) {
+                $sum += (int) ($point['value'] ?? 0);
+            }
+
+            $totals[$label] = $sum;
+        }
+
+        return [
+            'available' => true,
+            'message' => $connection->location_title ?: 'Google Business Profile',
+            'metrics' => $totals,
+        ];
+    }
+
+    /**
      * @param  array<string, mixed>  $review
      */
     private function storeReview(array $review, ?string $sourceUrl): string
