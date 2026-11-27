@@ -500,7 +500,15 @@
                 window.ngTrack('quote_whatsapp_clicked', { location: 'quote_form' });
             }
 
-            if (navigator.sendBeacon) {
+            let consent = null;
+
+            try {
+                consent = window.localStorage.getItem('ng-cookie-consent');
+            } catch (error) {
+                consent = null;
+            }
+
+            if (consent !== 'declined' && navigator.sendBeacon) {
                 const params = new URLSearchParams(window.location.search);
                 navigator.sendBeacon('/analytics/events', new Blob([JSON.stringify({
                     event: 'whatsapp_opened',

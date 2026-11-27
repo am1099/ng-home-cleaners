@@ -80,4 +80,30 @@ class GoogleReportingClient
 
         return GoogleReportingConnection::query()->create($attributes);
     }
+
+    /**
+     * A short-lived access token for the connected Google account.
+     * Null when nobody has connected Ads and Analytics yet.
+     */
+    public function accessToken(): ?string
+    {
+        $connection = GoogleReportingConnection::query()->latest('id')->first();
+
+        if (! $connection) {
+            return null;
+        }
+
+        $token = Http::asForm()
+            ->acceptJson()
+            ->post('https://oauth2.googleapis.com/token', [
+                'refresh_token' => $connection->refresh_token,
+                'grant_type' => 'refresh_token',
+                'client_id' => config('services.google.client_id'),
+                'client_secret' => config('services.google.client_secret'),
+            ])
+            ->throw()
+            ->json();
+
+        return is_string($token['access_token'] ?? null) ? $token['access_token'] : null;
+    }
 }

@@ -97,6 +97,40 @@ class ServiceForm
                                             ->required()
                                             ->helperText('Pick from the grid — shown as icons customers see on cards and the estimate form.'),
                                     ]),
+                                Section::make('Quote page')
+                                    ->description('Shown on Get a quote. Leave a field blank to hide it for this service.')
+                                    ->columns(3)
+                                    ->schema([
+                                        Textarea::make('equipment_note')
+                                            ->label('Products and equipment line')
+                                            ->rows(2)
+                                            ->columnSpan(3)
+                                            ->helperText('For example, whether you bring the vacuum and mop. Leave blank to hide the line.'),
+                                        TextInput::make('guide_duration_base_hours')
+                                            ->label('Time for 1 bed, 1 bath')
+                                            ->numeric()
+                                            ->step(0.25)
+                                            ->minValue(0)
+                                            ->maxValue(24)
+                                            ->suffix('hrs')
+                                            ->helperText('2.5 shows as About 2½ hrs. A studio uses this same time. Blank hides the time.'),
+                                        TextInput::make('guide_duration_extra_bedroom_hours')
+                                            ->label('Extra per bedroom')
+                                            ->numeric()
+                                            ->step(0.25)
+                                            ->minValue(0)
+                                            ->maxValue(12)
+                                            ->suffix('hrs')
+                                            ->helperText('Added for each bedroom above 1. 0.5 is 30 minutes.'),
+                                        TextInput::make('guide_duration_extra_bathroom_hours')
+                                            ->label('Extra per bathroom')
+                                            ->numeric()
+                                            ->step(0.25)
+                                            ->minValue(0)
+                                            ->maxValue(12)
+                                            ->suffix('hrs')
+                                            ->helperText('Added for each bathroom above 1. 0.75 is 45 minutes.'),
+                                    ]),
                                 Section::make('Visibility')
                                     ->columns(2)
                                     ->schema([

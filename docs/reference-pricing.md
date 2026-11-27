@@ -176,7 +176,7 @@ hi = max(hi, 65)
 
 Comment in source: “2h minimum at £24/hr” (marketing copy elsewhere says two-hour minimum visit).
 
-The short quote page shows a display-only duration from that minimum: 2 hours, plus 30 minutes for each bedroom above one and 45 minutes for each bathroom above one. A 2 bed, 1 bath clean reads “about 2½ hrs”. This label does not change the guide price.
+The short quote page shows a display-only duration from the service’s admin hours: a 1-bed, 1-bath base, plus extra time for each bedroom above one and each bathroom above one. Regular cleans are seeded at 2 hours, plus 30 minutes per extra bedroom and 45 minutes per extra bathroom, so a 2-bed, 1-bath regular clean still reads “About 2½ hrs”. Deep clean, end of tenancy and office hide the time until hours are set. This label does not change the guide price.
 
 ### 6.2 Frequency discounts (Regular only)
 

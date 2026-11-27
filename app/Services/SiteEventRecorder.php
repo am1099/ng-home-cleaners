@@ -26,9 +26,7 @@ final class SiteEventRecorder
             return false;
         }
 
-        $needsConsent = in_array($event, [self::PAGE_VIEW, self::FORM_STARTED], true);
-
-        if ($needsConsent && $request->cookie(AdAttribution::CONSENT_COOKIE) !== 'accepted') {
+        if ($request->cookie(AdAttribution::CONSENT_COOKIE) === 'declined') {
             return false;
         }
 
@@ -143,7 +141,7 @@ final class SiteEventRecorder
 
     private function visitor(mixed $value, Request $request): ?string
     {
-        if ($request->cookie(AdAttribution::CONSENT_COOKIE) !== 'accepted') {
+        if ($request->cookie(AdAttribution::CONSENT_COOKIE) === 'declined') {
             return null;
         }
 

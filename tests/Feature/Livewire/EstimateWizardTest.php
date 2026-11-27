@@ -488,6 +488,45 @@ class EstimateWizardTest extends TestCase
             ->assertSet('firstName', 'Alex');
     }
 
+    public function test_quote_equipment_note_and_time_follow_the_selected_service(): void
+    {
+        $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();
+        $deep = Service::query()->where('slug', 'deep-clean')->firstOrFail();
+        $tenancy = Service::query()->where('slug', 'end-of-tenancy')->firstOrFail();
+        $office = Service::query()->where('slug', 'office-commercial')->firstOrFail();
+
+        Livewire::test(EstimateWizard::class)
+            ->set('serviceId', $regular->id)
+            ->set('bedrooms', 2)
+            ->set('bathrooms', 1)
+            ->assertSee('We bring all cleaning products — you provide a vacuum and mop', false)
+            ->assertSee('About 2½ hrs', false)
+            ->set('serviceId', $deep->id)
+            ->assertSee('We bring all products and equipment, including vacuum and mop', false)
+            ->assertDontSee('you provide a vacuum and mop', false)
+            ->assertDontSee('About ', false)
+            ->set('serviceId', $tenancy->id)
+            ->assertSee('We bring all products and equipment, including vacuum and mop', false)
+            ->assertDontSee('you provide a vacuum and mop', false)
+            ->assertDontSee('About ', false)
+            ->set('serviceId', $office->id)
+            ->assertDontSee('We bring all products and equipment, including vacuum and mop', false)
+            ->assertDontSee('you provide a vacuum and mop', false)
+            ->assertDontSee('About ', false);
+
+        $deep->update([
+            'guide_duration_base_hours' => 5,
+            'guide_duration_extra_bedroom_hours' => 1,
+            'guide_duration_extra_bathroom_hours' => 0.5,
+        ]);
+
+        Livewire::test(EstimateWizard::class)
+            ->set('serviceId', $deep->id)
+            ->set('bedrooms', 2)
+            ->set('bathrooms', 2)
+            ->assertSee('About 6½ hrs', false);
+    }
+
     public function test_short_form_saves_a_whatsapp_lead_without_contact_details(): void
     {
         $regular = Service::query()->where('slug', 'regular-clean')->firstOrFail();

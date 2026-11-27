@@ -307,6 +307,10 @@ class EstimateWizard extends Component
                 'slug',
                 'card_title',
                 'estimate_description',
+                'equipment_note',
+                'guide_duration_base_hours',
+                'guide_duration_extra_bedroom_hours',
+                'guide_duration_extra_bathroom_hours',
                 'is_active',
                 'sort_order',
             ])
@@ -384,30 +388,11 @@ class EstimateWizard extends Component
     }
 
     /**
-     * Display-only visit length. Does not change the guide price.
-     * Two-hour minimum, plus 30 minutes per bedroom above one and 45 minutes per bathroom above one.
+     * Display-only visit length from the service's admin hours. Does not change the guide price.
      */
     public function guideDurationLabel(): ?string
     {
-        if ($this->selectedService()?->requiresManualQuote()) {
-            return null;
-        }
-
-        $minutes = 120
-            + (max(0, $this->bedrooms - 1) * 30)
-            + (max(0, $this->bathrooms - 1) * 45);
-
-        $hours = intdiv($minutes, 60);
-        $fraction = match ($minutes % 60) {
-            15 => '¼',
-            30 => '½',
-            45 => '¾',
-            default => '',
-        };
-
-        $amount = $fraction === '' ? (string) $hours : $hours.$fraction;
-
-        return 'about '.$amount.' hr'.($minutes === 60 ? '' : 's');
+        return $this->selectedService()?->guideDurationLabel($this->bedrooms, $this->bathrooms);
     }
 
     #[Computed]

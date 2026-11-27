@@ -167,7 +167,7 @@ Route: `/get-a-quote` → `App\Livewire\EstimateWizard`.
 
 The public form asks for the clean, how often (regular only), bedrooms, bathrooms, optional extras, full name, an optional phone number, and postcode. Under the chosen clean, a single line says the kitchen and living room are included (kitchen, washrooms and reception for commercial). **Book via WhatsApp** saves that lead and opens a chat. Fields the short form does not ask use neutral pricing defaults: house, floors at the included baseline, one kitchen, one reception, no condition flags. Each frequency chip is a live engine price for the current home and extras.
 
-Visit length on the price card is display-only: a two-hour minimum, plus 30 minutes per bedroom above one and 45 minutes per bathroom above one. It does not change the price.
+Visit length on the price card is display-only and does not change the price. Each service stores an optional 1-bed, 1-bath time plus extra hours per bedroom and bathroom. A blank time is hidden. The products and equipment line is also per service and hidden when blank.
 
 `/get-a-quote/detailed` keeps the full form (property, rooms, condition, date, address, photos, email) for landlords, agencies and larger jobs.
 

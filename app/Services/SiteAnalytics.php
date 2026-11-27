@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\QuoteRequest;
 use App\Models\SiteEvent;
 use App\Models\Testimonial;
+use App\Services\Analytics\ReportingPeriod;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -20,9 +21,11 @@ final class SiteAnalytics
      */
     public function report(int $days): array
     {
-        $days = in_array($days, [7, 30, 90], true) ? $days : 30;
-        $since = now()->subDays($days)->startOfDay();
-        $events = SiteEvent::query()->where('occurred_at', '>=', $since);
+        $period = ReportingPeriod::make($days);
+        $days = $period->days;
+        $since = $period->start;
+        $until = $period->end;
+        $events = SiteEvent::query()->whereBetween('occurred_at', [$since, $until]);
 
         $visitors = SiteEvent::query()
             ->where('occurred_at', '>=', $since)
@@ -33,7 +36,7 @@ final class SiteAnalytics
         $phone = (clone $events)->where('event', SiteEventRecorder::PHONE_CLICKED)->count();
         $formStarts = (clone $events)->where('event', SiteEventRecorder::FORM_STARTED)->count();
 
-        $quotes = QuoteRequest::query()->where('submitted_at', '>=', $since)->get();
+        $quotes = QuoteRequest::query()->whereBetween('submitted_at', [$since, $until])->get();
 
         return [
             'days' => $days,

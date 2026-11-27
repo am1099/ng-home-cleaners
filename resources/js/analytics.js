@@ -36,6 +36,18 @@
         return consentValue() === 'accepted';
     }
 
+    function trackingAllowed() {
+        return consentValue() !== 'declined';
+    }
+
+    function forgetVisitor() {
+        try {
+            window.localStorage.removeItem('ng-visitor');
+        } catch {
+            // Ignore storage failures (private mode).
+        }
+    }
+
     function setConsent(value) {
         try {
             window.localStorage.setItem(CONSENT_KEY, value);
@@ -45,6 +57,11 @@
 
         root.dataset.analyticsConsent = value;
         writeConsentCookie(value);
+
+        if (value === 'declined') {
+            forgetVisitor();
+        }
+
         window.dispatchEvent(new CustomEvent('ng:consent', { detail: { value } }));
         updateGoogleConsent(value === 'accepted');
     }
@@ -58,6 +75,7 @@
 
         root.dataset.analyticsConsent = '';
         writeConsentCookie('declined');
+        forgetVisitor();
         clearAttributionCookie();
         updateGoogleConsent(false);
         window.dispatchEvent(new CustomEvent('ng:consent', { detail: { value: null } }));
@@ -133,7 +151,7 @@
     }
 
     function visitorKey() {
-        if (!hasConsent()) {
+        if (!trackingAllowed()) {
             return null;
         }
 
@@ -152,6 +170,10 @@
     }
 
     function recordEvent(event, extra = {}) {
+        if (!trackingAllowed()) {
+            return;
+        }
+
         const params = new URLSearchParams(window.location.search);
         const body = JSON.stringify({
             event,
@@ -299,14 +321,14 @@
         }
     }, true);
 
-    if (hasConsent()) {
+    if (trackingAllowed()) {
         recordEvent('page_view');
     }
 
     let formStarted = false;
 
     document.addEventListener('focusin', (event) => {
-        if (formStarted || !hasConsent() || !(event.target instanceof Element)) {
+        if (formStarted || !trackingAllowed() || !(event.target instanceof Element)) {
             return;
         }
 

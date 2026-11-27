@@ -19,6 +19,10 @@ use Illuminate\Support\Str;
     'card_title',
     'short_description',
     'estimate_description',
+    'equipment_note',
+    'guide_duration_base_hours',
+    'guide_duration_extra_bedroom_hours',
+    'guide_duration_extra_bathroom_hours',
     'full_description',
     'icon',
     'cta_label',
@@ -41,6 +45,9 @@ class Service extends Model
             'icon' => ServiceIcon::class,
             'is_active' => 'boolean',
             'sort_order' => 'integer',
+            'guide_duration_base_hours' => 'decimal:2',
+            'guide_duration_extra_bedroom_hours' => 'decimal:2',
+            'guide_duration_extra_bathroom_hours' => 'decimal:2',
         ];
     }
 
@@ -152,6 +159,60 @@ class Service extends Model
     public function isRegularClean(): bool
     {
         return $this->slug === 'regular-clean';
+    }
+
+    /**
+     * Display-only visit length for the quote card. Null hides the time.
+     * The base is a 1-bed, 1-bath home. Studio uses that same base.
+     */
+    public function guideDurationLabel(int $bedrooms, int $bathrooms): ?string
+    {
+        if ($this->guide_duration_base_hours === null || $this->guide_duration_base_hours === '') {
+            return null;
+        }
+
+        $hours = (float) $this->guide_duration_base_hours
+            + (max(0, $bedrooms - 1) * (float) ($this->guide_duration_extra_bedroom_hours ?? 0))
+            + (max(0, $bathrooms - 1) * (float) ($this->guide_duration_extra_bathroom_hours ?? 0));
+
+        $minutes = (int) round($hours * 60);
+
+        if ($minutes < 1) {
+            return null;
+        }
+
+        return self::formatGuideDuration($minutes);
+    }
+
+    public static function formatGuideDuration(int $minutes): string
+    {
+        $hours = intdiv($minutes, 60);
+        $remainder = $minutes % 60;
+        $fraction = match ($remainder) {
+            0 => '',
+            15 => '¼',
+            30 => '½',
+            45 => '¾',
+            default => null,
+        };
+
+        if ($fraction === null || $hours === 0) {
+            $parts = [];
+
+            if ($hours > 0) {
+                $parts[] = $hours.' hr'.($hours === 1 ? '' : 's');
+            }
+
+            if ($remainder > 0) {
+                $parts[] = $remainder.' min'.($remainder === 1 ? '' : 's');
+            }
+
+            return 'about '.implode(' ', $parts);
+        }
+
+        $amount = $fraction === '' ? (string) $hours : $hours.$fraction;
+
+        return 'about '.$amount.' hr'.($minutes === 60 ? '' : 's');
     }
 
     public function appliesPropertyStatusMultipliers(): bool

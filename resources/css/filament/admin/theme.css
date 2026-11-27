@@ -160,3 +160,65 @@
     height: 1rem;
     flex-shrink: 0;
 }
+
+@keyframes ng-rise {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes ng-donut {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.ng-rise {
+    animation: ng-rise 0.45s ease both;
+}
+
+.ng-donut {
+    animation: ng-donut 0.7s ease both;
+}
+
+.ng-clickable {
+    cursor: pointer;
+    transition: transform 0.18s ease, border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ng-clickable:hover {
+    transform: translateY(-2px);
+    border-color: #208378;
+    background-color: rgb(32 131 120 / 0.06);
+    box-shadow: 0 8px 20px -12px rgb(14 59 54 / 0.45);
+}
+
+.ng-clickable:focus-visible {
+    outline: 2px solid #208378;
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ng-rise,
+    .ng-donut,
+    .ng-clickable {
+        animation: none;
+        transition: none;
+    }
+
+    .ng-clickable:hover {
+        transform: none;
+    }
+}

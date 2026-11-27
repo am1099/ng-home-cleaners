@@ -13,14 +13,29 @@ class SiteAnalyticsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_page_views_are_ignored_until_cookies_are_accepted(): void
+    public function test_page_views_are_recorded_until_cookies_are_declined(): void
     {
         $this->postJson('/analytics/events', [
             'event' => SiteEventRecorder::PAGE_VIEW,
             'path' => '/',
+            'visitor' => '11111111-1111-4111-8111-111111111111',
         ])->assertNoContent();
 
-        $this->assertDatabaseCount('site_events', 0);
+        $this->assertDatabaseHas('site_events', [
+            'event' => SiteEventRecorder::PAGE_VIEW,
+            'path' => '/',
+            'visitor_key' => '11111111-1111-4111-8111-111111111111',
+        ]);
+
+        $this->withCredentials()
+            ->disableCookieEncryption()
+            ->withCookie(AdAttribution::CONSENT_COOKIE, 'declined')
+            ->postJson('/analytics/events', [
+                'event' => SiteEventRecorder::WHATSAPP_OPENED,
+                'path' => '/get-a-quote',
+            ])->assertNoContent();
+
+        $this->assertDatabaseCount('site_events', 1);
     }
 
     public function test_whatsapp_open_is_recorded_with_its_page(): void
@@ -66,6 +81,8 @@ class SiteAnalyticsTest extends TestCase
             ->assertOk()
             ->assertSee('WhatsApp opened')
             ->assertSee('Google Business Profile')
-            ->assertSee('Age and gender are not collected');
+            ->assertSee('Age and gender are not collected')
+            ->assertSee('Visits are counted until someone declines cookies')
+            ->assertSee('Business performance');
     }
 }

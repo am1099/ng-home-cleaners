@@ -199,7 +199,16 @@
                                                 <li wire:key="inclusion-{{ $inclusion->id }}">{{ $inclusion->content }}</li>
                                             @endforeach
                                         </ul>
-                                        <p class="mt-3 text-sm text-ink-muted">Inside the oven, fridge and cupboards are add-ons below. We bring the products — you provide a vacuum and mop.</p>
+                                        @if ($isRegular || filled($service?->equipment_note))
+                                            <p class="mt-3 text-sm text-ink-muted">
+                                                @if ($isRegular)
+                                                    Inside the oven, fridge and cupboards are add-ons below.
+                                                @endif
+                                                @if (filled($service?->equipment_note))
+                                                    {{ $service->equipment_note }}
+                                                @endif
+                                            </p>
+                                        @endif
                                     </div>
                                 @endif
                             </div>
@@ -420,7 +429,9 @@
                         </p>
 
                         <ul class="space-y-2 rounded-[var(--radius-card)] border border-border bg-surface-card p-4 text-sm leading-snug text-ink shadow-[var(--shadow-card)]">
-                            <li class="flex gap-2"><span class="text-brand-700" aria-hidden="true">&#10003;</span><span>We bring all cleaning products — you provide a vacuum and mop</span></li>
+                            @if (filled($service?->equipment_note))
+                                <li class="flex gap-2"><span class="text-brand-700" aria-hidden="true">&#10003;</span><span>{{ $service->equipment_note }}</span></li>
+                            @endif
                             <li class="flex gap-2"><span class="text-brand-700" aria-hidden="true">&#10003;</span><span>Not happy? Tell us within 48 hours and we'll re-clean free</span></li>
                             <li class="flex gap-2"><span class="text-brand-700" aria-hidden="true">&#10003;</span><span>No contract — cancel or reschedule free with 24 hours' notice</span></li>
                         </ul>
